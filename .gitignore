@@ -2,3 +2,7 @@
 *.css.map
 *.sass.map
 *.scss.map
+node_modules
+.idea
+dist/
+package-lock.json
