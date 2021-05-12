@@ -4,18 +4,24 @@
   "description": "Chess",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build-ts": "tsc"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@types/node": "^15.0.2",
     "browser-sync": "^2.26.14",
     "bufferutil": "^4.0.1",
     "gulp": "^4.0.2",
     "gulp-clean-css": "^4.3.0",
     "gulp-plumber": "^1.2.1",
     "gulp-sass": "^4.1.0",
-    "utf-8-validate": "^5.0.2",
-    "gulp-sourcemaps": "^3.0.0"
+    "gulp-sourcemaps": "^3.0.0",
+    "gulp-typescript": "^6.0.0-alpha.1",
+    "utf-8-validate": "^5.0.2"
+  },
+  "dependencies": {
+    "typescript": "^4.2.4"
   }
 }
