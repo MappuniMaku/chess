@@ -12,7 +12,7 @@ const tsProject = ts.createProject('tsconfig.json');
 
 // Compile SCSS(SASS) files
 task('scss', () => {
-    return src('./src/scss/*.scss')
+    return src('./src/scss/*.scss', '!variables.scss')
         .pipe(plumber())
         .pipe(sourcemaps.init())
         .pipe(sass())

@@ -13,6 +13,7 @@
     "strictNullChecks": true,
     "resolveJsonModule": true,
     "sourceMap": true,
+    "outFile": "script.js",
     "baseUrl": ".",
     "paths": {
       "*": [

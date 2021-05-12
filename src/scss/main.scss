@@ -1,3 +1,58 @@
+@import "variables";
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
 body {
-  color: red;
+    font-family: sans-serif;
+}
+
+.Chess {
+    $block: &;
+
+    &__desc {
+        // +2 - empty cells on corners
+        width: $cell-size * ($desk-size + 2);
+        height: $cell-size * ($desk-size + 2);
+        display: flex;
+        flex-direction: column;
+    }
+
+    &__row {
+        display: flex;
+
+        &:nth-child(odd) {
+            #{$block}__cell--main {
+                background-color: $color-light-brown;
+
+                &:nth-child(even) {
+                    background-color: $color-dark-brown;
+                }
+            }
+        }
+
+        &:nth-child(even) {
+            #{$block}__cell--main {
+                background-color: $color-dark-brown;
+
+                &:nth-child(even) {
+                    background-color: $color-light-brown;
+                }
+            }
+        }
+    }
+
+    &__cell {
+        width: $cell-size;
+        height: $cell-size;
+
+        &--heading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+    }
 }
