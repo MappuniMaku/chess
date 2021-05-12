@@ -1,5 +1,5 @@
 export type Cell = {
-    column: number,
+    col: number,
     row: number,
 }
 
