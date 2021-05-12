@@ -1,4 +1,4 @@
-const { series, watch } = require('gulp');
+const { task, series, watch } = require('gulp');
 
 const gulp = require('gulp');
 const plumber = require('gulp-plumber');
@@ -6,19 +6,21 @@ const sass = require('gulp-sass');
 const cleanCSS = require('gulp-clean-css');
 const sourcemaps = require('gulp-sourcemaps');
 const browserSync = require('browser-sync').create();
+const { reload } = browserSync;
 
-function scss(cb) {
-    gulp.src('./src/scss/*.scss')
+// Compile SCSS(SASS) files
+task('scss', function compileScss() {
+    return gulp.src('./src/scss/*.scss')
         .pipe(plumber())
         .pipe(sourcemaps.init())
         .pipe(sass())
         .pipe(cleanCSS())
         .pipe(sourcemaps.write())
         .pipe(gulp.dest('./dist'));
-    cb();
-}
+});
 
-function browsersync(cb) {
+// Configure the browserSync task and watch file path for change
+task('dev', function browserDev(done) {
     browserSync.init({
         server: {
             baseDir: './',
@@ -31,12 +33,12 @@ function browsersync(cb) {
         cors: true,
         notify: false
     });
-    if (cb) {
-        cb();
-    }
-}
+    watch(['src/scss/*.scss','src/scss/**/*.scss'], series('scss', function cssBrowserReload (done) {
+        reload();
+        done();
+    }));
+    watch(['*.html']).on('change', reload);
+    done();
+});
 
-exports.default = function() {
-    browsersync();
-    watch('./src/scss/*.scss', series(scss, browsersync));
-};
+task('default', gulp.series('scss'));
