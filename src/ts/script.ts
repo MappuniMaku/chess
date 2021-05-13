@@ -6,7 +6,7 @@ import {
 const root = document.getElementById('root');
 const DESC_SIZE = 8;
 const LETTERS_START_CODE = 'a'.charCodeAt(0);
-/*
+
 abstract class Figure {
     place: Cell;
 
@@ -18,7 +18,7 @@ abstract class Figure {
 class FigureKing extends Figure implements FigureInterface {
     getCellsToMove(): Cell[] {
         const result: Cell[] = [];
-        /*const { col, row } = this.place;
+        const { col, row } = this.place;
 
         for (let i = col - 1; i < col + 1; i++) {
             for (let j = row - 1; j < row + 1; j++) {
@@ -30,14 +30,15 @@ class FigureKing extends Figure implements FigureInterface {
                     result.push({ col: i, row: j });
                 }
             }
-        }*/
+        }
 
-   /*     return result;
+        return result;
     }
-}*/
+}
 
 class App {
     root: HTMLElement;
+
 
     constructor(props) {
         this.root = props.root;

@@ -5,10 +5,11 @@ const plumber = require('gulp-plumber');
 const sass = require('gulp-sass');
 const cleanCSS = require('gulp-clean-css');
 const sourcemaps = require('gulp-sourcemaps');
-const ts = require('gulp-typescript');
 const browserSync = require('browser-sync').create();
 const { reload } = browserSync;
-const tsProject = ts.createProject('tsconfig.json');
+const webpack = require('webpack');
+const webpackStream = require('webpack-stream');
+const webpackConfig = require('./webpack.config.js');
 
 // Compile SCSS(SASS) files
 task('scss', () => {
@@ -22,8 +23,8 @@ task('scss', () => {
 });
 
 task('ts', () => {
-    return tsProject.src()
-        .pipe(tsProject())
+    return src('./src/ts/script.ts')
+        .pipe(webpackStream(webpackConfig), webpack)
         .pipe(dest('./dist'));
 });
 
