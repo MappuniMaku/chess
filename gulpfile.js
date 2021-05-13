@@ -4,6 +4,7 @@ const gulp = require('gulp');
 const plumber = require('gulp-plumber');
 const sass = require('gulp-sass');
 const cleanCSS = require('gulp-clean-css');
+const concat = require('gulp-concat');
 const sourcemaps = require('gulp-sourcemaps');
 const browserSync = require('browser-sync').create();
 const { reload } = browserSync;
@@ -13,12 +14,13 @@ const webpackConfig = require('./webpack.config.js');
 
 // Compile SCSS(SASS) files
 task('scss', () => {
-    return src('./src/scss/*.scss', '!variables.scss')
+    return src('./src/scss/*.scss')
         .pipe(plumber())
         .pipe(sourcemaps.init())
         .pipe(sass())
         .pipe(cleanCSS())
         .pipe(sourcemaps.write())
+        .pipe(concat('styles.min.css'))
         .pipe(dest('./dist'));
 });
 
