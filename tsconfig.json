@@ -1,9 +1,10 @@
 {
   "compilerOptions": {
     "target": "esnext",
-    "module": "commonjs",
     "allowJs": true,
     "checkJs": false,
+    "module": "commonjs",
+    "lib": ["es5", "es6", "dom"],
     "outDir": "dist",
     "rootDir": "./src/ts",
     "strict": false,
@@ -13,7 +14,6 @@
     "strictNullChecks": true,
     "resolveJsonModule": true,
     "sourceMap": true,
-    "outFile": "script.js",
     "baseUrl": ".",
     "paths": {
       "*": [

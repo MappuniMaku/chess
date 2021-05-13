@@ -17,12 +17,28 @@ abstract class Figure {
 
 class FigureKing extends Figure implements FigureInterface {
     getCellsToMove(): Cell[] {
-        return [];
+        const result: Cell[] = [];
+        const { col, row } = this.place;
+
+        for (let i = col - 1; i < col + 1; i++) {
+            for (let j = row - 1; j < row + 1; j++) {
+                if (
+                    i > 0 && j > 0 &&
+                    i < DESC_SIZE && j < DESC_SIZE &&
+                    !(i === col && j === row)
+                ) {
+                    result.push({ col: i, row: j });
+                }
+            }
+        }
+
+        return result;
     }
 }
 
 class App {
     root: HTMLElement;
+
 
     constructor(props) {
         this.root = props.root;
@@ -58,7 +74,7 @@ class App {
             for (let j = 0; j < DESC_SIZE; j++) {
                 const cell = this.createElement('div', 'Chess__cell Chess__cell--main');
                 cell.addEventListener('click', (event) => {
-                    this.onCellClick({ column: j, row: i });
+                    this.onCellClick({ col: j, row: i });
                 });
                 row.append(cell);
             }
@@ -75,7 +91,7 @@ class App {
     }
 
     onCellClick(cell: Cell) {
-        console.log(cell.column, cell.row);
+        console.log(cell.col, cell.row);
     }
 
     getElement(query: string): HTMLElement | null {
