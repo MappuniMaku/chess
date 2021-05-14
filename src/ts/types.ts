@@ -17,11 +17,11 @@ export type BoardCell = {
 }
 
 export enum FigureType {
-    King = 'king'/*,
+    King = 'king',
     Queen = 'queen',
     Rook = 'rook',
     Bishop = 'bishop',
-    Knight = 'knight',
+    Knight = 'knight'/*,
     Pawn = 'pawn',*/
 }
 

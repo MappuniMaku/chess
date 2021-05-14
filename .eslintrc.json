@@ -39,6 +39,7 @@
             "SwitchCase": 1
           }
         ],
+        "no-plusplus": "off",
         "lines-between-class-members": "off",
         "class-methods-use-this": "off",
         "no-param-reassign": "off",

@@ -83,11 +83,51 @@ body {
             &#{$el}--king {
                 background-image: url("./images/king-w.png");
             }
+
+            &#{$el}--queen {
+                background-image: url("./images/queen-w.png");
+            }
+
+            &#{$el}--rook {
+                background-image: url("./images/rook-w.png");
+            }
+
+            &#{$el}--bishop {
+                background-image: url("./images/bishop-w.png");
+            }
+
+            &#{$el}--knight {
+                background-image: url("./images/knight-w.png");
+            }
+
+            &#{$el}--pawn {
+                background-image: url("./images/pawn-w.png");
+            }
         }
 
         &--black {
             &#{$el}--king {
                 background-image: url("./images/king-b.png");
+            }
+
+            &#{$el}--queen {
+                background-image: url("./images/queen-b.png");
+            }
+
+            &#{$el}--rook {
+                background-image: url("./images/rook-b.png");
+            }
+
+            &#{$el}--bishop {
+                background-image: url("./images/bishop-b.png");
+            }
+
+            &#{$el}--knight {
+                background-image: url("./images/knight-b.png");
+            }
+
+            &#{$el}--pawn {
+                background-image: url("./images/pawn-b.png");
             }
         }
     }
