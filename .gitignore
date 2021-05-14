@@ -1,7 +1,7 @@
 .sass-cache/
-*.css.map
-*.sass.map
-*.scss.map
+*.map
+*.min.css
+public/bundle.js
 node_modules
 .idea
 dist/
