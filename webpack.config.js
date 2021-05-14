@@ -1,21 +1,38 @@
-//webpack.config.js
 const path = require('path');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
-module.exports = {
-    mode: "development",
-    devtool: "inline-source-map",
-    output: {
-        filename: "script.js"
+const buildConfig = {
+    entry: {
+        'bundle': './src/ts/bundle.ts',
     },
-    resolve: {
-        extensions: [".ts", ".tsx", ".js"],
-    },
+    devtool: 'source-map',
     module: {
         rules: [
             {
                 test: /\.tsx?$/,
-                loader: "ts-loader"
-            }
-        ]
-    }
+                use: 'ts-loader',
+                exclude: /node_modules/,
+            },
+        ],
+    },
+    resolve: {
+        extensions: ['.tsx', '.ts', '.js'],
+    },
 };
+
+const outputExampleWebVoiceControl = Object.assign({}, buildConfig, {
+    output: {
+        filename: 'bundle.js',
+        path: path.resolve(__dirname, 'public'),
+    },
+    plugins: [
+        new CleanWebpackPlugin({
+            cleanOnceBeforeBuildPatterns: [
+                path.resolve(__dirname,
+                    './public/bundle.js'),
+            ],
+        }),
+    ],
+});
+
+module.exports = [outputExampleWebVoiceControl];
