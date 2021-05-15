@@ -56,7 +56,8 @@ body {
             justify-content: center;
         }
 
-        &--highlighted {
+        &--move,
+        &--attack {
             position: relative;
 
             &::before {
@@ -64,9 +65,16 @@ body {
                 position: absolute;
                 width: 100%;
                 height: 100%;
-                background-color: rgba(green, 0.3);
                 z-index: 2;
             }
+        }
+
+        &--move::before {
+            background-color: rgba(green, 0.3);
+        }
+
+        &--attack::before {
+            background-color: rgba(red, 0.3);
         }
     }
 

@@ -1,8 +1,6 @@
-import { Cell, FigureType, IFigure } from '../../types';
+import { FigureType, IFigure, MovementResult } from '../../types';
 import { Figure, FigureProps } from './Figure';
-import { CONSTANTS } from '../../constants';
-
-const { BOARD_SIZE } = CONSTANTS;
+import { mergeMovementResults } from "../../utils";
 
 export class Bishop extends Figure implements IFigure {
     constructor(props: Omit<FigureProps, 'type'>) {
@@ -12,21 +10,12 @@ export class Bishop extends Figure implements IFigure {
         });
     }
 
-    getCellsToMove(currentCell: Cell): Cell[] {
-        const result: Cell[] = [];
-        const { col, row } = currentCell;
-
-        for (let i = 0; i < BOARD_SIZE; i++) {
-            for (let j = 0; j < BOARD_SIZE; j++) {
-                if (
-                    ((i - j === row - col) || (i + j === col + row)) &&
-                    !(i === row && j === col)
-                ) {
-                    result.push({ row: i, col: j});
-                }
-            }
-        }
-
-        return result;
+    getPossibleMoves(): MovementResult {
+        return mergeMovementResults(
+            this.getMovementRay(-1, -1),
+            this.getMovementRay(-1, 1),
+            this.getMovementRay(1, -1),
+            this.getMovementRay(1, 1)
+        );
     }
 }

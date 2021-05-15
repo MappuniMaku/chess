@@ -1,8 +1,6 @@
-import { Cell, FigureType, IFigure } from '../../types';
+import { FigureType, IFigure, MovementResult } from '../../types';
 import { Figure, FigureProps } from './Figure';
-import { CONSTANTS } from '../../constants';
-
-const { BOARD_SIZE } = CONSTANTS;
+import { mergeMovementResults } from '../../utils';
 
 export class Rook extends Figure implements IFigure {
     constructor(props: Omit<FigureProps, 'type'>) {
@@ -12,22 +10,12 @@ export class Rook extends Figure implements IFigure {
         });
     }
 
-    getCellsToMove(currentCell: Cell): Cell[] {
-        const result: Cell[] = [];
-        const { col, row } = currentCell;
-
-        for (let i = 0; i < BOARD_SIZE; i++) {
-            if (i !== col) {
-                result.push({ row, col: i });
-            }
-        }
-
-        for (let i = 0; i < BOARD_SIZE; i++) {
-            if (i !== row) {
-                result.push({ row: i, col });
-            }
-        }
-
-        return result;
+    getPossibleMoves(): MovementResult {
+        return mergeMovementResults(
+            this.getMovementRay(-1),
+            this.getMovementRay(1),
+            this.getMovementRay(0, -1),
+            this.getMovementRay(0, 1)
+        );
     }
 }

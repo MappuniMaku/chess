@@ -1,4 +1,4 @@
-import { Cell, FigureType, IFigure } from '../../types';
+import { Cell, FigureType, IFigure, MovementResult } from '../../types';
 import { Figure, FigureProps } from './Figure';
 import { CONSTANTS } from '../../constants';
 
@@ -12,9 +12,10 @@ export class Knight extends Figure implements IFigure {
         });
     }
 
-    getCellsToMove(currentCell: Cell): Cell[] {
-        const result: Cell[] = [];
-        const { col, row } = currentCell;
+    getPossibleMoves(): MovementResult {
+        const cellsToMove: Cell[] = [];
+        const cellsToAttack: Cell[] = [];
+        const { col, row } = this.cell;
 
         const left = Math.max(col - 2, 0);
         const top = Math.max(row - 2, 0);
@@ -23,12 +24,21 @@ export class Knight extends Figure implements IFigure {
 
         for (let i = top; i <= bottom; i++) {
             for (let j = left; j <= right; j++) {
-                if (Math.abs(i - row) + Math.abs(j - col) === 3) {
-                    result.push({ row: i, col: j});
+                const cell = { row: i, col: j };
+
+                if ((Math.abs(i - row) + Math.abs(j - col) === 3)) {
+                    const figure = this.board.getFigureOnCell(cell);
+                    if (figure !== null) {
+                        if (this.isEnemyFigure(figure)) {
+                            cellsToAttack.push(cell);
+                        }
+                    } else {
+                        cellsToMove.push(cell);
+                    }
                 }
             }
         }
 
-        return result;
+        return { cellsToMove, cellsToAttack };
     }
 }

@@ -3,6 +3,7 @@ export type Cell = {
     col: number,
 }
 
+// eslint-disable-next-line no-shadow
 export enum FigureType {
     King = 'king',
     Queen = 'queen',
@@ -12,9 +13,15 @@ export enum FigureType {
     Pawn = 'pawn',
 }
 
+// eslint-disable-next-line no-shadow
 export enum PlayerColor {
     White = 'white',
     Black = 'black',
+}
+
+export type MovementResult = {
+    cellsToMove: Cell[],
+    cellsToAttack: Cell[],
 }
 
 export interface IFigure {
@@ -22,13 +29,14 @@ export interface IFigure {
     cell: Cell;
     color: PlayerColor,
     type: FigureType,
+    isOnStartPosition: boolean,
 
-    getCellsToMove(currentCell: Cell): Cell[],
+    getPossibleMoves(): MovementResult,
+    moveTo(cell: Cell): void,
+    getMovementRay(rowOffset: number, colOffset: number): MovementResult,
 }
 
 export type BoardCell = {
     $cell: HTMLElement,
     figure: IFigure | null,
 }
-
-//export type FiguresList = Record<FigureType, IFigure>

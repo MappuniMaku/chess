@@ -1,8 +1,5 @@
-import { Cell, FigureType, IFigure } from '../../types';
+import { Cell, FigureType, IFigure, MovementResult } from '../../types';
 import { Figure, FigureProps } from './Figure';
-import { CONSTANTS } from '../../constants';
-
-const { BOARD_SIZE } = CONSTANTS;
 
 export class King extends Figure implements IFigure {
     constructor(props: Omit<FigureProps, 'type'>) {
@@ -12,22 +9,27 @@ export class King extends Figure implements IFigure {
         });
     }
 
-    getCellsToMove(currentCell: Cell): Cell[] {
-        const result: Cell[] = [];
-        const { col, row } = currentCell;
+    getPossibleMoves(): MovementResult {
+        const cellsToMove: Cell[] = [];
+        const cellsToAttack: Cell[] = [];
+        const { col, row } = this.cell;
 
         for (let i = row - 1; i <= row + 1; i++) {
             for (let j = col - 1; j <= col + 1; j++) {
-                if (
-                    i > -1 && j > -1 &&
-                    i < BOARD_SIZE && j < BOARD_SIZE &&
-                    !(i === col && j === row)
-                ) {
-                    result.push({ row: i, col: j });
+                const cell = { row: i, col: j };
+                if (this.board.checkCellExisting(cell)) {
+                    const figure = this.board.getFigureOnCell(cell);
+                    if (figure !== null) {
+                        if (this.isEnemyFigure(figure)) {
+                            cellsToAttack.push(cell);
+                        }
+                    } else {
+                        cellsToMove.push(cell);
+                    }
                 }
             }
         }
 
-        return result;
+        return { cellsToMove, cellsToAttack };
     }
 }

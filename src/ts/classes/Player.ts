@@ -12,4 +12,7 @@ export class Player {
         this.color = props.color;
     }
 
+    giveFigure(figure: IFigure) {
+        this.figures.push(figure);
+    }
 }

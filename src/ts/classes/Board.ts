@@ -1,6 +1,6 @@
-import { Cell, PlayerColor, IFigure, FigureType, BoardCell } from '../types';
+import { Cell, PlayerColor, IFigure, FigureType, BoardCell, MovementResult } from '../types';
 import { CONSTANTS } from '../constants';
-import { createDiv } from '../utils';
+import { createDiv, removeClassesFromElements } from '../utils';
 import { figures } from "./figures/figures";
 
 const { BOARD_SIZE, CELL_SIZE, LETTERS_START_CODE } = CONSTANTS;
@@ -26,16 +26,24 @@ export class Board {
     onBoardClick(event: MouseEvent): void {
         const cell = this.getCellFromMouseEvent(event);
 
-        //if (cell === null) return;
+        if (cell === null) return;
 
-        //const { figure } = this.getBoardCell(cell);
-        //if (figure !== null) {
-        //    this.highlightCells(figure.getCellsToMove(cell));
-        //}
+        const figure = this.getFigureOnCell(cell);
+        if (figure !== null) {
+            this.highlightMovements(figure.getPossibleMoves());
+        }
     }
 
-    getBoardCell(cell: Cell): BoardCell {
-        return this.cells[cell.row][cell.col];
+    checkCellExisting(cell: Cell): boolean {
+        return cell.col >= 0 && cell.row >= 0 && cell.col < BOARD_SIZE && cell.row < BOARD_SIZE;
+    }
+
+    getBoardCell(cell: Cell): BoardCell | null {
+        if (this.checkCellExisting(cell)) {
+            return this.cells[cell.row][cell.col];
+        }
+
+        throw Error(`Cell doesnt exist: col: ${cell.col}, row: ${ cell.row }`);
     }
 
     getCellFromMouseEvent(event: MouseEvent): Cell | null {
@@ -56,19 +64,33 @@ export class Board {
         return { row: Math.floor(y / CELL_SIZE), col: Math.floor(x / CELL_SIZE) };
     }
 
-    highlightCells(cells: Cell[]): void {
-        this.$board?.querySelectorAll('.Chess__cell--highlighted').forEach(($el) => {
-            $el.classList.remove('Chess__cell--highlighted');
-        });
-
+    addClassesToCells(cells: Cell[], className: string): void {
         cells.forEach(cell => {
-            const { $cell } = this.getBoardCell(cell);
-            $cell.classList.add('Chess__cell--highlighted');
+            const boardCell = this.getBoardCell(cell);
+            if (boardCell !== null) {
+                const { $cell } = boardCell;
+                $cell.classList.add(className);
+            }
         });
     }
 
-    createBoard() {
+    highlightMovements(movements: MovementResult): void {
+        const MOVE_CLASS_NAME = 'Chess__cell--move';
+        const ATTACK_CLASS_NAME = 'Chess__cell--attack';
+
+        if (this.$board === null) return;
+
+        removeClassesFromElements(this.$board, MOVE_CLASS_NAME);
+        removeClassesFromElements(this.$board, ATTACK_CLASS_NAME);
+        this.addClassesToCells(movements.cellsToMove, MOVE_CLASS_NAME);
+        this.addClassesToCells(movements.cellsToAttack, ATTACK_CLASS_NAME);
+
+    }
+
+    createBoard(): void {
         this.$board = createDiv('Chess__board');
+        // temporary
+        this.$board.addEventListener('click', this.onBoardClick.bind(this));
 
         // create letters row
         const $lettersRow = createDiv('Chess__row');
@@ -118,13 +140,27 @@ export class Board {
         this.$board?.append(this.$figures);
     }
 
-    createFigure(type: FigureType, color: PlayerColor, cell: Cell): void {
-        const figure: IFigure = new figures[type]({ color, cell });
+    createFigure(type: FigureType, color: PlayerColor, cell: Cell): IFigure {
+        const figure: IFigure = new figures[type]({ color, cell, board: this });
 
         if (figure.$el !== null) {
             this.$figures?.append(figure.$el);
         }
 
-        this.getBoardCell(cell).figure = figure;
+        const boardCell = this.getBoardCell(cell);
+        if (boardCell !== null) {
+            boardCell.figure = figure;
+        }
+
+        return figure;
+    }
+
+    getFigureOnCell(cell: Cell): IFigure | null {
+        const boardCell = this.getBoardCell(cell);
+        return boardCell !== null ? boardCell.figure : null;
+    }
+
+    hasFigureOnCell(cell: Cell): boolean {
+        return this.getFigureOnCell(cell) !== null;
     }
 }
