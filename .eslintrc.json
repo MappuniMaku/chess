@@ -32,6 +32,8 @@
         "plugin:@typescript-eslint/recommended-requiring-type-checking"
       ],
       "rules": {
+        "import/extensions": "off",
+        "import/no-unresolved": "off",
         "indent": [
           "error",
           4,
