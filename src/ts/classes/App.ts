@@ -23,8 +23,6 @@ export class App {
         this.board = new Board({ root: this.$root });
         this.createFiguresForPlayer(this.players[PlayerColor.Black]);
         this.createFiguresForPlayer(this.players[PlayerColor.White]);
-
-        this.board.createFigure(FigureType.Queen, PlayerColor.White, { row: 5, col: 4 })
     }
 
     createFiguresForPlayer(player: Player): void {
