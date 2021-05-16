@@ -43,3 +43,10 @@ export type BoardCell = {
     $cell: HTMLElement,
     figure: IFigure | null,
 }
+
+// eslint-disable-next-line no-shadow
+export enum ObserverEvent {
+    FigureSelected = 'figure_selected',
+    FigureMoved = 'figure_moved',
+    FigureRemoved = 'figure_removed',
+}

@@ -1,5 +1,5 @@
-import { Cell, PlayerColor, IFigure, FigureType, BoardCell, MovesList } from '../types';
-import { CONSTANTS, EVENTS } from '../constants';
+import { Cell, PlayerColor, IFigure, FigureType, BoardCell, MovesList, ObserverEvent } from '../types';
+import { CONSTANTS } from '../constants';
 import { createDiv, removeClassesFromElements, isMovePossible, isEqualCells } from '../utils';
 import { figures } from './figures/figures';
 import { observer } from './Observer';
@@ -30,8 +30,8 @@ export class Board {
     }
 
     subscribeEvents(): void {
-        observer.subscribe(EVENTS.FIGURE_SELECTED, this.beReadyToFigureMove.bind(this));
-        observer.subscribe(EVENTS.FIGURE_MOVED, this.updateFigurePosition.bind(this));
+        observer.subscribe(ObserverEvent.FigureSelected, this.beReadyToFigureMove.bind(this));
+        observer.subscribe(ObserverEvent.FigureMoved, this.updateFigurePosition.bind(this));
     }
 
     beReadyToFigureMove(figure: IFigure, moves: MovesList): void {
@@ -41,7 +41,7 @@ export class Board {
             if (cell === null || isEqualCells(cell, figure.cell)) return;
 
             if (isMovePossible(moves, cell)) {
-                observer.dispatch(EVENTS.FIGURE_MOVED, figure, cell);
+                observer.dispatch(ObserverEvent.FigureMoved, figure, cell);
             }
 
             this.$board?.removeEventListener('click', moveFigure);
@@ -59,6 +59,10 @@ export class Board {
         if (oldCell === null || newCell === null) return;
 
         oldCell.figure = null;
+
+        if (newCell.figure !== null) {
+            observer.dispatch(ObserverEvent.FigureRemoved, figure);
+        }
         newCell.figure = figure;
 
         figure.moveTo(newPosition);

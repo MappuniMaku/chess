@@ -1,7 +1,7 @@
-import { FigureType, Cell, MovesList, PlayerColor, IFigure } from '../../types';
+import { FigureType, Cell, MovesList, PlayerColor, IFigure, ObserverEvent } from '../../types';
 import { Board } from '../Board';
 import { createDiv } from '../../utils';
-import { CONSTANTS, EVENTS } from '../../constants';
+import { CONSTANTS } from '../../constants';
 import { observer } from '../Observer';
 
 const { CELL_SIZE } = CONSTANTS;
@@ -92,7 +92,7 @@ export abstract class Figure implements IFigure{
         const moves = this.showPossibleMoves();
         if (moves.cellsToMove.length === 0 && moves.cellsToAttack.length === 0) return;
 
-        observer.dispatch(EVENTS.FIGURE_SELECTED, this, moves);
+        observer.dispatch(ObserverEvent.FigureSelected, this, moves);
     }
 
     listenPlayerCommands(): void {

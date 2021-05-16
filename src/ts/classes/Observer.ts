@@ -1,13 +1,13 @@
+import { ObserverEvent } from '../types';
+
 type Listener = (...args: any) => void;
 
+type EventsList = Record<ObserverEvent, Listener[]>;
+
 class Observer {
-    events: Record<string, Listener[]>
+    events: EventsList = {} as EventsList;
 
-    constructor() {
-        this.events = {};
-    }
-
-    subscribe(eventName: string, listener: Listener): void {
+    subscribe(eventName: ObserverEvent, listener: Listener): void {
         if (this.events[eventName] === undefined) {
             this.events[eventName] = [listener];
         } else {
@@ -15,11 +15,11 @@ class Observer {
         }
     }
 
-    unsubscribe(eventName: string, listener: Listener): void {
+    unsubscribe(eventName: ObserverEvent, listener: Listener): void {
         this.events[eventName].filter(item => item !== listener);
     }
 
-    dispatch(eventName: string, ...args: any): void {
+    dispatch(eventName: ObserverEvent, ...args: any): void {
         const event = this.events[eventName];
 
         if (event !== undefined) {
