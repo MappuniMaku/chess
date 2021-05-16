@@ -1,4 +1,4 @@
-import { IFigure, PlayerColor } from '../types';
+import {IFigure, ObserverEvent, PlayerColor} from '../types';
 import { Board } from './Board';
 
 type PlayerProps = {
@@ -18,6 +18,10 @@ export class Player {
 
     addFigure(figure: IFigure): void {
         this.figures.push(figure);
+    }
+
+    removeFigure(figure: IFigure): void {
+        this.figures = this.figures.filter(current => ( current !== figure ));
     }
 
     startTurn(): void {

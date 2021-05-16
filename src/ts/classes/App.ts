@@ -1,7 +1,8 @@
-import { FigureType, PlayerColor } from '../types';
+import {FigureType, IFigure, ObserverEvent, PlayerColor} from '../types';
 import { Board } from './Board';
 import { Player } from './Player';
 import { CONSTANTS } from '../constants';
+import { observer } from './Observer';
 
 const { BOARD_SIZE } = CONSTANTS;
 
@@ -24,7 +25,21 @@ export class App {
         };
         this.createFiguresForPlayer(this.players[PlayerColor.Black]);
         this.createFiguresForPlayer(this.players[PlayerColor.White]);
+        this.subscribeEvents();
         this.start();
+    }
+
+    subscribeEvents(): void {
+        observer.subscribe(ObserverEvent.FigureMoved, this.onFigureMoved.bind(this));
+        observer.subscribe(ObserverEvent.FigureRemoved, this.onFigureRemoved.bind(this));
+    }
+
+    onFigureMoved(): void {
+        this.changePlayer();
+    }
+
+    onFigureRemoved(figure: IFigure): void {
+        this.players[figure.color].removeFigure(figure);
     }
 
     createFiguresForPlayer(player: Player): void {

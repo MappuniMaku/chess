@@ -15,8 +15,8 @@ type BoardParams = {
 export class Board {
     cells: ((BoardCell)[])[] = [];
     $board: HTMLElement | null = null;
-    $figures: HTMLElement | null = null;
-
+    $figuresList: HTMLElement | null = null;
+    $figures: HTMLElement[] = [];
 
     constructor(params: BoardParams) {
         this.createBoard();
@@ -32,6 +32,7 @@ export class Board {
     subscribeEvents(): void {
         observer.subscribe(ObserverEvent.FigureSelected, this.beReadyToFigureMove.bind(this));
         observer.subscribe(ObserverEvent.FigureMoved, this.updateFigurePosition.bind(this));
+        observer.subscribe(ObserverEvent.FigureRemoved, this.removeFigure.bind(this));
     }
 
     beReadyToFigureMove(figure: IFigure, moves: MovesList): void {
@@ -61,7 +62,7 @@ export class Board {
         oldCell.figure = null;
 
         if (newCell.figure !== null) {
-            observer.dispatch(ObserverEvent.FigureRemoved, figure);
+            observer.dispatch(ObserverEvent.FigureRemoved, newCell.figure);
         }
         newCell.figure = figure;
 
@@ -168,15 +169,16 @@ export class Board {
     }
 
     createFiguresList(): void {
-        this.$figures = createDiv('Chess__figures');
-        this.$board?.append(this.$figures);
+        this.$figuresList = createDiv('Chess__figures');
+        this.$board?.append(this.$figuresList);
     }
 
     createFigure(type: FigureType, color: PlayerColor, cell: Cell): IFigure {
         const figure: IFigure = new figures[type]({ color, cell, board: this });
 
         if (figure.$el !== null) {
-            this.$figures?.append(figure.$el);
+            this.$figures.push(figure.$el);
+            this.$figuresList?.append(figure.$el);
         }
 
         const boardCell = this.getBoardCell(cell);
@@ -185,6 +187,12 @@ export class Board {
         }
 
         return figure;
+    }
+
+    removeFigure(figure: IFigure): void {
+        this.$figures.find(($el) => (
+            $el === figure.$el
+        ))?.remove();
     }
 
     getFigureOnCell(cell: Cell): IFigure | null {
