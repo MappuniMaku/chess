@@ -1,4 +1,4 @@
-import { Cell, FigureType, IFigure, MovementResult } from '../../types';
+import { Cell, FigureType, IFigure, MovesList } from '../../types';
 import { Figure, FigureProps } from './Figure';
 import { CONSTANTS } from '../../constants';
 
@@ -12,7 +12,7 @@ export class Knight extends Figure implements IFigure {
         });
     }
 
-    getPossibleMoves(): MovementResult {
+    getPossibleMoves(): MovesList {
         const cellsToMove: Cell[] = [];
         const cellsToAttack: Cell[] = [];
         const { col, row } = this.cell;

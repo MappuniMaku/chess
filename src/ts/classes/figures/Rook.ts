@@ -1,6 +1,6 @@
-import { FigureType, IFigure, MovementResult } from '../../types';
+import { FigureType, IFigure, MovesList } from '../../types';
 import { Figure, FigureProps } from './Figure';
-import { mergeMovementResults } from '../../utils';
+import { mergePossibleMoves } from '../../utils';
 
 export class Rook extends Figure implements IFigure {
     constructor(props: Omit<FigureProps, 'type'>) {
@@ -10,12 +10,12 @@ export class Rook extends Figure implements IFigure {
         });
     }
 
-    getPossibleMoves(): MovementResult {
-        return mergeMovementResults(
-            this.getMovementRay(-1),
-            this.getMovementRay(1),
-            this.getMovementRay(0, -1),
-            this.getMovementRay(0, 1)
+    getPossibleMoves(): MovesList {
+        return mergePossibleMoves(
+            this.getMovesRay(-1),
+            this.getMovesRay(1),
+            this.getMovesRay(0, -1),
+            this.getMovesRay(0, 1)
         );
     }
 }

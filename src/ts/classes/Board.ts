@@ -1,9 +1,12 @@
-import { Cell, PlayerColor, IFigure, FigureType, BoardCell, MovementResult } from '../types';
-import { CONSTANTS } from '../constants';
-import { createDiv, removeClassesFromElements } from '../utils';
-import { figures } from "./figures/figures";
+import { Cell, PlayerColor, IFigure, FigureType, BoardCell, MovesList } from '../types';
+import { CONSTANTS, EVENTS } from '../constants';
+import { createDiv, removeClassesFromElements, isMovePossible, isEqualCells } from '../utils';
+import { figures } from './figures/figures';
+import { observer } from './Observer';
 
 const { BOARD_SIZE, CELL_SIZE, LETTERS_START_CODE } = CONSTANTS;
+const MOVE_CLASS_NAME = 'Chess__cell--move';
+const ATTACK_CLASS_NAME = 'Chess__cell--attack';
 
 type BoardParams = {
     root: HTMLElement,
@@ -14,6 +17,7 @@ export class Board {
     $board: HTMLElement | null = null;
     $figures: HTMLElement | null = null;
 
+
     constructor(params: BoardParams) {
         this.createBoard();
         this.createFiguresList();
@@ -21,17 +25,43 @@ export class Board {
         if (this.$board !== null) {
             params.root.append(this.$board);
         }
+
+        this.subscribeEvents();
     }
 
-    onBoardClick(event: MouseEvent): void {
-        const cell = this.getCellFromMouseEvent(event);
+    subscribeEvents(): void {
+        observer.subscribe(EVENTS.FIGURE_SELECTED, this.beReadyToFigureMove.bind(this));
+        observer.subscribe(EVENTS.FIGURE_MOVED, this.updateFigurePosition.bind(this));
+    }
 
-        if (cell === null) return;
+    beReadyToFigureMove(figure: IFigure, moves: MovesList): void {
+        const moveFigure = (event: MouseEvent) => {
+            const cell = this.getCellFromMouseEvent(event);
 
-        const figure = this.getFigureOnCell(cell);
-        if (figure !== null) {
-            this.highlightMovements(figure.getPossibleMoves());
-        }
+            if (cell === null || isEqualCells(cell, figure.cell)) return;
+
+            if (isMovePossible(moves, cell)) {
+                observer.dispatch(EVENTS.FIGURE_MOVED, figure, cell);
+            }
+
+            this.$board?.removeEventListener('click', moveFigure);
+        };
+
+        this.$board?.addEventListener('click', moveFigure);
+    }
+
+    updateFigurePosition(figure: IFigure, newPosition: Cell): void {
+        this.stopHighlighting();
+
+        const oldCell = this.getBoardCell(figure.cell);
+        const newCell = this.getBoardCell(newPosition);
+
+        if (oldCell === null || newCell === null) return;
+
+        oldCell.figure = null;
+        newCell.figure = figure;
+
+        figure.moveTo(newPosition);
     }
 
     checkCellExisting(cell: Cell): boolean {
@@ -43,7 +73,7 @@ export class Board {
             return this.cells[cell.row][cell.col];
         }
 
-        throw Error(`Cell doesnt exist: col: ${cell.col}, row: ${ cell.row }`);
+        return null;
     }
 
     getCellFromMouseEvent(event: MouseEvent): Cell | null {
@@ -74,23 +104,21 @@ export class Board {
         });
     }
 
-    highlightMovements(movements: MovementResult): void {
-        const MOVE_CLASS_NAME = 'Chess__cell--move';
-        const ATTACK_CLASS_NAME = 'Chess__cell--attack';
-
+    stopHighlighting(): void {
         if (this.$board === null) return;
 
         removeClassesFromElements(this.$board, MOVE_CLASS_NAME);
         removeClassesFromElements(this.$board, ATTACK_CLASS_NAME);
-        this.addClassesToCells(movements.cellsToMove, MOVE_CLASS_NAME);
-        this.addClassesToCells(movements.cellsToAttack, ATTACK_CLASS_NAME);
+    }
 
+    highlightPossibleMoves(moves: MovesList): void {
+        this.stopHighlighting();
+        this.addClassesToCells(moves.cellsToMove, MOVE_CLASS_NAME);
+        this.addClassesToCells(moves.cellsToAttack, ATTACK_CLASS_NAME);
     }
 
     createBoard(): void {
         this.$board = createDiv('Chess__board');
-        // temporary
-        this.$board.addEventListener('click', this.onBoardClick.bind(this));
 
         // create letters row
         const $lettersRow = createDiv('Chess__row');

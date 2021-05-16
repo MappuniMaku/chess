@@ -1,4 +1,4 @@
-import { Cell, FigureType, IFigure, MovementResult } from '../../types';
+import { Cell, FigureType, IFigure, MovesList } from '../../types';
 import { Figure, FigureProps } from './Figure';
 
 export class King extends Figure implements IFigure {
@@ -9,7 +9,7 @@ export class King extends Figure implements IFigure {
         });
     }
 
-    getPossibleMoves(): MovementResult {
+    getPossibleMoves(): MovesList {
         const cellsToMove: Cell[] = [];
         const cellsToAttack: Cell[] = [];
         const { col, row } = this.cell;

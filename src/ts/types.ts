@@ -19,7 +19,7 @@ export enum PlayerColor {
     Black = 'black',
 }
 
-export type MovementResult = {
+export type MovesList = {
     cellsToMove: Cell[],
     cellsToAttack: Cell[],
 }
@@ -31,9 +31,12 @@ export interface IFigure {
     type: FigureType,
     isOnStartPosition: boolean,
 
-    getPossibleMoves(): MovementResult,
+    showPossibleMoves(): void,
+    getPossibleMoves(): MovesList,
+    listenPlayerCommands(): void,
+    stopListenPlayerCommands(): void,
     moveTo(cell: Cell): void,
-    getMovementRay(rowOffset: number, colOffset: number): MovementResult,
+    getMovesRay(rowOffset: number, colOffset: number): MovesList,
 }
 
 export type BoardCell = {

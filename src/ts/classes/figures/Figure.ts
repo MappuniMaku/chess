@@ -1,9 +1,10 @@
-import { FigureType, Cell, MovementResult, PlayerColor, IFigure } from '../../types';
+import { FigureType, Cell, MovesList, PlayerColor, IFigure } from '../../types';
 import { Board } from '../Board';
 import { createDiv } from '../../utils';
-import { CONSTANTS } from '../../constants';
+import { CONSTANTS, EVENTS } from '../../constants';
+import { observer } from '../Observer';
 
-const { CELL_SIZE, BOARD_SIZE } = CONSTANTS;
+const { CELL_SIZE } = CONSTANTS;
 
 export type FigureProps = {
     board: Board,
@@ -12,19 +13,22 @@ export type FigureProps = {
     type: FigureType,
 }
 
-export abstract class Figure {
+export abstract class Figure implements IFigure{
     board: Board;
     cell: Cell;
     color: PlayerColor;
     type: FigureType;
     isOnStartPosition = true;
     $el: HTMLElement | null = null;
+    bindedOnSelect: () => void;
 
     protected constructor(props: FigureProps) {
         this.cell = props.cell;
         this.color = props.color;
         this.type = props.type;
         this.board = props.board;
+
+        this.bindedOnSelect = this.onSelect.bind(this);
 
         this.initHTMLElement();
     }
@@ -54,7 +58,9 @@ export abstract class Figure {
         return figure.color !== this.color;
     }
 
-    getMovementRay(rowOffset = 0, colOffset = 0): MovementResult {
+    abstract getPossibleMoves(): MovesList;
+
+    getMovesRay(rowOffset = 0, colOffset = 0): MovesList {
         const cellsToMove: Cell[] = [];
         const cellsToAttack: Cell[] = [];
         const { col, row } = this.cell;
@@ -73,5 +79,27 @@ export abstract class Figure {
         }
 
         return { cellsToMove, cellsToAttack };
+    }
+
+    showPossibleMoves(): MovesList {
+        const moves = this.getPossibleMoves();
+        this.board.highlightPossibleMoves(moves);
+
+        return moves;
+    }
+
+    onSelect(): void {
+        const moves = this.showPossibleMoves();
+        if (moves.cellsToMove.length === 0 && moves.cellsToAttack.length === 0) return;
+
+        observer.dispatch(EVENTS.FIGURE_SELECTED, this, moves);
+    }
+
+    listenPlayerCommands(): void {
+        this.$el?.addEventListener('click', this.bindedOnSelect);
+    }
+
+    stopListenPlayerCommands(): void {
+        this.$el?.removeEventListener('click', this.bindedOnSelect);
     }
 }

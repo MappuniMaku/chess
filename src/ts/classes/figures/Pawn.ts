@@ -1,4 +1,4 @@
-import { FigureType, IFigure, MovementResult, PlayerColor } from '../../types';
+import { FigureType, IFigure, MovesList, PlayerColor } from '../../types';
 import { Figure, FigureProps } from './Figure';
 
 export class Pawn extends Figure implements IFigure {
@@ -9,8 +9,8 @@ export class Pawn extends Figure implements IFigure {
         });
     }
 
-    getPossibleMoves(): MovementResult {
-        const result: MovementResult = {
+    getPossibleMoves(): MovesList {
+        const result: MovesList = {
             cellsToMove: [],
             cellsToAttack: [],
         };
