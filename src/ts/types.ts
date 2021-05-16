@@ -50,3 +50,12 @@ export enum ObserverEvent {
     FigureMoved = 'figure_moved',
     FigureRemoved = 'figure_removed',
 }
+
+export const FigureShortName: Record<FigureType, string> = {
+    [FigureType.King]: 'Кр',
+    [FigureType.Queen]: 'Ф',
+    [FigureType.Rook]: 'Л',
+    [FigureType.Bishop]: 'С',
+    [FigureType.Knight]: 'К',
+    [FigureType.Pawn]: '',
+}

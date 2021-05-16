@@ -9,23 +9,18 @@ const MOVE_CLASS_NAME = 'Chess__cell--move';
 const ATTACK_CLASS_NAME = 'Chess__cell--attack';
 
 type BoardParams = {
-    root: HTMLElement,
+    $root: HTMLElement,
 }
 
 export class Board {
     cells: ((BoardCell)[])[] = [];
-    $board: HTMLElement | null = null;
+    $el: HTMLElement | null = null;
     $figuresList: HTMLElement | null = null;
     $figures: HTMLElement[] = [];
 
     constructor(params: BoardParams) {
-        this.createBoard();
+        this.createBoard(params.$root);
         this.createFiguresList();
-
-        if (this.$board !== null) {
-            params.root.append(this.$board);
-        }
-
         this.subscribeEvents();
     }
 
@@ -45,10 +40,10 @@ export class Board {
                 observer.dispatch(ObserverEvent.FigureMoved, figure, cell);
             }
 
-            this.$board?.removeEventListener('click', moveFigure);
+            this.$el?.removeEventListener('click', moveFigure);
         };
 
-        this.$board?.addEventListener('click', moveFigure);
+        this.$el?.addEventListener('click', moveFigure);
     }
 
     updateFigurePosition(figure: IFigure, newPosition: Cell): void {
@@ -82,7 +77,7 @@ export class Board {
     }
 
     getCellFromMouseEvent(event: MouseEvent): Cell | null {
-        const rect = this.$board?.getBoundingClientRect();
+        const rect = this.$el?.getBoundingClientRect();
         if (!rect) return null;
 
         let x = event.clientX - rect.left;
@@ -110,10 +105,10 @@ export class Board {
     }
 
     stopHighlighting(): void {
-        if (this.$board === null) return;
+        if (this.$el === null) return;
 
-        removeClassesFromElements(this.$board, MOVE_CLASS_NAME);
-        removeClassesFromElements(this.$board, ATTACK_CLASS_NAME);
+        removeClassesFromElements(this.$el, MOVE_CLASS_NAME);
+        removeClassesFromElements(this.$el, ATTACK_CLASS_NAME);
     }
 
     highlightPossibleMoves(moves: MovesList): void {
@@ -122,12 +117,12 @@ export class Board {
         this.addClassesToCells(moves.cellsToAttack, ATTACK_CLASS_NAME);
     }
 
-    createBoard(): void {
-        this.$board = createDiv('Chess__board');
+    createBoard($root: HTMLElement): void {
+        this.$el = createDiv('Chess__board');
 
         // create letters row
         const $lettersRow = createDiv('Chess__row');
-        this.$board.append($lettersRow);
+        this.$el.append($lettersRow);
 
         // create empty cell for spacing and add it to start of letters headings
         const $emptyCell = createDiv('Chess__cell');
@@ -160,17 +155,18 @@ export class Board {
             }
 
             $row.append($numberCell.cloneNode(true));
-            this.$board.append($row);
+            this.$el.append($row);
         }
 
         // add empty cell to end of letters headings
         $lettersRow.append($emptyCell.cloneNode());
-        this.$board.append($lettersRow.cloneNode(true));
+        this.$el.append($lettersRow.cloneNode(true));
+        $root.append(this.$el);
     }
 
     createFiguresList(): void {
         this.$figuresList = createDiv('Chess__figures');
-        this.$board?.append(this.$figuresList);
+        this.$el?.append(this.$figuresList);
     }
 
     createFigure(type: FigureType, color: PlayerColor, cell: Cell): IFigure {

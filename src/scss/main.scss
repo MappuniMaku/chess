@@ -13,6 +13,8 @@ body {
 .Chess {
     $block: &;
 
+    display: flex;
+
     &__board {
         display: flex;
         flex-direction: column;
@@ -137,6 +139,22 @@ body {
             &#{$el}--pawn {
                 background-image: url("./images/pawn-b.png");
             }
+        }
+    }
+
+    &__turnsList {
+        width: 250px;
+        margin: $cell-size 32px;
+        padding: 32px 48px;
+        border: 1px black solid;
+        list-style: decimal;
+    }
+
+    &__turnsListItem {
+        font-weight: bold;
+
+        &:not(:first-child) {
+            margin-top: 8px;
         }
     }
 }

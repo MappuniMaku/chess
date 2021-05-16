@@ -1,5 +1,9 @@
 import { Cell, MovesList } from './types';
 
+export function isOdd(x: number): boolean {
+    return x % 2 !== 0;
+}
+
 export function createElement(tag: string, className = ''): HTMLElement {
     const el = document.createElement(tag);
     if (className) {

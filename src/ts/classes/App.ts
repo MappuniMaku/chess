@@ -1,8 +1,9 @@
-import {FigureType, IFigure, ObserverEvent, PlayerColor} from '../types';
+import { FigureType, IFigure, ObserverEvent, PlayerColor } from '../types';
 import { Board } from './Board';
 import { Player } from './Player';
 import { CONSTANTS } from '../constants';
 import { observer } from './Observer';
+import { TurnsList } from '../TurnsList';
 
 const { BOARD_SIZE } = CONSTANTS;
 
@@ -12,13 +13,15 @@ type AppParams = {
 
 export class App {
     board: Board;
+    turnsList: TurnsList;
     currentPlayer: Player | null = null;
     players: Record<PlayerColor, Player>;
     $root: HTMLElement;
 
     constructor(props: AppParams) {
         this.$root = props.root;
-        this.board = new Board({ root: this.$root });
+        this.board = new Board({ $root: this.$root });
+        this.turnsList = new TurnsList({ $root: this.$root });
         this.players = {
             [PlayerColor.White]: new Player({ color: PlayerColor.White, board: this.board }),
             [PlayerColor.Black]: new Player( { color: PlayerColor.Black, board: this.board }),
