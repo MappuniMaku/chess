@@ -4,7 +4,7 @@ import { createDiv, removeClassesFromElements, isMovePossible, isEqualCells } fr
 import { figures } from './figures/figures';
 import { observer } from './Observer';
 
-const { BOARD_SIZE, CELL_SIZE, LETTERS_START_CODE } = CONSTANTS;
+const { BOARD_SIZE, CELL_SIZE, HEADING_CELL_SIZE, LETTERS_START_CODE } = CONSTANTS;
 const MOVE_CLASS_NAME = 'Chess__cell--move';
 const ATTACK_CLASS_NAME = 'Chess__cell--attack';
 
@@ -17,6 +17,8 @@ export class Board {
     $el: HTMLElement | null = null;
     $figuresList: HTMLElement | null = null;
     $figures: HTMLElement[] = [];
+
+    onFigureMoveListener: (event: MouseEvent) => void = () => null;
 
     constructor(params: BoardParams) {
         this.createBoard(params.$root);
@@ -31,7 +33,7 @@ export class Board {
     }
 
     beReadyToFigureMove(figure: IFigure, moves: MovesList): void {
-        const moveFigure = (event: MouseEvent) => {
+        this.onFigureMoveListener = (event: MouseEvent) => {
             const cell = this.getCellFromMouseEvent(event);
 
             if (cell === null || isEqualCells(cell, figure.cell)) return;
@@ -40,10 +42,11 @@ export class Board {
                 observer.dispatch(ObserverEvent.FigureMoved, figure, cell);
             }
 
-            this.$el?.removeEventListener('click', moveFigure);
+            this.$el?.removeEventListener('click', this.onFigureMoveListener);
         };
 
-        this.$el?.addEventListener('click', moveFigure);
+        this.$el?.removeEventListener('click', this.onFigureMoveListener);
+        this.$el?.addEventListener('click', this.onFigureMoveListener);
     }
 
     updateFigurePosition(figure: IFigure, newPosition: Cell): void {
@@ -88,8 +91,8 @@ export class Board {
         ) return null;
 
         // remove headings offsets
-        y -= CELL_SIZE;
-        x -= CELL_SIZE;
+        y -= HEADING_CELL_SIZE;
+        x -= HEADING_CELL_SIZE;
 
         return { row: Math.floor(y / CELL_SIZE), col: Math.floor(x / CELL_SIZE) };
     }
@@ -125,12 +128,12 @@ export class Board {
         this.$el.append($lettersRow);
 
         // create empty cell for spacing and add it to start of letters headings
-        const $emptyCell = createDiv('Chess__cell');
+        const $emptyCell = createDiv('Chess__cell Chess__cell--empty');
         $lettersRow.append($emptyCell);
 
         for (let i = 0; i < BOARD_SIZE; i++) {
             // create heading letter cells
-            const $letterCell = createDiv('Chess__cell Chess__cell--heading');
+            const $letterCell = createDiv('Chess__cell Chess__cell--heading Chess__cell--headingLetter');
             $letterCell.textContent = String.fromCharCode(LETTERS_START_CODE + i);
             $lettersRow.append($letterCell);
 
@@ -138,7 +141,7 @@ export class Board {
             const $row = createDiv('Chess__row');
 
             // create heading number cell
-            const $numberCell = createDiv('Chess__cell Chess__cell--heading');
+            const $numberCell = createDiv('Chess__cell Chess__cell--heading Chess__cell--headingNumber');
             $numberCell.textContent = String(BOARD_SIZE - i);
             $row.append($numberCell);
 

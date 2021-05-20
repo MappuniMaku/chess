@@ -4,7 +4,7 @@ import { createDiv } from '../../utils';
 import { CONSTANTS } from '../../constants';
 import { observer } from '../Observer';
 
-const { CELL_SIZE } = CONSTANTS;
+const { CELL_SIZE, HEADING_CELL_SIZE } = CONSTANTS;
 
 export type FigureProps = {
     board: Board,
@@ -44,8 +44,8 @@ export abstract class Figure implements IFigure{
     updatePosition(): void {
         if (this.$el === null) return;
 
-        this.$el.style.top = `${String(CELL_SIZE * (this.cell.row + 1))}px`;
-        this.$el.style.left = `${String(CELL_SIZE * (this.cell.col + 1))}px`;
+        this.$el.style.top = `${String(CELL_SIZE * (this.cell.row) + HEADING_CELL_SIZE)}px`;
+        this.$el.style.left = `${String(CELL_SIZE * (this.cell.col) + HEADING_CELL_SIZE)}px`;
     }
 
     moveTo(cell: Cell): void {
