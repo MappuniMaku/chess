@@ -66,7 +66,7 @@ task('watch', (done) => {
             https: false,
         },
         watch: true,
-        port: 8083,
+        port: 3000,
         open: true,
         cors: true,
         notify: false
