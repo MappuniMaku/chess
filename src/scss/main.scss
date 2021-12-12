@@ -43,6 +43,7 @@ body {
     }
 
     &__cellsWrapper {
+        position: relative;
         grid-area: cells;
         display: grid;
         grid-template-columns: repeat(8, 60px);
@@ -61,5 +62,11 @@ body {
         &--dark {
             background-color: saddlebrown;
         }
+    }
+
+    &__piece {
+        position: absolute;
+        width: 60px;
+        height: 60px;
     }
 }

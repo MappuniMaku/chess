@@ -1,27 +1,27 @@
-import { Colors } from './types';
+import { Color } from "./types";
 
-type CellData = {
-    id: number;
-    row: number;
-    col: number;
-    color: Colors;
-}
+type CellProps = {
+  id: number;
+  row: number;
+  col: number;
+  color: Color;
+};
 
 export class Cell {
-    data: CellData;
+  props: CellProps;
 
-    constructor(data: CellData) {
-        this.data = data;
-    }
+  constructor(props: CellProps) {
+    this.props = props;
+  }
 
-    render(): string {
-        return (`
-            <div
-                class="Chess__cell Chess__cell--${this.data.color}"
-                data-cell="${this.data.id}"
-                data-row="${this.data.row}"
-                data-column="${this.data.col}"
-            ></div>
-        `);
-    }
+  render(): string {
+    return `
+      <div
+        class="Chess__cell Chess__cell--${this.props.color}"
+        data-cell="${this.props.id}"
+        data-row="${this.props.row}"
+        data-column="${this.props.col}"
+      ></div>
+  `;
+  }
 }
