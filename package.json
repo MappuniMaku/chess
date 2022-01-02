@@ -4,7 +4,7 @@
   "description": "Chess",
   "main": "index.js",
   "scripts": {
-    "dev": "gulp dev",
+    "start": "gulp dev",
     "test": "gulp tests"
   },
   "author": "",

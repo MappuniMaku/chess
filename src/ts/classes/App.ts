@@ -9,7 +9,6 @@ export class App {
     this.$el = $el;
     this.board = new Board($el);
     this.init();
-    this.board.movePiece(1, { row: 3, col: 4 });
   }
 
   init(): void {

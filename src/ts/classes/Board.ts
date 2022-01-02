@@ -14,6 +14,7 @@ export class Board {
   $el: HTMLElement;
   $cellsContainer: HTMLElement;
   pieces: Piece[];
+  $activePiece: Piece | null;
 
   constructor($el: HTMLElement) {
     this.$el = $el;
@@ -26,6 +27,10 @@ export class Board {
       "mousedown",
       this.handleMouseDown.bind(this)
     );
+    this.$activePiece = null;
+    this.handleMouseMove = this.handleMouseMove.bind(this);
+    this.handleMouseUp = this.handleMouseUp.bind(this);
+    this.handleMouseLeave = this.handleMouseLeave.bind(this);
   }
 
   render(): void {
@@ -126,31 +131,93 @@ export class Board {
   }
 
   handleMouseDown(event: MouseEvent): void {
-    const { target } = event;
-    if (target === null) {
+    const piece = event.target as HTMLImageElement;
+    if (piece === null) {
       return;
     }
-    const { pieceId } = (target as HTMLElement).dataset;
+    const { pieceId } = piece.dataset;
     if (pieceId === undefined) {
       return;
     }
-    const handleMouseUp = (mouseupEvent: MouseEvent) => {
-      const { target: mouseupTarget } = mouseupEvent;
-      if (mouseupTarget === null) {
-        return;
-      }
-      const { row, column } = (mouseupTarget as HTMLElement).dataset;
-      if (row === undefined || column === undefined) {
-        return;
-      }
-      this.movePiece(Number(pieceId), {
-        row: Number(row),
-        col: Number(column),
-      });
-    };
-
-    this.$cellsContainer.addEventListener("mouseup", handleMouseUp, {
-      once: true,
+    const activePiece = this.pieces.find((item) => item.id === Number(pieceId));
+    if (activePiece === undefined) {
+      throw new Error("Active piece not found");
+    }
+    this.$activePiece = activePiece;
+    this.$cellsContainer.style.cursor = "grabbing";
+    const piecesArr: NodeListOf<HTMLImageElement> =
+      this.$cellsContainer.querySelectorAll("[data-piece-id]");
+    piecesArr.forEach((item) => {
+      item.style.pointerEvents = "none";
     });
+
+    this.clearListeners = this.clearListeners.bind(this, piecesArr);
+
+    // eslint-disable-next-line @typescript-eslint/unbound-method
+    this.$cellsContainer.addEventListener("mouseup", this.handleMouseUp);
+    // eslint-disable-next-line @typescript-eslint/unbound-method
+    this.$cellsContainer.addEventListener("mousemove", this.handleMouseMove);
+    // eslint-disable-next-line @typescript-eslint/unbound-method
+    this.$cellsContainer.addEventListener("mouseleave", this.handleMouseLeave);
+  }
+
+  handleMouseLeave(): void {
+    if (this.$activePiece === null) {
+      throw new Error("Active piece is null in handleMouseLeave");
+    }
+    const { id, position } = this.$activePiece;
+    this.movePiece(id, position);
+    this.clearListeners();
+  }
+
+  handleMouseMove(mousemoveEvent: MouseEvent): void {
+    const { offsetLeft, offsetTop } = this.$cellsContainer;
+    if (this.$activePiece === null) {
+      throw new Error("Active piece is null");
+    }
+    const { $el: activePieceElement } = this.$activePiece;
+    const { offsetWidth, offsetHeight } = activePieceElement;
+    const { pageX, pageY } = mousemoveEvent;
+    activePieceElement.style.left = `${pageX - offsetLeft - offsetWidth / 2}px`;
+    activePieceElement.style.top = `${pageY - offsetTop - offsetHeight / 2}px`;
+  }
+
+  handleMouseUp(mouseupEvent: MouseEvent): void {
+    const mouseupTarget = mouseupEvent.target as HTMLElement;
+    if (mouseupTarget === null) {
+      throw new Error("Mouseup target is null in handleMouseUp");
+    }
+    const { row, column } = mouseupTarget.dataset;
+    if (row === undefined || column === undefined) {
+      throw new Error("Mouseup target is not a cell");
+    }
+    const { pieceId } = this.$activePiece?.$el.dataset ?? {};
+    if (pieceId === undefined) {
+      throw new Error("Piece id is undefined in handleMouseUp");
+    }
+    this.movePiece(Number(pieceId), {
+      row: Number(row),
+      col: Number(column),
+    });
+    this.clearListeners();
+  }
+
+  clearListeners(piecesArr?: NodeListOf<HTMLImageElement>): void {
+    if (piecesArr === undefined) {
+      throw new Error("Pieces array passed undefined to clearListeners");
+    }
+    // eslint-disable-next-line @typescript-eslint/unbound-method
+    this.$cellsContainer.removeEventListener("mousemove", this.handleMouseMove);
+    // eslint-disable-next-line @typescript-eslint/unbound-method
+    this.$cellsContainer.removeEventListener("mouseup", this.handleMouseUp);
+    this.$cellsContainer.removeEventListener(
+      "mouseleave",
+      // eslint-disable-next-line @typescript-eslint/unbound-method
+      this.handleMouseLeave
+    );
+    piecesArr.forEach((item) => {
+      item.style.pointerEvents = "auto";
+    });
+    this.$cellsContainer.style.cursor = "default";
   }
 }
