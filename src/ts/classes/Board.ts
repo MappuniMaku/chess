@@ -1,11 +1,16 @@
-import { Color, PieceType, PieceColor, PiecePosition } from "./types";
+import { Color, PieceType, PieceColor, PiecePosition } from "../types";
 import { Cell } from "./Cell";
-import { isEven } from "./utils";
-import { Pawn } from "./Pawn";
+import { isEven } from "../utils";
 import { Piece } from "./Piece";
+import { Bishop, Knight, Pawn, Rook, King, Queen } from "./pieces";
 
-const piecesDictionary = {
+const PIECES_DICTIONARY: Record<PieceType, typeof Piece> = {
+  bishop: Bishop,
+  knight: Knight,
   pawn: Pawn,
+  rook: Rook,
+  king: King,
+  queen: Queen,
 };
 
 const cellsContainerId = "cells-container";
@@ -87,7 +92,7 @@ export class Board {
     color: PieceColor,
     position: PiecePosition
   ): void {
-    const TargetPiece = piecesDictionary[pieceType];
+    const TargetPiece = PIECES_DICTIONARY[pieceType];
     const pieceInstance = new TargetPiece({
       color,
       position,

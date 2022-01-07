@@ -1,72 +1,72 @@
 * {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
 body {
-    font-family: sans-serif;
+  font-family: sans-serif;
 }
 
 .Chess {
-    padding: 100px 150px;
+  padding: 100px 150px;
 
-    &__board {
-        display: grid;
-        grid-template-columns: 60px 1fr;
-        grid-template-rows: 1fr 60px;
-        grid-template-areas: "numbers cells" ". letters";
-        width: fit-content;
+  &__board {
+    display: grid;
+    grid-template-columns: 60px 1fr;
+    grid-template-rows: 1fr 60px;
+    grid-template-areas: "numbers cells" ". letters";
+    width: fit-content;
+  }
+
+  &__letters,
+  &__numbers {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  &__letters {
+    grid-area: letters;
+  }
+
+  &__numbers {
+    grid-area: numbers;
+    flex-direction: column-reverse;
+  }
+
+  &__letter,
+  &__number {
+    flex-grow: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  &__cellsWrapper {
+    position: relative;
+    grid-area: cells;
+    display: grid;
+    grid-template-columns: repeat(8, 60px);
+    grid-template-rows: repeat(8, 60px);
+    grid-auto-flow: row;
+  }
+
+  &__cell {
+    width: 100%;
+    height: 100%;
+
+    &--light {
+      background-color: antiquewhite;
     }
 
-    &__letters,
-    &__numbers {
-        display: flex;
-        justify-content: space-between;
+    &--dark {
+      background-color: saddlebrown;
     }
+  }
 
-    &__letters {
-        grid-area: letters;
-    }
-
-    &__numbers {
-        grid-area: numbers;
-        flex-direction: column-reverse;
-    }
-
-    &__letter,
-    &__number {
-        flex-grow: 1;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
-
-    &__cellsWrapper {
-        position: relative;
-        grid-area: cells;
-        display: grid;
-        grid-template-columns: repeat(8, 60px);
-        grid-template-rows: repeat(8, 60px);
-        grid-auto-flow: row;
-    }
-
-    &__cell {
-        width: 100%;
-        height: 100%;
-
-        &--light {
-            background-color: antiquewhite;
-        }
-
-        &--dark {
-            background-color: saddlebrown;
-        }
-    }
-
-    &__piece {
-        position: absolute;
-        width: 60px;
-        height: 60px;
-    }
+  &__piece {
+    position: absolute;
+    width: 60px;
+    height: 60px;
+  }
 }

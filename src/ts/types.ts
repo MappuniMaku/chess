@@ -15,4 +15,9 @@ export type PiecePosition = {
 
 export enum PieceType {
   Pawn = "pawn",
+  Bishop = "bishop",
+  Knight = "knight",
+  Rook = "rook",
+  King = "king",
+  Queen = "queen",
 }
