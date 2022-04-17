@@ -2,10 +2,10 @@ import { Board } from "./Board";
 import { PieceColor, PieceType } from "../types";
 
 export class App {
-  $el: HTMLElement;
+  $el: HTMLDivElement;
   board: Board;
 
-  constructor($el: HTMLElement) {
+  constructor($el: HTMLDivElement) {
     this.$el = $el;
     this.board = new Board($el);
     this.init();

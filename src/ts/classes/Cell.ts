@@ -8,20 +8,31 @@ type CellProps = {
 };
 
 export class Cell {
-  props: CellProps;
+  id: number;
+  row: number;
+  col: number;
+  color: Color;
+  $el: HTMLDivElement;
 
   constructor(props: CellProps) {
-    this.props = props;
+    const { id, row, col, color } = props;
+    this.id = id;
+    this.row = row;
+    this.col = col;
+    this.color = color;
+    this.$el = this.getElement();
   }
 
-  render(): string {
-    return `
-      <div
-        class="Chess__cell Chess__cell--${this.props.color}"
-        data-cell="${this.props.id}"
-        data-row="${this.props.row}"
-        data-column="${this.props.col}"
-      ></div>
-  `;
+  private getElement(): HTMLDivElement {
+    const el = document.createElement("div");
+    el.dataset.cell = String(this.id);
+    el.dataset.row = String(this.row);
+    el.dataset.column = String(this.col);
+    el.classList.add("Chess__cell", `Chess__cell--${this.color}`);
+    return el;
+  }
+
+  addAvailableMoveState(): void {
+    this.$el.classList.add("Chess__cell--availableMove");
   }
 }

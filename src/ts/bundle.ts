@@ -4,6 +4,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const $root = document.getElementById("root");
 
   if ($root !== null) {
-    const app = new App($root);
+    const app = new App($root as HTMLDivElement);
   }
 });

@@ -13,25 +13,28 @@ const PIECES_DICTIONARY: Record<PieceType, typeof Piece> = {
   queen: Queen,
 };
 
+const boardId = "board";
 const cellsContainerId = "cells-container";
 
 export class Board {
-  $el: HTMLElement;
-  $cellsContainer: HTMLElement;
+  $el: HTMLDivElement;
+  $board: HTMLDivElement;
+  $cellsContainer: HTMLDivElement;
+  cells: Cell[];
   pieces: Piece[];
   $activePiece: Piece | null;
 
-  constructor($el: HTMLElement) {
+  constructor($el: HTMLDivElement) {
     this.$el = $el;
     this.render();
+    this.$board = document.getElementById(boardId) as HTMLDivElement;
     this.$cellsContainer = document.getElementById(
       cellsContainerId
-    ) as HTMLElement;
+    ) as HTMLDivElement;
+    this.cells = this.getInitialCells();
+    this.renderCells();
     this.pieces = [];
-    this.$cellsContainer.addEventListener(
-      "mousedown",
-      this.handleMouseDown.bind(this)
-    );
+    this.$board.addEventListener("mousedown", this.handleMouseDown.bind(this));
     this.$activePiece = null;
     this.handleMouseMove = this.handleMouseMove.bind(this);
     this.handleMouseUp = this.handleMouseUp.bind(this);
@@ -39,7 +42,35 @@ export class Board {
   }
 
   render(): void {
-    const cellsArr = Array.from({ length: 64 })
+    const numbersArr = Array.from({ length: 8 }).map((_, index) => index + 1);
+    const letters = numbersArr.map(
+      (item) =>
+        `<div class="Chess__letter">${String.fromCharCode(item + 64)}</div>`
+    );
+    const numbers = numbersArr.map(
+      (item) => `<div class="Chess__number">${item}</div>`
+    );
+
+    const html = `
+      <div class="Chess__boardWrapper">
+        <div class="Chess__letters">
+          ${letters.join("")}
+        </div>
+        
+        <div class="Chess__numbers">
+          ${numbers.join("")}
+        </div>
+        
+        <div class="Chess__board" id="${boardId}">
+          <div class="Chess__cellsContainer" id="${cellsContainerId}"></div>
+        </div>
+      </div>
+  `;
+    this.$el.insertAdjacentHTML("beforeend", html);
+  }
+
+  getInitialCells(): Cell[] {
+    return Array.from({ length: 64 })
       .map((_, index) => {
         const row = Math.floor(index / 8) + 1;
         const col = (index % 8) + 1;
@@ -58,33 +89,29 @@ export class Board {
           color,
         };
       })
-      .map((item) => new Cell(item).render());
+      .map((item) => new Cell(item));
+  }
 
-    const numbersArr = Array.from({ length: 8 }).map((_, index) => index + 1);
-    const letters = numbersArr.map(
-      (item) =>
-        `<div class="Chess__letter">${String.fromCharCode(item + 64)}</div>`
-    );
-    const numbers = numbersArr.map(
-      (item) => `<div class="Chess__number">${item}</div>`
-    );
+  renderCells(): void {
+    const { children } = this.$cellsContainer;
+    if (children.length > 0) {
+      Array.from(children).forEach((child) => {
+        this.$cellsContainer.removeChild(child);
+      });
+    }
+    this.cells.forEach((cell) => this.$cellsContainer.appendChild(cell.$el));
+  }
 
-    const html = `
-      <div class="Chess__board">
-        <div class="Chess__letters">
-          ${letters.join("")}
-        </div>
-        
-        <div class="Chess__numbers">
-          ${numbers.join("")}
-        </div>
-        
-        <div class="Chess__cellsWrapper" id="${cellsContainerId}">
-          ${cellsArr.join("")}
-        </div>
-      </div>
-  `;
-    this.$el.insertAdjacentHTML("beforeend", html);
+  rerenderPiece(piece: Piece): void {
+    const { id, $el } = piece;
+    const removingElement = (
+      Array.from(this.$board.children) as HTMLElement[]
+    ).find((el) => el.dataset.pieceId === String(id));
+    if (removingElement === undefined) {
+      throw new Error(`Piece with id ${id} not found in the document`);
+    }
+    this.$board.removeChild(removingElement);
+    this.$board.appendChild($el);
   }
 
   addPiece(
@@ -93,46 +120,22 @@ export class Board {
     position: PiecePosition
   ): void {
     const TargetPiece = PIECES_DICTIONARY[pieceType];
-    const pieceInstance = new TargetPiece({
+    const piece = new TargetPiece({
       color,
       position,
       id: this.pieces.length,
     });
-    const $piece = pieceInstance.$el;
-
-    $piece.classList.add("Chess__piece");
-    const { left, top } = this.calculatePositionStyles(position);
-    $piece.style.left = left;
-    $piece.style.top = top;
-    this.pieces.push(pieceInstance);
-    this.$cellsContainer.append($piece);
-  }
-
-  calculatePositionStyles(position: PiecePosition): {
-    left: string;
-    top: string;
-  } {
-    return {
-      left: `${((position.col - 1) * 100) / 8}%`,
-      top: `${((position.row - 1) * 100) / 8}%`,
-    };
+    this.pieces.push(piece);
+    this.$board.appendChild(piece.$el);
   }
 
   movePiece(id: number, position: PiecePosition): void {
-    const targetInstance = this.pieces.find((item) => item.id === id);
-    if (targetInstance === undefined) {
+    const targetPiece = this.pieces.find((item) => item.id === id);
+    if (targetPiece === undefined) {
       throw new Error("Piece object with target ID not found");
     }
-    targetInstance.position = position;
-    const $targetPieceEl = this.$cellsContainer.querySelector(
-      `[data-piece-id="${id}"]`
-    ) as HTMLImageElement;
-    if ($targetPieceEl === null) {
-      throw new Error("Piece element with target ID not found");
-    }
-    const { left, top } = this.calculatePositionStyles(position);
-    $targetPieceEl.style.left = left;
-    $targetPieceEl.style.top = top;
+    targetPiece.setPosition(position);
+    this.rerenderPiece(targetPiece);
   }
 
   handleMouseDown(event: MouseEvent): void {
@@ -149,9 +152,9 @@ export class Board {
       throw new Error("Active piece not found");
     }
     this.$activePiece = activePiece;
-    this.$cellsContainer.style.cursor = "grabbing";
+    this.$board.style.cursor = "grabbing";
     const piecesArr: NodeListOf<HTMLImageElement> =
-      this.$cellsContainer.querySelectorAll("[data-piece-id]");
+      this.$board.querySelectorAll("[data-piece-id]");
     piecesArr.forEach((item) => {
       item.style.pointerEvents = "none";
     });
@@ -159,11 +162,11 @@ export class Board {
     this.clearListeners = this.clearListeners.bind(this, piecesArr);
 
     // eslint-disable-next-line @typescript-eslint/unbound-method
-    this.$cellsContainer.addEventListener("mouseup", this.handleMouseUp);
+    this.$board.addEventListener("mouseup", this.handleMouseUp);
     // eslint-disable-next-line @typescript-eslint/unbound-method
-    this.$cellsContainer.addEventListener("mousemove", this.handleMouseMove);
+    this.$board.addEventListener("mousemove", this.handleMouseMove);
     // eslint-disable-next-line @typescript-eslint/unbound-method
-    this.$cellsContainer.addEventListener("mouseleave", this.handleMouseLeave);
+    this.$board.addEventListener("mouseleave", this.handleMouseLeave);
   }
 
   handleMouseLeave(): void {
@@ -176,7 +179,7 @@ export class Board {
   }
 
   handleMouseMove(mousemoveEvent: MouseEvent): void {
-    const { offsetLeft, offsetTop } = this.$cellsContainer;
+    const { offsetLeft, offsetTop } = this.$board;
     if (this.$activePiece === null) {
       throw new Error("Active piece is null");
     }
@@ -212,10 +215,10 @@ export class Board {
       throw new Error("Pieces array passed undefined to clearListeners");
     }
     // eslint-disable-next-line @typescript-eslint/unbound-method
-    this.$cellsContainer.removeEventListener("mousemove", this.handleMouseMove);
+    this.$board.removeEventListener("mousemove", this.handleMouseMove);
     // eslint-disable-next-line @typescript-eslint/unbound-method
-    this.$cellsContainer.removeEventListener("mouseup", this.handleMouseUp);
-    this.$cellsContainer.removeEventListener(
+    this.$board.removeEventListener("mouseup", this.handleMouseUp);
+    this.$board.removeEventListener(
       "mouseleave",
       // eslint-disable-next-line @typescript-eslint/unbound-method
       this.handleMouseLeave
@@ -223,6 +226,6 @@ export class Board {
     piecesArr.forEach((item) => {
       item.style.pointerEvents = "auto";
     });
-    this.$cellsContainer.style.cursor = "default";
+    this.$board.style.cursor = "default";
   }
 }

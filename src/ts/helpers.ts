@@ -1,4 +1,4 @@
-import { PieceColor, PieceType } from "./types";
+import { PieceColor, PiecePosition, PieceType } from "./types";
 
 export const setPieceElementProperties = (
   $el: HTMLImageElement,
@@ -8,3 +8,13 @@ export const setPieceElementProperties = (
   $el.src = `images/pieces/${pieceName}-${color}.png`;
   $el.alt = `${color} ${pieceName}`;
 };
+
+export const calculatePositionStyles = (
+  position: PiecePosition
+): {
+  left: string;
+  top: string;
+} => ({
+  left: `${((position.col - 1) * 100) / 8}%`,
+  top: `${((position.row - 1) * 100) / 8}%`,
+});

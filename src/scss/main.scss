@@ -11,11 +11,11 @@ body {
 .Chess {
   padding: 100px 150px;
 
-  &__board {
+  &__boardWrapper {
     display: grid;
     grid-template-columns: 60px 1fr;
     grid-template-rows: 1fr 60px;
-    grid-template-areas: "numbers cells" ". letters";
+    grid-template-areas: "numbers board" ". letters";
     width: fit-content;
 
     -webkit-touch-callout: none;
@@ -49,9 +49,12 @@ body {
     align-items: center;
   }
 
-  &__cellsWrapper {
+  &__board {
     position: relative;
-    grid-area: cells;
+    grid-area: board;
+  }
+
+  &__cellsContainer {
     display: grid;
     grid-template-columns: repeat(8, 60px);
     grid-template-rows: repeat(8, 60px);
