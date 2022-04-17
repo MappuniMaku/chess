@@ -12,7 +12,7 @@ export class App {
   }
 
   init(): void {
-    const blackPawnsArr = Array.from({ length: 8 }).map((item, index) => ({
+    const blackPawnsArr = Array.from({ length: 8 }).map((_, index) => ({
       row: 2,
       col: index + 1,
     }));
@@ -20,7 +20,7 @@ export class App {
       this.board.addPiece(PieceType.Pawn, PieceColor.Black, item);
     });
 
-    const whitePawnsArr = Array.from({ length: 8 }).map((item, index) => ({
+    const whitePawnsArr = Array.from({ length: 8 }).map((_, index) => ({
       row: 7,
       col: index + 1,
     }));
