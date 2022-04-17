@@ -35,4 +35,8 @@ export class Cell {
   addAvailableMoveState(): void {
     this.$el.classList.add("Chess__cell--availableMove");
   }
+
+  removeAvailableMoveState(): void {
+    this.$el.classList.remove("Chess__cell--availableMove");
+  }
 }

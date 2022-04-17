@@ -3,6 +3,7 @@ import { Cell } from "./Cell";
 import { isEven } from "../utils";
 import { Piece } from "./Piece";
 import { Bishop, Knight, Pawn, Rook, King, Queen } from "./pieces";
+import { getCellIdFromPosition } from "../helpers";
 
 const PIECES_DICTIONARY: Record<PieceType, typeof Piece> = {
   bishop: Bishop,
@@ -151,6 +152,7 @@ export class Board {
     if (activePiece === undefined) {
       throw new Error("Active piece not found");
     }
+    this.showAvailableCells(activePiece);
     this.$activePiece = activePiece;
     this.$board.style.cursor = "grabbing";
     const piecesArr: NodeListOf<HTMLImageElement> =
@@ -175,6 +177,7 @@ export class Board {
     }
     const { id, position } = this.$activePiece;
     this.movePiece(id, position);
+    this.clearAvailableCells();
     this.clearListeners();
   }
 
@@ -199,14 +202,29 @@ export class Board {
     if (row === undefined || column === undefined) {
       throw new Error("Mouseup target is not a cell");
     }
-    const { pieceId } = this.$activePiece?.$el.dataset ?? {};
-    if (pieceId === undefined) {
-      throw new Error("Piece id is undefined in handleMouseUp");
+    const targetRow = Number(row);
+    const targetCol = Number(column);
+
+    if (this.$activePiece === null) {
+      throw new Error("Active piece is null in handleMouseUp");
     }
-    this.movePiece(Number(pieceId), {
-      row: Number(row),
-      col: Number(column),
+    const { id: pieceId, position: startingPosition } = this.$activePiece;
+
+    const targetCellId = getCellIdFromPosition({
+      row: targetRow,
+      col: targetCol,
     });
+
+    this.movePiece(
+      pieceId,
+      this.$activePiece.getMoves().includes(targetCellId)
+        ? {
+            row: targetRow,
+            col: targetCol,
+          }
+        : startingPosition
+    );
+    this.clearAvailableCells();
     this.clearListeners();
   }
 
@@ -227,5 +245,24 @@ export class Board {
       item.style.pointerEvents = "auto";
     });
     this.$board.style.cursor = "default";
+  }
+
+  showAvailableCells(piece: Piece): void {
+    const targetCellsIds = piece.getMoves();
+    targetCellsIds.forEach((id) => {
+      const cell = this.cells.find((item) => item.id === id);
+      if (cell === undefined) {
+        throw new Error(`Cell with id ${id} not found`);
+      }
+      cell.addAvailableMoveState();
+    });
+    this.renderCells();
+  }
+
+  clearAvailableCells(): void {
+    this.cells.forEach((cell) => {
+      cell.removeAvailableMoveState();
+    });
+    this.renderCells();
   }
 }

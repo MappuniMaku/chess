@@ -36,4 +36,9 @@ export class Piece {
     this.$el.style.left = left;
     this.$el.style.top = top;
   }
+
+  getMoves(): number[] {
+    console.warn("getMoves() method for this piece is absent");
+    return [];
+  }
 }
