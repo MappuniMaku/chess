@@ -94,25 +94,7 @@ export class Board {
   }
 
   renderCells(): void {
-    const { children } = this.$cellsContainer;
-    if (children.length > 0) {
-      Array.from(children).forEach((child) => {
-        this.$cellsContainer.removeChild(child);
-      });
-    }
     this.cells.forEach((cell) => this.$cellsContainer.appendChild(cell.$el));
-  }
-
-  rerenderPiece(piece: Piece): void {
-    const { id, $el } = piece;
-    const removingElement = (
-      Array.from(this.$board.children) as HTMLElement[]
-    ).find((el) => el.dataset.pieceId === String(id));
-    if (removingElement === undefined) {
-      throw new Error(`Piece with id ${id} not found in the document`);
-    }
-    this.$board.removeChild(removingElement);
-    this.$board.appendChild($el);
   }
 
   addPiece(
@@ -136,7 +118,6 @@ export class Board {
       throw new Error("Piece object with target ID not found");
     }
     targetPiece.setPosition(position);
-    this.rerenderPiece(targetPiece);
   }
 
   handleMouseDown(event: MouseEvent): void {
@@ -256,13 +237,11 @@ export class Board {
       }
       cell.addAvailableMoveState();
     });
-    this.renderCells();
   }
 
   clearAvailableCells(): void {
     this.cells.forEach((cell) => {
       cell.removeAvailableMoveState();
     });
-    this.renderCells();
   }
 }
