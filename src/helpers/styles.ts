@@ -1,7 +1,7 @@
-import { PiecePosition } from "../types";
+import { IPiecePosition } from "../types";
 
 export const calculatePositionStyles = (
-  position: PiecePosition
+  position: IPiecePosition
 ): {
   left: string;
   top: string;

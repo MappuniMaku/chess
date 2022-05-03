@@ -86,6 +86,10 @@ body {
         background-color: gray;
       }
     }
+
+    &--availableHit {
+      background-color: red;
+    }
   }
 
   &__piece {

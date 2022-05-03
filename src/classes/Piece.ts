@@ -1,23 +1,19 @@
-import { PieceColor, PiecePosition } from "../types";
+import { PieceColor, IPiecePosition, IPieceProps } from "../types";
 import { calculatePositionStyles } from "../helpers";
 
-export type PieceProps = {
-  position: PiecePosition;
-  color: PieceColor;
-  id: number;
-};
+export class Piece implements IPieceProps {
+  readonly id: number;
+  position: IPiecePosition;
+  readonly pieces: IPieceProps[];
+  readonly color: PieceColor;
+  readonly $el: HTMLImageElement;
 
-export class Piece {
-  position: PiecePosition;
-  color: PieceColor;
-  id: number;
-  $el: HTMLImageElement;
-
-  constructor(props: PieceProps) {
-    const { id, position, color } = props;
+  constructor(props: IPieceProps) {
+    const { id, position, color, pieces } = props;
     this.id = id;
     this.position = position;
     this.color = color;
+    this.pieces = pieces;
     this.$el = this.getElement();
     this.setPosition(position);
   }
@@ -30,7 +26,7 @@ export class Piece {
     return el;
   }
 
-  setPosition(position: PiecePosition): void {
+  setPosition(position: IPiecePosition): void {
     this.position = position;
     const { left, top } = calculatePositionStyles(position);
     this.$el.style.left = left;

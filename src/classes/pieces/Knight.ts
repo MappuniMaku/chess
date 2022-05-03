@@ -1,19 +1,21 @@
-import { Piece, PieceProps } from "../Piece";
+import { Piece } from "../Piece";
+import { IPiecePosition, PieceType, IPieceProps } from "../../types";
 import {
   getCellIdFromPosition,
+  removeCellsIfNecessary,
+  removeInvalidPositions,
   setPieceElementProperties,
 } from "../../helpers";
-import { PiecePosition, PieceType } from "../../types";
 
 export class Knight extends Piece {
-  constructor(props: PieceProps) {
+  constructor(props: IPieceProps) {
     super(props);
     setPieceElementProperties(this.$el, PieceType.Knight, this.color);
   }
 
   getMoves(): number[] {
     const { row, col } = this.position;
-    const positions: PiecePosition[] = [];
+    const positions: IPiecePosition[] = [];
     positions.push({ row: row + 1, col: col - 2 });
     positions.push({ row: row + 2, col: col - 1 });
     positions.push({ row: row + 2, col: col + 1 });
@@ -22,11 +24,7 @@ export class Knight extends Piece {
     positions.push({ row: row - 2, col: col + 1 });
     positions.push({ row: row - 2, col: col - 1 });
     positions.push({ row: row - 1, col: col - 2 });
-    return positions
-      .filter(
-        (item) =>
-          item.row >= 1 && item.row <= 8 && item.col >= 1 && item.col <= 8
-      )
-      .map(getCellIdFromPosition);
+    const ids = removeInvalidPositions(positions).map(getCellIdFromPosition);
+    return removeCellsIfNecessary({ ids, selectedPiece: this });
   }
 }

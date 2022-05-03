@@ -1,17 +1,28 @@
-import { Piece, PieceProps } from "../Piece";
+import { Piece } from "../Piece";
+import { PieceType, IPieceProps } from "../../types";
 import {
-  getLinesCellsIdsFromPosition,
+  cutLineIfNecessary,
+  getBottomLine,
+  getLeftLine,
+  getRightLine,
+  getTopLine,
   setPieceElementProperties,
 } from "../../helpers";
-import { PieceType } from "../../types";
 
 export class Rook extends Piece {
-  constructor(props: PieceProps) {
+  constructor(props: IPieceProps) {
     super(props);
     setPieceElementProperties(this.$el, PieceType.Rook, this.color);
   }
 
   getMoves(): number[] {
-    return getLinesCellsIdsFromPosition(this.position);
+    return [
+      getTopLine(this.position),
+      getRightLine(this.position),
+      getBottomLine(this.position),
+      getLeftLine(this.position),
+    ]
+      .map((line) => cutLineIfNecessary({ line, selectedPiece: this }))
+      .flat();
   }
 }

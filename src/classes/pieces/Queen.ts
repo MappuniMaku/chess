@@ -1,21 +1,36 @@
-import { Piece, PieceProps } from "../Piece";
+import { Piece } from "../Piece";
+import { PieceType, IPieceProps } from "../../types";
 import {
-  getDiagonalsCellsIdsFromPosition,
-  getLinesCellsIdsFromPosition,
+  cutLineIfNecessary,
+  getBottomLeftDiagonal,
+  getBottomLine,
+  getBottomRightDiagonal,
+  getLeftLine,
+  getRightLine,
+  getTopLeftDiagonal,
+  getTopLine,
+  getTopRightDiagonal,
   setPieceElementProperties,
 } from "../../helpers";
-import { PieceType } from "../../types";
 
 export class Queen extends Piece {
-  constructor(props: PieceProps) {
+  constructor(props: IPieceProps) {
     super(props);
     setPieceElementProperties(this.$el, PieceType.Queen, this.color);
   }
 
   getMoves(): number[] {
     return [
-      ...getLinesCellsIdsFromPosition(this.position),
-      ...getDiagonalsCellsIdsFromPosition(this.position),
-    ];
+      getTopLine(this.position),
+      getRightLine(this.position),
+      getBottomLine(this.position),
+      getLeftLine(this.position),
+      getTopLeftDiagonal(this.position),
+      getTopRightDiagonal(this.position),
+      getBottomRightDiagonal(this.position),
+      getBottomLeftDiagonal(this.position),
+    ]
+      .map((line) => cutLineIfNecessary({ line, selectedPiece: this }))
+      .flat();
   }
 }

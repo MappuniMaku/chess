@@ -1,4 +1,4 @@
-import { Color, PieceType, PieceColor, PiecePosition } from "../types";
+import { Color, PieceType, PieceColor, IPiecePosition } from "../types";
 import { Cell } from "./Cell";
 import { isEven } from "../utils";
 import { Piece } from "./Piece";
@@ -100,19 +100,20 @@ export class Board {
   addPiece(
     pieceType: PieceType,
     color: PieceColor,
-    position: PiecePosition
+    position: IPiecePosition
   ): void {
     const TargetPiece = PIECES_DICTIONARY[pieceType];
     const piece = new TargetPiece({
       color,
       position,
       id: this.pieces.length,
+      pieces: this.pieces,
     });
     this.pieces.push(piece);
     this.$board.appendChild(piece.$el);
   }
 
-  movePiece(id: number, position: PiecePosition): void {
+  movePiece(id: number, position: IPiecePosition): void {
     const targetPiece = this.pieces.find((item) => item.id === id);
     if (targetPiece === undefined) {
       throw new Error("Piece object with target ID not found");
@@ -234,6 +235,14 @@ export class Board {
       const cell = this.cells.find((item) => item.id === id);
       if (cell === undefined) {
         throw new Error(`Cell with id ${id} not found`);
+      }
+      if (
+        this.pieces.some(
+          (piece) => getCellIdFromPosition(piece.position) === id
+        )
+      ) {
+        cell.addAvailableHitState();
+        return;
       }
       cell.addAvailableMoveState();
     });

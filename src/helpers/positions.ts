@@ -1,11 +1,60 @@
-import { PiecePosition } from "../types";
+import {
+  ICutLineIfNecessaryFunction,
+  IPiecePosition,
+  IRemoveCellsIfNecessaryFunction,
+} from "../types";
 
-export const getCellIdFromPosition = (position: PiecePosition): number => {
+export const getCellIdFromPosition = (position: IPiecePosition): number => {
   const { row, col } = position;
   return (row - 1) * 8 + col - 1;
 };
 
-export const getTopLine = (position: PiecePosition): number[] => {
+export const cutLineIfNecessary: ICutLineIfNecessaryFunction = ({
+  line,
+  selectedPiece,
+}) => {
+  const { color: selectedPieceColor, pieces } = selectedPiece;
+  const result: number[] = [];
+  for (const id of line) {
+    const piece = pieces.find(
+      (item) => getCellIdFromPosition(item.position) === id
+    );
+    if (piece === undefined) {
+      result.push(id);
+      continue;
+    }
+    const { color } = piece;
+    if (selectedPieceColor !== color) {
+      result.push(id);
+    }
+    break;
+  }
+  return result;
+};
+
+export const removeCellsIfNecessary: IRemoveCellsIfNecessaryFunction = ({
+  ids,
+  selectedPiece,
+}) => {
+  const { color: selectedPieceColor, pieces } = selectedPiece;
+  const result: number[] = [];
+  ids.forEach((id) => {
+    const piece = pieces.find(
+      (item) => getCellIdFromPosition(item.position) === id
+    );
+    if (piece === undefined) {
+      result.push(id);
+      return;
+    }
+    const { color } = piece;
+    if (selectedPieceColor !== color) {
+      result.push(id);
+    }
+  });
+  return result;
+};
+
+export const getTopLine = (position: IPiecePosition): number[] => {
   const { row, col } = position;
   let rowVar = row;
   const result: number[] = [];
@@ -16,7 +65,7 @@ export const getTopLine = (position: PiecePosition): number[] => {
   return result;
 };
 
-export const getBottomLine = (position: PiecePosition): number[] => {
+export const getBottomLine = (position: IPiecePosition): number[] => {
   const { row, col } = position;
   let rowVar = row;
   const result: number[] = [];
@@ -27,7 +76,7 @@ export const getBottomLine = (position: PiecePosition): number[] => {
   return result;
 };
 
-export const getLeftLine = (position: PiecePosition): number[] => {
+export const getLeftLine = (position: IPiecePosition): number[] => {
   const { row, col } = position;
   let colVar = col;
   const result: number[] = [];
@@ -38,7 +87,7 @@ export const getLeftLine = (position: PiecePosition): number[] => {
   return result;
 };
 
-export const getRightLine = (position: PiecePosition): number[] => {
+export const getRightLine = (position: IPiecePosition): number[] => {
   const { row, col } = position;
   let colVar = col;
   const result: number[] = [];
@@ -49,16 +98,7 @@ export const getRightLine = (position: PiecePosition): number[] => {
   return result;
 };
 
-export const getLinesCellsIdsFromPosition = (
-  position: PiecePosition
-): number[] => [
-  ...getTopLine(position),
-  ...getBottomLine(position),
-  ...getLeftLine(position),
-  ...getRightLine(position),
-];
-
-export const getTopLeftDiagonal = (position: PiecePosition): number[] => {
+export const getTopLeftDiagonal = (position: IPiecePosition): number[] => {
   const { row, col } = position;
   let rowVar = row;
   let colVar = col;
@@ -71,7 +111,7 @@ export const getTopLeftDiagonal = (position: PiecePosition): number[] => {
   return result;
 };
 
-export const getTopRightDiagonal = (position: PiecePosition): number[] => {
+export const getTopRightDiagonal = (position: IPiecePosition): number[] => {
   const { row, col } = position;
   let rowVar = row;
   let colVar = col;
@@ -84,7 +124,7 @@ export const getTopRightDiagonal = (position: PiecePosition): number[] => {
   return result;
 };
 
-export const getBottomLeftDiagonal = (position: PiecePosition): number[] => {
+export const getBottomLeftDiagonal = (position: IPiecePosition): number[] => {
   const { row, col } = position;
   let rowVar = row;
   let colVar = col;
@@ -97,7 +137,7 @@ export const getBottomLeftDiagonal = (position: PiecePosition): number[] => {
   return result;
 };
 
-export const getBottomRightDiagonal = (position: PiecePosition): number[] => {
+export const getBottomRightDiagonal = (position: IPiecePosition): number[] => {
   const { row, col } = position;
   let rowVar = row;
   let colVar = col;
@@ -110,11 +150,9 @@ export const getBottomRightDiagonal = (position: PiecePosition): number[] => {
   return result;
 };
 
-export const getDiagonalsCellsIdsFromPosition = (
-  position: PiecePosition
-): number[] => [
-  ...getTopLeftDiagonal(position),
-  ...getTopRightDiagonal(position),
-  ...getBottomLeftDiagonal(position),
-  ...getBottomRightDiagonal(position),
-];
+export const removeInvalidPositions = (
+  positions: IPiecePosition[]
+): IPiecePosition[] =>
+  positions.filter(
+    (item) => item.row >= 1 && item.row <= 8 && item.col >= 1 && item.col <= 8
+  );

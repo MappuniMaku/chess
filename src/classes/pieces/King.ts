@@ -1,4 +1,5 @@
-import { Piece, PieceProps } from "../Piece";
+import { Piece } from "../Piece";
+import { PieceType, IPieceProps } from "../../types";
 import {
   getBottomLeftDiagonal,
   getBottomLine,
@@ -8,18 +9,18 @@ import {
   getTopLeftDiagonal,
   getTopLine,
   getTopRightDiagonal,
+  removeCellsIfNecessary,
   setPieceElementProperties,
 } from "../../helpers";
-import { PieceType } from "../../types";
 
 export class King extends Piece {
-  constructor(props: PieceProps) {
+  constructor(props: IPieceProps) {
     super(props);
     setPieceElementProperties(this.$el, PieceType.King, this.color);
   }
 
   getMoves(): number[] {
-    return [
+    const ids = [
       getTopLine(this.position)[0] ?? [],
       getBottomLine(this.position)[0] ?? [],
       getLeftLine(this.position)[0] ?? [],
@@ -29,5 +30,6 @@ export class King extends Piece {
       getBottomLeftDiagonal(this.position)[0] ?? [],
       getBottomRightDiagonal(this.position)[0] ?? [],
     ].flat();
+    return removeCellsIfNecessary({ ids, selectedPiece: this });
   }
 }

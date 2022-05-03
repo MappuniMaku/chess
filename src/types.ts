@@ -8,10 +8,10 @@ export enum PieceColor {
   Black = "black",
 }
 
-export type PiecePosition = {
+export interface IPiecePosition {
   row: number;
   col: number;
-};
+}
 
 export enum PieceType {
   Pawn = "pawn",
@@ -21,3 +21,30 @@ export enum PieceType {
   King = "king",
   Queen = "queen",
 }
+
+export interface IPieceProps {
+  position: IPiecePosition;
+  color: PieceColor;
+  id: number;
+  pieces: IPieceProps[];
+}
+
+export interface ICutLineIfNecessaryFunctionProps {
+  line: number[];
+  selectedPiece: IPieceProps;
+}
+
+export type ICutLineIfNecessaryFunction = ({
+  line,
+  selectedPiece,
+}: ICutLineIfNecessaryFunctionProps) => number[];
+
+export interface IRemoveCellsIfNecessaryFunctionProps {
+  ids: number[];
+  selectedPiece: IPieceProps;
+}
+
+export type IRemoveCellsIfNecessaryFunction = ({
+  ids,
+  selectedPiece,
+}: IRemoveCellsIfNecessaryFunctionProps) => number[];
