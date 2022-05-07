@@ -115,7 +115,13 @@ export class Board {
   }
 
   removePiece(piece: Piece): void {
-    this.pieces = this.pieces.filter((item) => item.id !== piece.id);
+    const targetPieceIndex = this.pieces.findIndex(
+      (item) => item.id === piece.id
+    );
+    if (targetPieceIndex === -1) {
+      throw new Error(`Cannot find piece with id ${piece.id}`);
+    }
+    this.pieces.splice(targetPieceIndex, 1);
     this.$board.removeChild(piece.$el);
   }
 
@@ -213,13 +219,15 @@ export class Board {
           }
         : startingPosition
     );
-    const enemyPiece = this.pieces.find(
-      (piece) =>
-        piece.color !== this.$activePiece?.color &&
-        piece.cellId === targetCellId
-    );
-    if (enemyPiece !== undefined) {
-      this.removePiece(enemyPiece);
+    if (isMoveAvailable) {
+      const enemyPiece = this.pieces.find(
+        (piece) =>
+          piece.color !== this.$activePiece?.color &&
+          piece.cellId === targetCellId
+      );
+      if (enemyPiece !== undefined) {
+        this.removePiece(enemyPiece);
+      }
     }
 
     this.clearAvailableCells();
