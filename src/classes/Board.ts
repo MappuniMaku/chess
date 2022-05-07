@@ -106,6 +106,7 @@ export class Board {
     const piece = new TargetPiece({
       color,
       position,
+      cellId: getCellIdFromPosition(position),
       id: this.pieces.length,
       pieces: this.pieces,
     });
@@ -236,11 +237,7 @@ export class Board {
       if (cell === undefined) {
         throw new Error(`Cell with id ${id} not found`);
       }
-      if (
-        this.pieces.some(
-          (piece) => getCellIdFromPosition(piece.position) === id
-        )
-      ) {
+      if (this.pieces.some((piece) => piece.cellId === id)) {
         cell.addAvailableHitState();
         return;
       }

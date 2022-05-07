@@ -50,26 +50,16 @@ export class Pawn extends Piece {
     }
     const filteredPossibleHits = possibleHits.filter((item) =>
       this.pieces.some(
-        (piece) =>
-          piece.color !== this.color &&
-          getCellIdFromPosition(piece.position) === item
+        (piece) => piece.color !== this.color && piece.cellId === item
       )
     );
     const positionsIds = positions.map(getCellIdFromPosition);
 
-    if (
-      this.pieces.some(
-        (piece) => getCellIdFromPosition(piece.position) === positionsIds[0]
-      )
-    ) {
+    if (this.pieces.some((piece) => piece.cellId === positionsIds[0])) {
       return filteredPossibleHits;
     }
 
-    if (
-      this.pieces.some(
-        (piece) => getCellIdFromPosition(piece.position) === positionsIds[1]
-      )
-    ) {
+    if (this.pieces.some((piece) => piece.cellId === positionsIds[1])) {
       return [...filteredPossibleHits, positionsIds[0]];
     }
 

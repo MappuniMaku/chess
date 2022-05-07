@@ -16,9 +16,7 @@ export const cutLineIfNecessary: ICutLineIfNecessaryFunction = ({
   const { color: selectedPieceColor, pieces } = selectedPiece;
   const result: number[] = [];
   for (const id of line) {
-    const piece = pieces.find(
-      (item) => getCellIdFromPosition(item.position) === id
-    );
+    const piece = pieces.find((item) => item.cellId === id);
     if (piece === undefined) {
       result.push(id);
       continue;
@@ -39,9 +37,7 @@ export const removeCellsIfNecessary: IRemoveCellsIfNecessaryFunction = ({
   const { color: selectedPieceColor, pieces } = selectedPiece;
   const result: number[] = [];
   ids.forEach((id) => {
-    const piece = pieces.find(
-      (item) => getCellIdFromPosition(item.position) === id
-    );
+    const piece = pieces.find((item) => item.cellId === id);
     if (piece === undefined) {
       result.push(id);
       return;

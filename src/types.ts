@@ -24,6 +24,7 @@ export enum PieceType {
 
 export interface IPieceProps {
   position: IPiecePosition;
+  cellId: number;
   color: PieceColor;
   id: number;
   pieces: IPieceProps[];
