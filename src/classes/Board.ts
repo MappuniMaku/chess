@@ -114,6 +114,11 @@ export class Board {
     this.$board.appendChild(piece.$el);
   }
 
+  removePiece(piece: Piece): void {
+    this.pieces = this.pieces.filter((item) => item.id !== piece.id);
+    this.$board.removeChild(piece.$el);
+  }
+
   movePiece(id: number, position: IPiecePosition): void {
     const targetPiece = this.pieces.find((item) => item.id === id);
     if (targetPiece === undefined) {
@@ -198,15 +203,25 @@ export class Board {
       col: targetCol,
     });
 
+    const isMoveAvailable = this.$activePiece.getMoves().includes(targetCellId);
     this.movePiece(
       pieceId,
-      this.$activePiece.getMoves().includes(targetCellId)
+      isMoveAvailable
         ? {
             row: targetRow,
             col: targetCol,
           }
         : startingPosition
     );
+    const enemyPiece = this.pieces.find(
+      (piece) =>
+        piece.color !== this.$activePiece?.color &&
+        piece.cellId === targetCellId
+    );
+    if (enemyPiece !== undefined) {
+      this.removePiece(enemyPiece);
+    }
+
     this.clearAvailableCells();
     this.clearListeners();
   }
