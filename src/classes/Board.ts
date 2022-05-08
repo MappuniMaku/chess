@@ -1,9 +1,25 @@
-import { Color, PieceType, PieceColor, IPiecePosition } from "../types";
+import {
+  Color,
+  PieceType,
+  PieceColor,
+  IPiecePosition,
+  IKingBounder,
+} from "../types";
 import { Cell } from "./Cell";
 import { isEven } from "../utils";
 import { Piece } from "./Piece";
 import { Bishop, Knight, Pawn, Rook, King, Queen } from "./pieces";
-import { getCellIdFromPosition } from "../helpers";
+import {
+  getBottomLeftDiagonal,
+  getBottomLine,
+  getBottomRightDiagonal,
+  getCellIdFromPosition,
+  getLeftLine,
+  getRightLine,
+  getTopLeftDiagonal,
+  getTopLine,
+  getTopRightDiagonal,
+} from "../helpers";
 
 const PIECES_DICTIONARY: Record<PieceType, typeof Piece> = {
   bishop: Bishop,
@@ -24,6 +40,7 @@ export class Board {
   cells: Cell[];
   pieces: Piece[];
   $activePiece: Piece | null;
+  activePiecePossibleMoves: number[];
 
   constructor($el: HTMLDivElement) {
     this.$el = $el;
@@ -37,6 +54,7 @@ export class Board {
     this.pieces = [];
     this.$board.addEventListener("mousedown", this.handleMouseDown.bind(this));
     this.$activePiece = null;
+    this.activePiecePossibleMoves = [];
     this.handleMouseMove = this.handleMouseMove.bind(this);
     this.handleMouseUp = this.handleMouseUp.bind(this);
     this.handleMouseLeave = this.handleMouseLeave.bind(this);
@@ -109,6 +127,7 @@ export class Board {
       cellId: getCellIdFromPosition(position),
       id: this.pieces.length,
       pieces: this.pieces,
+      type: pieceType,
     });
     this.pieces.push(piece);
     this.$board.appendChild(piece.$el);
@@ -146,8 +165,21 @@ export class Board {
     if (activePiece === undefined) {
       throw new Error("Active piece not found");
     }
-    this.showAvailableCells(activePiece);
+
     this.$activePiece = activePiece;
+    const boundingLineObj = this.getKingBounders().find(
+      (l) => l.boundPiece.id === activePiece.id
+    );
+    const targetCellsIds = activePiece.getMoves();
+    const possibleMoves =
+      boundingLineObj !== undefined
+        ? targetCellsIds.filter((cellId) =>
+            boundingLineObj.boundingLine.includes(cellId)
+          )
+        : targetCellsIds;
+    this.activePiecePossibleMoves = possibleMoves;
+
+    this.showAvailableCells();
     this.$board.style.cursor = "grabbing";
     const piecesArr: NodeListOf<HTMLImageElement> =
       this.$board.querySelectorAll("[data-piece-id]");
@@ -171,6 +203,7 @@ export class Board {
     }
     const { id, position } = this.$activePiece;
     this.movePiece(id, position);
+    this.clearActivePiece();
     this.clearAvailableCells();
     this.clearListeners();
   }
@@ -209,7 +242,8 @@ export class Board {
       col: targetCol,
     });
 
-    const isMoveAvailable = this.$activePiece.getMoves().includes(targetCellId);
+    const isMoveAvailable =
+      this.activePiecePossibleMoves.includes(targetCellId);
     this.movePiece(
       pieceId,
       isMoveAvailable
@@ -230,6 +264,7 @@ export class Board {
       }
     }
 
+    this.clearActivePiece();
     this.clearAvailableCells();
     this.clearListeners();
   }
@@ -253,9 +288,100 @@ export class Board {
     this.$board.style.cursor = "default";
   }
 
-  showAvailableCells(piece: Piece): void {
-    const targetCellsIds = piece.getMoves();
-    targetCellsIds.forEach((id) => {
+  getKingBounders(): IKingBounder[] {
+    if (this.$activePiece === null) {
+      throw new Error("Active piece not found");
+    }
+    const { color: activePieceColor } = this.$activePiece;
+    const king = this.pieces.find(
+      (p) => p.type === PieceType.King && p.color === activePieceColor
+    );
+    if (king === undefined) {
+      throw new Error("King not found");
+    }
+    const { position: kingPosition } = king;
+    const kingLines = [
+      getTopLine(kingPosition),
+      getRightLine(kingPosition),
+      getBottomLine(kingPosition),
+      getLeftLine(kingPosition),
+      getTopLeftDiagonal(kingPosition),
+      getTopRightDiagonal(kingPosition),
+      getBottomRightDiagonal(kingPosition),
+      getBottomLeftDiagonal(kingPosition),
+    ];
+    const possibleBounders = [
+      PieceType.Bishop,
+      PieceType.Rook,
+      PieceType.Queen,
+    ];
+    const boundingPiecesLines = kingLines
+      .map((line) => ({
+        line,
+        pieces: line.map((cellId, index) => ({
+          piece: this.pieces.find((p) => p.cellId === cellId),
+          index,
+        })),
+      }))
+      .filter((l) =>
+        l.pieces.some(
+          (p) =>
+            p.piece !== undefined &&
+            possibleBounders.includes(p.piece.type) &&
+            p.piece.color !== activePieceColor
+        )
+      )
+      .filter((l) => {
+        const { pieces } = l;
+        const firstFriendlyPiece = pieces.find(
+          (p) => p.piece?.color === activePieceColor
+        );
+        const boundingPiece = pieces.find(
+          (p) =>
+            p.piece !== undefined &&
+            possibleBounders.includes(p.piece.type) &&
+            p.piece.color !== activePieceColor
+        );
+        return (
+          firstFriendlyPiece !== undefined &&
+          boundingPiece !== undefined &&
+          !pieces.some(
+            (p) =>
+              p.piece !== undefined &&
+              p.index > firstFriendlyPiece.index &&
+              p.index < boundingPiece.index
+          )
+        );
+      });
+    return boundingPiecesLines.map((l) => {
+      const { pieces, line } = l;
+      const firstFriendlyPiece = pieces.find(
+        (p) => p.piece?.color === activePieceColor
+      );
+      const boundingPiece = pieces.find(
+        (p) =>
+          p.piece !== undefined &&
+          possibleBounders.includes(p.piece.type) &&
+          p.piece.color !== activePieceColor
+      );
+      if (
+        firstFriendlyPiece?.piece === undefined ||
+        boundingPiece?.piece === undefined
+      ) {
+        throw new Error("Failed to form a bounding line");
+      }
+      return {
+        boundingEnemyPiece: boundingPiece.piece,
+        boundPiece: firstFriendlyPiece.piece,
+        boundingLine: line.filter(
+          (_, i) => i > firstFriendlyPiece.index && i <= boundingPiece.index
+        ),
+      };
+    });
+  }
+
+  showAvailableCells(): void {
+    this.activePiecePossibleMoves.forEach((id) => {
       const cell = this.cells.find((item) => item.id === id);
       if (cell === undefined) {
         throw new Error(`Cell with id ${id} not found`);
@@ -272,5 +398,10 @@ export class Board {
     this.cells.forEach((cell) => {
       cell.removeAvailableMoveState();
     });
+  }
+
+  clearActivePiece(): void {
+    this.$activePiece = null;
+    this.activePiecePossibleMoves = [];
   }
 }

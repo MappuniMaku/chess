@@ -27,6 +27,7 @@ export interface IPieceProps {
   cellId: number;
   color: PieceColor;
   id: number;
+  type: PieceType;
   pieces: IPieceProps[];
 }
 
@@ -49,3 +50,9 @@ export type IRemoveCellsIfNecessaryFunction = ({
   ids,
   selectedPiece,
 }: IRemoveCellsIfNecessaryFunctionProps) => number[];
+
+export interface IKingBounder {
+  boundingEnemyPiece: IPieceProps;
+  boundPiece: IPieceProps;
+  boundingLine: number[];
+}

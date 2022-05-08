@@ -1,8 +1,9 @@
-import { PieceColor, IPiecePosition, IPieceProps } from "../types";
+import { IPiecePosition, IPieceProps, PieceColor, PieceType } from "../types";
 import { calculatePositionStyles, getCellIdFromPosition } from "../helpers";
 
 export class Piece implements IPieceProps {
   readonly id: number;
+  readonly type: PieceType;
   position: IPiecePosition;
   cellId: number;
   readonly pieces: IPieceProps[];
@@ -10,12 +11,13 @@ export class Piece implements IPieceProps {
   readonly $el: HTMLImageElement;
 
   constructor(props: IPieceProps) {
-    const { id, position, color, pieces, cellId } = props;
+    const { id, position, color, pieces, cellId, type } = props;
     this.id = id;
     this.position = position;
     this.cellId = cellId;
     this.color = color;
     this.pieces = pieces;
+    this.type = type;
     this.$el = this.getElement();
     this.setPosition(position);
   }
