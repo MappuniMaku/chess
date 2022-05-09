@@ -44,4 +44,12 @@ export class Cell {
     this.$el.classList.remove("Chess__cell--availableMove");
     this.$el.classList.remove("Chess__cell--availableHit");
   }
+
+  highlightCheck(): void {
+    this.$el.classList.remove("Chess__cell--checked");
+    this.$el.classList.add("Chess__cell--checked");
+    setTimeout(() => {
+      this.$el.classList.remove("Chess__cell--checked");
+    }, 600);
+  }
 }

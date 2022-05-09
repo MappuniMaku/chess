@@ -56,3 +56,8 @@ export interface IKingBounder {
   boundPiece: IPieceProps;
   boundingLine: number[];
 }
+
+export interface IKingChecker {
+  piece: IPieceProps;
+  checkingLine: number[];
+}

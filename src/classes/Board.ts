@@ -4,6 +4,7 @@ import {
   PieceColor,
   IPiecePosition,
   IKingBounder,
+  IKingChecker,
 } from "../types";
 import { Cell } from "./Cell";
 import { isEven } from "../utils";
@@ -177,7 +178,29 @@ export class Board {
             boundingLineObj.boundingLine.includes(cellId)
           )
         : targetCellsIds;
-    this.activePiecePossibleMoves = possibleMoves;
+
+    const kingCheckers = this.getKingCheckers();
+    switch (kingCheckers.length) {
+      case 0: {
+        this.activePiecePossibleMoves = possibleMoves;
+        break;
+      }
+      case 1: {
+        if (activePiece.type === PieceType.King) {
+          this.activePiecePossibleMoves = possibleMoves;
+          break;
+        }
+        const [checker] = kingCheckers;
+        this.activePiecePossibleMoves = possibleMoves.filter((id) =>
+          checker.checkingLine.includes(id)
+        );
+        break;
+      }
+      case 2: {
+        this.activePiecePossibleMoves =
+          activePiece.type === PieceType.King ? possibleMoves : [];
+      }
+    }
 
     this.showAvailableCells();
     this.$board.style.cursor = "grabbing";
@@ -288,7 +311,7 @@ export class Board {
     this.$board.style.cursor = "default";
   }
 
-  getKingBounders(): IKingBounder[] {
+  getKingInfo(): { king: Piece; kingLines: number[][] } {
     if (this.$activePiece === null) {
       throw new Error("Active piece not found");
     }
@@ -310,6 +333,18 @@ export class Board {
       getBottomRightDiagonal(kingPosition),
       getBottomLeftDiagonal(kingPosition),
     ];
+    return {
+      king,
+      kingLines,
+    };
+  }
+
+  getKingBounders(): IKingBounder[] {
+    if (this.$activePiece === null) {
+      throw new Error("Active piece not found");
+    }
+    const { color: activePieceColor } = this.$activePiece;
+    const { kingLines } = this.getKingInfo();
     const possibleBounders = [
       PieceType.Bishop,
       PieceType.Rook,
@@ -380,7 +415,60 @@ export class Board {
     });
   }
 
+  getKingCheckers(): IKingChecker[] {
+    if (this.$activePiece === null) {
+      throw new Error("Active piece not found");
+    }
+    const { color: activePieceColor } = this.$activePiece;
+
+    const { king, kingLines } = this.getKingInfo();
+    const { cellId: kingCellId } = king;
+
+    const enemyPieces = this.pieces.filter((p) => p.color !== activePieceColor);
+    const checkers = enemyPieces.filter((p) =>
+      p.getMoves().includes(kingCellId)
+    );
+    const possibleLineCheckers = [
+      PieceType.Bishop,
+      PieceType.Rook,
+      PieceType.Queen,
+    ];
+    return checkers.map((piece) => {
+      const { type, cellId } = piece;
+      if (possibleLineCheckers.includes(type)) {
+        const attackingLine = kingLines.find((line) => line.includes(cellId));
+        const attackerCellIndex = attackingLine?.findIndex(
+          (id) => id === cellId
+        );
+        if (attackingLine === undefined || attackerCellIndex === undefined) {
+          throw new Error("Cannot find checker on checking line");
+        }
+        return {
+          piece,
+          checkingLine: attackingLine.slice(0, attackerCellIndex + 1),
+        };
+      }
+      return {
+        piece,
+        checkingLine: [cellId],
+      };
+    });
+  }
+
   showAvailableCells(): void {
+    if (
+      this.activePiecePossibleMoves.length === 0 &&
+      this.getKingCheckers().length > 0
+    ) {
+      const kingCell = this.cells.find(
+        (cell) => cell.id === this.getKingInfo().king.cellId
+      );
+      if (kingCell === undefined) {
+        throw new Error("Cannot find king cell");
+      }
+      kingCell.highlightCheck();
+      return;
+    }
     this.activePiecePossibleMoves.forEach((id) => {
       const cell = this.cells.find((item) => item.id === id);
       if (cell === undefined) {

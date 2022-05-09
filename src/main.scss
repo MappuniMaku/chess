@@ -62,6 +62,8 @@ body {
   }
 
   &__cell {
+    $cell: &;
+
     display: flex;
     justify-content: center;
     align-items: center;
@@ -70,10 +72,22 @@ body {
 
     &--light {
       background-color: antiquewhite;
+
+      &#{$cell}--checked {
+        animation: animateLightCellCheck;
+        animation-duration: 200ms;
+        animation-iteration-count: 3;
+      }
     }
 
     &--dark {
       background-color: saddlebrown;
+
+      &#{$cell}--checked {
+        animation: animateDarkCellCheck;
+        animation-duration: 200ms;
+        animation-iteration-count: 3;
+      }
     }
 
     &--availableMove {
@@ -97,5 +111,25 @@ body {
     width: 60px;
     height: 60px;
     cursor: grab;
+  }
+}
+
+@keyframes animateLightCellCheck {
+  10% {
+    background-color: red;
+  }
+
+  100% {
+    background-color: antiquewhite;
+  }
+}
+
+@keyframes animateDarkCellCheck {
+  10% {
+    background-color: red;
+  }
+
+  100% {
+    background-color: saddlebrown;
   }
 }
