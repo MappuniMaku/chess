@@ -1,7 +1,7 @@
 import { Piece } from "../Piece";
-import { PieceType, IPieceProps } from "../../types";
+import { IPieceProps } from "../../types";
+import { PieceType } from "../../enums";
 import {
-  cutLineIfNecessary,
   getBottomLine,
   getLeftLine,
   getRightLine,
@@ -15,14 +15,12 @@ export class Rook extends Piece {
     setPieceElementProperties(this.$el, PieceType.Rook, this.color);
   }
 
-  getMoves(): number[] {
+  getLines(): number[][] {
     return [
       getTopLine(this.position),
       getRightLine(this.position),
       getBottomLine(this.position),
       getLeftLine(this.position),
-    ]
-      .map((line) => cutLineIfNecessary({ line, selectedPiece: this }))
-      .flat();
+    ];
   }
 }

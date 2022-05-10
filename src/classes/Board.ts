@@ -1,15 +1,9 @@
-import {
-  Color,
-  PieceType,
-  PieceColor,
-  IPiecePosition,
-  IKingBounder,
-  IKingChecker,
-} from "../types";
+import { IKingBounder, IKingChecker, IPiecePosition } from "../types";
+import { Color, PieceColor, PieceType } from "../enums";
 import { Cell } from "./Cell";
 import { isEven } from "../utils";
 import { Piece } from "./Piece";
-import { Bishop, Knight, Pawn, Rook, King, Queen } from "./pieces";
+import { Bishop, King, Knight, Pawn, Queen, Rook } from "./pieces";
 import {
   getBottomLeftDiagonal,
   getBottomLine,
@@ -172,12 +166,29 @@ export class Board {
       (l) => l.boundPiece.id === activePiece.id
     );
     const targetCellsIds = activePiece.getMoves();
-    const possibleMoves =
+    let possibleMoves =
       boundingLineObj !== undefined
         ? targetCellsIds.filter((cellId) =>
             boundingLineObj.boundingLine.includes(cellId)
           )
         : targetCellsIds;
+    if (activePiece.type === PieceType.King) {
+      const enemyPieces = this.pieces.filter(
+        (p) => p.color !== activePiece.color
+      );
+      possibleMoves = possibleMoves.filter(
+        (id) =>
+          !enemyPieces.some((p) => {
+            const { type } = p;
+            if (type !== PieceType.Pawn) {
+              return [...p.getMoves(), ...p.getProtectedPiecesCells()].includes(
+                id
+              );
+            }
+            return (p as Pawn).getPossibleHits().includes(id);
+          })
+      );
+    }
 
     const kingCheckers = this.getKingCheckers();
     switch (kingCheckers.length) {

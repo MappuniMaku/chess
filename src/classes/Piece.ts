@@ -1,5 +1,21 @@
-import { IPiecePosition, IPieceProps, PieceColor, PieceType } from "../types";
-import { calculatePositionStyles, getCellIdFromPosition } from "../helpers";
+import { IPiecePosition, IPieceProps } from "../types";
+import {
+  cellMovingPieces,
+  ICellMovingPiece,
+  ILineMovingPiece,
+  lineMovingPieces,
+  PieceColor,
+  PieceType,
+} from "../enums";
+import {
+  calculatePositionStyles,
+  cutLinesIfNecessary,
+  getCellIdFromPosition,
+  getProtectedPiecesCellsFromIds,
+  getProtectedPiecesCellsFromLines,
+  removeCellsIfNecessary,
+} from "../helpers";
+import { Bishop, King, Knight, Pawn, Queen, Rook } from "./pieces";
 
 export class Piece implements IPieceProps {
   readonly id: number;
@@ -38,8 +54,29 @@ export class Piece implements IPieceProps {
     this.$el.style.top = top;
   }
 
+  getProtectedPiecesCells(): number[] {
+    if (lineMovingPieces.includes(this.type as ILineMovingPiece)) {
+      const lines = (this as unknown as Bishop | Queen | Rook).getLines();
+      return getProtectedPiecesCellsFromLines({ lines, selectedPiece: this });
+    }
+    if (cellMovingPieces.includes(this.type as ICellMovingPiece)) {
+      const ids = (this as unknown as King | Knight).getIds();
+      return getProtectedPiecesCellsFromIds({ ids, selectedPiece: this });
+    }
+    throw new Error(
+      "Pawn has getPossibleHits() method that is used to get protected pieces cells"
+    );
+  }
+
   getMoves(): number[] {
-    console.warn("getMoves() method for this piece is absent");
-    return [];
+    if (lineMovingPieces.includes(this.type as ILineMovingPiece)) {
+      const lines = (this as unknown as Bishop | Queen | Rook).getLines();
+      return cutLinesIfNecessary({ lines, selectedPiece: this });
+    }
+    if (cellMovingPieces.includes(this.type as ICellMovingPiece)) {
+      const ids = (this as unknown as King | Knight).getIds();
+      return removeCellsIfNecessary({ ids, selectedPiece: this });
+    }
+    return (this as unknown as Pawn).getMoves();
   }
 }

@@ -1,8 +1,8 @@
 import { Piece } from "../Piece";
-import { IPiecePosition, PieceType, IPieceProps } from "../../types";
+import { IPiecePosition, IPieceProps } from "../../types";
+import { PieceType } from "../../enums";
 import {
   getCellIdFromPosition,
-  removeCellsIfNecessary,
   removeInvalidPositions,
   setPieceElementProperties,
 } from "../../helpers";
@@ -13,7 +13,7 @@ export class Knight extends Piece {
     setPieceElementProperties(this.$el, PieceType.Knight, this.color);
   }
 
-  getMoves(): number[] {
+  getIds(): number[] {
     const { row, col } = this.position;
     const positions: IPiecePosition[] = [];
     positions.push({ row: row + 1, col: col - 2 });
@@ -24,7 +24,6 @@ export class Knight extends Piece {
     positions.push({ row: row - 2, col: col + 1 });
     positions.push({ row: row - 2, col: col - 1 });
     positions.push({ row: row - 1, col: col - 2 });
-    const ids = removeInvalidPositions(positions).map(getCellIdFromPosition);
-    return removeCellsIfNecessary({ ids, selectedPiece: this });
+    return removeInvalidPositions(positions).map(getCellIdFromPosition);
   }
 }

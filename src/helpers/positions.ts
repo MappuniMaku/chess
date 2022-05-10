@@ -1,5 +1,7 @@
 import {
-  ICutLineIfNecessaryFunction,
+  ICutLinesIfNecessaryFunction,
+  IGetProtectedPiecesCellsFromIdsFunction,
+  IGetProtectedPiecesCellsFromLinesFunction,
   IPiecePosition,
   IRemoveCellsIfNecessaryFunction,
 } from "../types";
@@ -9,24 +11,26 @@ export const getCellIdFromPosition = (position: IPiecePosition): number => {
   return (row - 1) * 8 + col - 1;
 };
 
-export const cutLineIfNecessary: ICutLineIfNecessaryFunction = ({
-  line,
+export const cutLinesIfNecessary: ICutLinesIfNecessaryFunction = ({
+  lines,
   selectedPiece,
 }) => {
   const { color: selectedPieceColor, pieces } = selectedPiece;
   const result: number[] = [];
-  for (const id of line) {
-    const piece = pieces.find((item) => item.cellId === id);
-    if (piece === undefined) {
-      result.push(id);
-      continue;
+  lines.forEach((line) => {
+    for (const id of line) {
+      const piece = pieces.find((item) => item.cellId === id);
+      if (piece === undefined) {
+        result.push(id);
+        continue;
+      }
+      const { color } = piece;
+      if (selectedPieceColor !== color) {
+        result.push(id);
+      }
+      break;
     }
-    const { color } = piece;
-    if (selectedPieceColor !== color) {
-      result.push(id);
-    }
-    break;
-  }
+  });
   return result;
 };
 
@@ -152,3 +156,41 @@ export const removeInvalidPositions = (
   positions.filter(
     (item) => item.row >= 1 && item.row <= 8 && item.col >= 1 && item.col <= 8
   );
+
+export const getProtectedPiecesCellsFromLines: IGetProtectedPiecesCellsFromLinesFunction =
+  ({ lines, selectedPiece }) => {
+    const { color: selectedPieceColor, pieces } = selectedPiece;
+    const result: number[] = [];
+    lines.forEach((line) => {
+      for (const id of line) {
+        const piece = pieces.find((item) => item.cellId === id);
+        if (piece === undefined) {
+          continue;
+        }
+        const { color } = piece;
+        if (selectedPieceColor === color) {
+          result.push(id);
+        }
+        break;
+      }
+    });
+    return result;
+  };
+
+export const getProtectedPiecesCellsFromIds: IGetProtectedPiecesCellsFromIdsFunction =
+  ({ ids, selectedPiece }) => {
+    const { color: selectedPieceColor, pieces } = selectedPiece;
+    const result: number[] = [];
+    for (const id of ids) {
+      const piece = pieces.find((item) => item.cellId === id);
+      if (piece === undefined) {
+        continue;
+      }
+      const { color } = piece;
+      if (selectedPieceColor === color) {
+        result.push(id);
+      }
+      break;
+    }
+    return result;
+  };

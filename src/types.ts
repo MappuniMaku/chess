@@ -1,25 +1,8 @@
-export enum Color {
-  Light = "light",
-  Dark = "dark",
-}
-
-export enum PieceColor {
-  White = "white",
-  Black = "black",
-}
+import { PieceColor, PieceType } from "./enums";
 
 export interface IPiecePosition {
   row: number;
   col: number;
-}
-
-export enum PieceType {
-  Pawn = "pawn",
-  Bishop = "bishop",
-  Knight = "knight",
-  Rook = "rook",
-  King = "king",
-  Queen = "queen",
 }
 
 export interface IPieceProps {
@@ -31,15 +14,15 @@ export interface IPieceProps {
   pieces: IPieceProps[];
 }
 
-export interface ICutLineIfNecessaryFunctionProps {
-  line: number[];
+export interface ICutLinesIfNecessaryFunctionProps {
+  lines: number[][];
   selectedPiece: IPieceProps;
 }
 
-export type ICutLineIfNecessaryFunction = ({
-  line,
+export type ICutLinesIfNecessaryFunction = ({
+  lines,
   selectedPiece,
-}: ICutLineIfNecessaryFunctionProps) => number[];
+}: ICutLinesIfNecessaryFunctionProps) => number[];
 
 export interface IRemoveCellsIfNecessaryFunctionProps {
   ids: number[];
@@ -61,3 +44,23 @@ export interface IKingChecker {
   piece: IPieceProps;
   checkingLine: number[];
 }
+
+export interface IGetProtectedPiecesCellsFromLinesFunctionProps {
+  lines: number[][];
+  selectedPiece: IPieceProps;
+}
+
+export type IGetProtectedPiecesCellsFromLinesFunction = ({
+  lines,
+  selectedPiece,
+}: IGetProtectedPiecesCellsFromLinesFunctionProps) => number[];
+
+export interface IGetProtectedPiecesCellsFromIdsFunctionProps {
+  ids: number[];
+  selectedPiece: IPieceProps;
+}
+
+export type IGetProtectedPiecesCellsFromIdsFunction = ({
+  ids,
+  selectedPiece,
+}: IGetProtectedPiecesCellsFromIdsFunctionProps) => number[];

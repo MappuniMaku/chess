@@ -1,7 +1,7 @@
 import { Piece } from "../Piece";
-import { IPieceProps, PieceType } from "../../types";
+import { IPieceProps } from "../../types";
+import { PieceType } from "../../enums";
 import {
-  cutLineIfNecessary,
   getTopLeftDiagonal,
   getTopRightDiagonal,
   getBottomRightDiagonal,
@@ -15,14 +15,12 @@ export class Bishop extends Piece {
     setPieceElementProperties(this.$el, PieceType.Bishop, this.color);
   }
 
-  getMoves(): number[] {
+  getLines(): number[][] {
     return [
       getTopLeftDiagonal(this.position),
       getTopRightDiagonal(this.position),
       getBottomRightDiagonal(this.position),
       getBottomLeftDiagonal(this.position),
-    ]
-      .map((line) => cutLineIfNecessary({ line, selectedPiece: this }))
-      .flat();
+    ];
   }
 }

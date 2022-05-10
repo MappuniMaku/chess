@@ -1,4 +1,4 @@
-import { Color } from "../types";
+import { Color } from "../enums";
 
 interface ICellProps {
   id: number;

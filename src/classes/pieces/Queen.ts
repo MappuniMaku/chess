@@ -1,7 +1,7 @@
 import { Piece } from "../Piece";
-import { PieceType, IPieceProps } from "../../types";
+import { IPieceProps } from "../../types";
+import { PieceType } from "../../enums";
 import {
-  cutLineIfNecessary,
   getBottomLeftDiagonal,
   getBottomLine,
   getBottomRightDiagonal,
@@ -19,7 +19,7 @@ export class Queen extends Piece {
     setPieceElementProperties(this.$el, PieceType.Queen, this.color);
   }
 
-  getMoves(): number[] {
+  getLines(): number[][] {
     return [
       getTopLine(this.position),
       getRightLine(this.position),
@@ -29,8 +29,6 @@ export class Queen extends Piece {
       getTopRightDiagonal(this.position),
       getBottomRightDiagonal(this.position),
       getBottomLeftDiagonal(this.position),
-    ]
-      .map((line) => cutLineIfNecessary({ line, selectedPiece: this }))
-      .flat();
+    ];
   }
 }

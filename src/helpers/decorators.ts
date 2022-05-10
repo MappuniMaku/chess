@@ -1,4 +1,4 @@
-import { PieceColor, PieceType } from "../types";
+import { PieceColor, PieceType } from "../enums";
 
 export const setPieceElementProperties = (
   $el: HTMLImageElement,

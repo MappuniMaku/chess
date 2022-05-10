@@ -1,10 +1,6 @@
 import { Piece } from "../Piece";
-import {
-  PieceColor,
-  PieceType,
-  IPieceProps,
-  IPiecePosition,
-} from "../../types";
+import { IPieceProps, IPiecePosition } from "../../types";
+import { PieceColor, PieceType } from "../../enums";
 import {
   getCellIdFromPosition,
   removeInvalidPositions,
@@ -17,9 +13,8 @@ export class Pawn extends Piece {
     setPieceElementProperties(this.$el, PieceType.Pawn, this.color);
   }
 
-  getMoves(): number[] {
+  getPossibleHits(): number[] {
     const { row, col } = this.position;
-    const positions: IPiecePosition[] = [];
     const possibleHits: number[] = [];
     switch (this.color) {
       case PieceColor.Black:
@@ -29,11 +24,6 @@ export class Pawn extends Piece {
             { row: row + 1, col: col + 1 },
           ]).map(getCellIdFromPosition)
         );
-        if (row === 2) {
-          positions.push({ row: 3, col }, { row: 4, col });
-          break;
-        }
-        positions.push({ row: row + 1, col });
         break;
       case PieceColor.White:
         possibleHits.push(
@@ -42,6 +32,23 @@ export class Pawn extends Piece {
             { row: row - 1, col: col + 1 },
           ]).map(getCellIdFromPosition)
         );
+    }
+    return possibleHits;
+  }
+
+  getMoves(): number[] {
+    const { row, col } = this.position;
+    const positions: IPiecePosition[] = [];
+    const possibleHits = this.getPossibleHits();
+    switch (this.color) {
+      case PieceColor.Black:
+        if (row === 2) {
+          positions.push({ row: 3, col }, { row: 4, col });
+          break;
+        }
+        positions.push({ row: row + 1, col });
+        break;
+      case PieceColor.White:
         if (row === 7) {
           positions.push({ row: 6, col }, { row: 5, col });
           break;

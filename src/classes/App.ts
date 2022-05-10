@@ -1,5 +1,5 @@
 import { Board } from "./Board";
-import { PieceColor, PieceType } from "../types";
+import { PieceColor, PieceType } from "../enums";
 
 export class App {
   $el: HTMLDivElement;
