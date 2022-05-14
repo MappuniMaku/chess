@@ -124,7 +124,7 @@ export class Board {
       (item) => item.id === piece.id
     );
     if (targetPieceIndex === -1) {
-      throw new Error(`Cannot find piece with id ${piece.id}`);
+      throw new Error(`removePiece(): Cannot find piece with id ${piece.id}`);
     }
     this.pieces.splice(targetPieceIndex, 1);
     this.$board.removeChild(piece.$el);
@@ -133,7 +133,7 @@ export class Board {
   movePiece(id: number, position: IPiecePosition): void {
     const targetPiece = this.pieces.find((item) => item.id === id);
     if (targetPiece === undefined) {
-      throw new Error("Piece object with target ID not found");
+      throw new Error("movePiece(): Piece object with target ID not found");
     }
     targetPiece.setPosition(position);
   }
@@ -149,7 +149,7 @@ export class Board {
     }
     const activePiece = this.pieces.find((item) => item.id === Number(pieceId));
     if (activePiece === undefined) {
-      throw new Error("Active piece not found");
+      throw new Error("handleMouseDown(): Active piece not found");
     }
 
     this.$activePiece = activePiece;
@@ -175,7 +175,7 @@ export class Board {
 
   handleMouseLeave(): void {
     if (this.$activePiece === null) {
-      throw new Error("Active piece is null in handleMouseLeave");
+      throw new Error("handleMouseLeave(): Active piece is null");
     }
     const { id, position } = this.$activePiece;
     this.movePiece(id, position);
@@ -187,7 +187,7 @@ export class Board {
   handleMouseMove(mousemoveEvent: MouseEvent): void {
     const { offsetLeft, offsetTop } = this.$board;
     if (this.$activePiece === null) {
-      throw new Error("Active piece is null");
+      throw new Error("handleMouseMove(): Active piece is null");
     }
     const { $el: activePieceElement } = this.$activePiece;
     const { offsetWidth, offsetHeight } = activePieceElement;
@@ -199,17 +199,17 @@ export class Board {
   handleMouseUp(mouseupEvent: MouseEvent): void {
     const mouseupTarget = mouseupEvent.target as HTMLElement;
     if (mouseupTarget === null) {
-      throw new Error("Mouseup target is null in handleMouseUp");
+      throw new Error("handleMouseUp(): Mouseup target is null");
     }
     const { row, column } = mouseupTarget.dataset;
     if (row === undefined || column === undefined) {
-      throw new Error("Mouseup target is not a cell");
+      throw new Error("handleMouseUp(): Mouseup target is not a cell");
     }
     const targetRow = Number(row);
     const targetCol = Number(column);
 
     if (this.$activePiece === null) {
-      throw new Error("Active piece is null in handleMouseUp");
+      throw new Error("handleMouseUp(): Active piece is null");
     }
     const { id: pieceId, position: startingPosition } = this.$activePiece;
 
@@ -255,7 +255,9 @@ export class Board {
 
   clearListeners(piecesArr?: NodeListOf<HTMLImageElement>): void {
     if (piecesArr === undefined) {
-      throw new Error("Pieces array passed undefined to clearListeners");
+      throw new Error(
+        "clearListeners(): Pieces array passed undefined to clearListeners"
+      );
     }
     // eslint-disable-next-line @typescript-eslint/unbound-method
     this.$board.removeEventListener("mousemove", this.handleMouseMove);
@@ -274,7 +276,9 @@ export class Board {
 
   showAvailableCells(): void {
     if (this.$activePiece === null) {
-      throw new Error("Active piece is null in showAvailableCells");
+      throw new Error(
+        "showAvailableCells(): Active piece is null in showAvailableCells"
+      );
     }
     const activePiece = this.$activePiece;
     if (
@@ -285,7 +289,7 @@ export class Board {
         (cell) => cell.id === activePiece.getKingInfo().king.cellId
       );
       if (kingCell === undefined) {
-        throw new Error("Cannot find king cell");
+        throw new Error("showAvailableCells(): Cannot find king cell");
       }
       kingCell.highlightCheck();
       return;
@@ -293,7 +297,7 @@ export class Board {
     this.activePiecePossibleMoves.forEach((id) => {
       const cell = this.cells.find((item) => item.id === id);
       if (cell === undefined) {
-        throw new Error(`Cell with id ${id} not found`);
+        throw new Error(`showAvailableCells(): Cell with id ${id} not found`);
       }
       if (this.pieces.some((piece) => piece.cellId === id)) {
         cell.addAvailableHitState();

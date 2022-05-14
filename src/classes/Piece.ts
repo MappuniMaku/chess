@@ -84,7 +84,7 @@ export class Piece implements IPiece {
       return getProtectedPiecesCellsFromIds({ ids, selectedPiece: this });
     }
     throw new Error(
-      "Pawn has getPossibleHits() method that is used to get protected pieces cells"
+      "getProtectedPiecesCells(): Pawn has getPossibleHits() method that is used to get protected pieces cells"
     );
   }
 
@@ -106,7 +106,7 @@ export class Piece implements IPiece {
       (p) => p.type === PieceType.King && p.color === activePieceColor
     ) as IKing | undefined;
     if (king === undefined) {
-      throw new Error("King not found");
+      throw new Error("getKingInfo(): King not found");
     }
     const { position: kingPosition } = king;
     const kingLines = [
@@ -148,7 +148,9 @@ export class Piece implements IPiece {
           (id) => id === cellId
         );
         if (attackingLine === undefined || attackerCellIndex === undefined) {
-          throw new Error("Cannot find checker on checking line");
+          throw new Error(
+            "getKingCheckers(): Cannot find checker on checking line"
+          );
         }
         return {
           piece,
@@ -223,7 +225,7 @@ export class Piece implements IPiece {
         firstFriendlyPiece?.piece === undefined ||
         boundingPiece?.piece === undefined
       ) {
-        throw new Error("Failed to form a bounding line");
+        throw new Error("getKingBounders(): Failed to form a bounding line");
       }
       return {
         boundingEnemyPiece: boundingPiece.piece,
@@ -322,7 +324,7 @@ export class Piece implements IPiece {
       | IRook
       | undefined;
     if (rook === undefined) {
-      throw new Error("Castling rook not found");
+      throw new Error("getCastlingRook(): Castling rook not found");
     }
     return {
       rook,
