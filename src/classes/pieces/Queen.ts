@@ -1,5 +1,5 @@
 import { Piece } from "../Piece";
-import { IPieceProps } from "../../types";
+import { IPieceProps, IQueen } from "../../types";
 import { PieceType } from "../../enums";
 import {
   getBottomLeftDiagonal,
@@ -13,13 +13,13 @@ import {
   setPieceElementProperties,
 } from "../../helpers";
 
-export class Queen extends Piece {
+export class Queen extends Piece implements IQueen {
   constructor(props: IPieceProps) {
     super(props);
     setPieceElementProperties(this.$el, PieceType.Queen, this.color);
   }
 
-  getLines(): number[][] {
+  getLines() {
     return [
       getTopLine(this.position),
       getRightLine(this.position),

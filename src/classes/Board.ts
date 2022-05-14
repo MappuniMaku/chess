@@ -1,20 +1,10 @@
-import { IKingBounder, IKingChecker, IPiecePosition } from "../types";
+import { IPiecePosition } from "../types";
 import { Color, PieceColor, PieceType } from "../enums";
 import { Cell } from "./Cell";
 import { isEven } from "../utils";
 import { Piece } from "./Piece";
 import { Bishop, King, Knight, Pawn, Queen, Rook } from "./pieces";
-import {
-  getBottomLeftDiagonal,
-  getBottomLine,
-  getBottomRightDiagonal,
-  getCellIdFromPosition,
-  getLeftLine,
-  getRightLine,
-  getTopLeftDiagonal,
-  getTopLine,
-  getTopRightDiagonal,
-} from "../helpers";
+import { getCellIdFromPosition } from "../helpers";
 
 const PIECES_DICTIONARY: Record<PieceType, typeof Piece> = {
   bishop: Bishop,
@@ -123,6 +113,7 @@ export class Board {
       id: this.pieces.length,
       pieces: this.pieces,
       type: pieceType,
+      hasMadeAnyMoves: false,
     });
     this.pieces.push(piece);
     this.$board.appendChild(piece.$el);
@@ -162,56 +153,7 @@ export class Board {
     }
 
     this.$activePiece = activePiece;
-    const boundingLineObj = this.getKingBounders().find(
-      (l) => l.boundPiece.id === activePiece.id
-    );
-    const targetCellsIds = activePiece.getMoves();
-    let possibleMoves =
-      boundingLineObj !== undefined
-        ? targetCellsIds.filter((cellId) =>
-            boundingLineObj.boundingLine.includes(cellId)
-          )
-        : targetCellsIds;
-    if (activePiece.type === PieceType.King) {
-      const enemyPieces = this.pieces.filter(
-        (p) => p.color !== activePiece.color
-      );
-      possibleMoves = possibleMoves.filter(
-        (id) =>
-          !enemyPieces.some((p) => {
-            const { type } = p;
-            if (type !== PieceType.Pawn) {
-              return [...p.getMoves(), ...p.getProtectedPiecesCells()].includes(
-                id
-              );
-            }
-            return (p as Pawn).getPossibleHits().includes(id);
-          })
-      );
-    }
-
-    const kingCheckers = this.getKingCheckers();
-    switch (kingCheckers.length) {
-      case 0: {
-        this.activePiecePossibleMoves = possibleMoves;
-        break;
-      }
-      case 1: {
-        if (activePiece.type === PieceType.King) {
-          this.activePiecePossibleMoves = possibleMoves;
-          break;
-        }
-        const [checker] = kingCheckers;
-        this.activePiecePossibleMoves = possibleMoves.filter((id) =>
-          checker.checkingLine.includes(id)
-        );
-        break;
-      }
-      case 2: {
-        this.activePiecePossibleMoves =
-          activePiece.type === PieceType.King ? possibleMoves : [];
-      }
-    }
+    this.activePiecePossibleMoves = activePiece.getValidMoves();
 
     this.showAvailableCells();
     this.$board.style.cursor = "grabbing";
@@ -278,6 +220,13 @@ export class Board {
 
     const isMoveAvailable =
       this.activePiecePossibleMoves.includes(targetCellId);
+    if (isMoveAvailable && this.$activePiece.type === PieceType.King) {
+      const { king } = this.$activePiece.getKingInfo();
+      if (king.getPossibleCastles().includes(targetCellId)) {
+        const { rook, targetPosition } = king.getCastlingRook(targetCellId);
+        this.movePiece(rook.id, targetPosition);
+      }
+    }
     this.movePiece(
       pieceId,
       isMoveAvailable
@@ -288,6 +237,7 @@ export class Board {
         : startingPosition
     );
     if (isMoveAvailable) {
+      this.$activePiece.hasMadeAnyMoves = true;
       const enemyPiece = this.pieces.find(
         (piece) =>
           piece.color !== this.$activePiece?.color &&
@@ -322,157 +272,17 @@ export class Board {
     this.$board.style.cursor = "default";
   }
 
-  getKingInfo(): { king: Piece; kingLines: number[][] } {
-    if (this.$activePiece === null) {
-      throw new Error("Active piece not found");
-    }
-    const { color: activePieceColor } = this.$activePiece;
-    const king = this.pieces.find(
-      (p) => p.type === PieceType.King && p.color === activePieceColor
-    );
-    if (king === undefined) {
-      throw new Error("King not found");
-    }
-    const { position: kingPosition } = king;
-    const kingLines = [
-      getTopLine(kingPosition),
-      getRightLine(kingPosition),
-      getBottomLine(kingPosition),
-      getLeftLine(kingPosition),
-      getTopLeftDiagonal(kingPosition),
-      getTopRightDiagonal(kingPosition),
-      getBottomRightDiagonal(kingPosition),
-      getBottomLeftDiagonal(kingPosition),
-    ];
-    return {
-      king,
-      kingLines,
-    };
-  }
-
-  getKingBounders(): IKingBounder[] {
-    if (this.$activePiece === null) {
-      throw new Error("Active piece not found");
-    }
-    const { color: activePieceColor } = this.$activePiece;
-    const { kingLines } = this.getKingInfo();
-    const possibleBounders = [
-      PieceType.Bishop,
-      PieceType.Rook,
-      PieceType.Queen,
-    ];
-    const boundingPiecesLines = kingLines
-      .map((line) => ({
-        line,
-        pieces: line.map((cellId, index) => ({
-          piece: this.pieces.find((p) => p.cellId === cellId),
-          index,
-        })),
-      }))
-      .filter((l) =>
-        l.pieces.some(
-          (p) =>
-            p.piece !== undefined &&
-            possibleBounders.includes(p.piece.type) &&
-            p.piece.color !== activePieceColor
-        )
-      )
-      .filter((l) => {
-        const { pieces } = l;
-        const firstFriendlyPiece = pieces.find(
-          (p) => p.piece?.color === activePieceColor
-        );
-        const boundingPiece = pieces.find(
-          (p) =>
-            p.piece !== undefined &&
-            possibleBounders.includes(p.piece.type) &&
-            p.piece.color !== activePieceColor
-        );
-        return (
-          firstFriendlyPiece !== undefined &&
-          boundingPiece !== undefined &&
-          !pieces.some(
-            (p) =>
-              p.piece !== undefined &&
-              p.index > firstFriendlyPiece.index &&
-              p.index < boundingPiece.index
-          )
-        );
-      });
-    return boundingPiecesLines.map((l) => {
-      const { pieces, line } = l;
-      const firstFriendlyPiece = pieces.find(
-        (p) => p.piece?.color === activePieceColor
-      );
-      const boundingPiece = pieces.find(
-        (p) =>
-          p.piece !== undefined &&
-          possibleBounders.includes(p.piece.type) &&
-          p.piece.color !== activePieceColor
-      );
-      if (
-        firstFriendlyPiece?.piece === undefined ||
-        boundingPiece?.piece === undefined
-      ) {
-        throw new Error("Failed to form a bounding line");
-      }
-      return {
-        boundingEnemyPiece: boundingPiece.piece,
-        boundPiece: firstFriendlyPiece.piece,
-        boundingLine: line.filter(
-          (_, i) => i > firstFriendlyPiece.index && i <= boundingPiece.index
-        ),
-      };
-    });
-  }
-
-  getKingCheckers(): IKingChecker[] {
-    if (this.$activePiece === null) {
-      throw new Error("Active piece not found");
-    }
-    const { color: activePieceColor } = this.$activePiece;
-
-    const { king, kingLines } = this.getKingInfo();
-    const { cellId: kingCellId } = king;
-
-    const enemyPieces = this.pieces.filter((p) => p.color !== activePieceColor);
-    const checkers = enemyPieces.filter((p) =>
-      p.getMoves().includes(kingCellId)
-    );
-    const possibleLineCheckers = [
-      PieceType.Bishop,
-      PieceType.Rook,
-      PieceType.Queen,
-    ];
-    return checkers.map((piece) => {
-      const { type, cellId } = piece;
-      if (possibleLineCheckers.includes(type)) {
-        const attackingLine = kingLines.find((line) => line.includes(cellId));
-        const attackerCellIndex = attackingLine?.findIndex(
-          (id) => id === cellId
-        );
-        if (attackingLine === undefined || attackerCellIndex === undefined) {
-          throw new Error("Cannot find checker on checking line");
-        }
-        return {
-          piece,
-          checkingLine: attackingLine.slice(0, attackerCellIndex + 1),
-        };
-      }
-      return {
-        piece,
-        checkingLine: [cellId],
-      };
-    });
-  }
-
   showAvailableCells(): void {
+    if (this.$activePiece === null) {
+      throw new Error("Active piece is null in showAvailableCells");
+    }
+    const activePiece = this.$activePiece;
     if (
       this.activePiecePossibleMoves.length === 0 &&
-      this.getKingCheckers().length > 0
+      activePiece.getKingCheckers().length > 0
     ) {
       const kingCell = this.cells.find(
-        (cell) => cell.id === this.getKingInfo().king.cellId
+        (cell) => cell.id === activePiece.getKingInfo().king.cellId
       );
       if (kingCell === undefined) {
         throw new Error("Cannot find king cell");

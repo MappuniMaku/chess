@@ -1,5 +1,5 @@
 import { Piece } from "../Piece";
-import { IPieceProps, IPiecePosition } from "../../types";
+import { IPieceProps, IPiecePosition, IPawn } from "../../types";
 import { PieceColor, PieceType } from "../../enums";
 import {
   getCellIdFromPosition,
@@ -7,13 +7,13 @@ import {
   setPieceElementProperties,
 } from "../../helpers";
 
-export class Pawn extends Piece {
+export class Pawn extends Piece implements IPawn {
   constructor(props: IPieceProps) {
     super(props);
     setPieceElementProperties(this.$el, PieceType.Pawn, this.color);
   }
 
-  getPossibleHits(): number[] {
+  getPossibleHits() {
     const { row, col } = this.position;
     const possibleHits: number[] = [];
     switch (this.color) {
@@ -36,7 +36,7 @@ export class Pawn extends Piece {
     return possibleHits;
   }
 
-  getMoves(): number[] {
+  getMoves() {
     const { row, col } = this.position;
     const positions: IPiecePosition[] = [];
     const possibleHits = this.getPossibleHits();

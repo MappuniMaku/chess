@@ -1,5 +1,5 @@
 import { Piece } from "../Piece";
-import { IPieceProps } from "../../types";
+import { IBishop, IPieceProps } from "../../types";
 import { PieceType } from "../../enums";
 import {
   getTopLeftDiagonal,
@@ -9,13 +9,13 @@ import {
   setPieceElementProperties,
 } from "../../helpers";
 
-export class Bishop extends Piece {
+export class Bishop extends Piece implements IBishop {
   constructor(props: IPieceProps) {
     super(props);
     setPieceElementProperties(this.$el, PieceType.Bishop, this.color);
   }
 
-  getLines(): number[][] {
+  getLines() {
     return [
       getTopLeftDiagonal(this.position),
       getTopRightDiagonal(this.position),

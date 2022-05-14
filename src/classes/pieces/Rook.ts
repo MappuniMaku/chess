@@ -1,5 +1,5 @@
 import { Piece } from "../Piece";
-import { IPieceProps } from "../../types";
+import { IPieceProps, IRook } from "../../types";
 import { PieceType } from "../../enums";
 import {
   getBottomLine,
@@ -9,13 +9,13 @@ import {
   setPieceElementProperties,
 } from "../../helpers";
 
-export class Rook extends Piece {
+export class Rook extends Piece implements IRook {
   constructor(props: IPieceProps) {
     super(props);
     setPieceElementProperties(this.$el, PieceType.Rook, this.color);
   }
 
-  getLines(): number[][] {
+  getLines() {
     return [
       getTopLine(this.position),
       getRightLine(this.position),

@@ -1,5 +1,5 @@
 import { Piece } from "../Piece";
-import { IPiecePosition, IPieceProps } from "../../types";
+import { IKnight, IPiecePosition, IPieceProps } from "../../types";
 import { PieceType } from "../../enums";
 import {
   getCellIdFromPosition,
@@ -7,13 +7,13 @@ import {
   setPieceElementProperties,
 } from "../../helpers";
 
-export class Knight extends Piece {
+export class Knight extends Piece implements IKnight {
   constructor(props: IPieceProps) {
     super(props);
     setPieceElementProperties(this.$el, PieceType.Knight, this.color);
   }
 
-  getIds(): number[] {
+  getIds() {
     const { row, col } = this.position;
     const positions: IPiecePosition[] = [];
     positions.push({ row: row + 1, col: col - 2 });
