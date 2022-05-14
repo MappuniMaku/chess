@@ -1,6 +1,8 @@
 import {
   IBishop,
+  IBoundingLine,
   IKing,
+  IKingBounder,
   IKnight,
   IPawn,
   IPiece,
@@ -114,6 +116,8 @@ export class Piece implements IPiece {
       getRightLine(kingPosition),
       getBottomLine(kingPosition),
       getLeftLine(kingPosition),
+    ];
+    const kingDiagonals = [
       getTopLeftDiagonal(kingPosition),
       getTopRightDiagonal(kingPosition),
       getBottomRightDiagonal(kingPosition),
@@ -122,13 +126,15 @@ export class Piece implements IPiece {
     return {
       king,
       kingLines,
+      kingDiagonals,
     };
   }
 
   getKingCheckers() {
     const activePieceColor = this.color;
 
-    const { king, kingLines } = this.getKingInfo();
+    const { king, kingLines, kingDiagonals } = this.getKingInfo();
+    const lingLinesAndDiagonals = [...kingLines, ...kingDiagonals];
     const { cellId: kingCellId } = king;
 
     const enemyPieces = this.pieces.filter((p) => p.color !== activePieceColor);
@@ -143,7 +149,9 @@ export class Piece implements IPiece {
     return checkers.map((piece) => {
       const { type, cellId } = piece;
       if (possibleLineCheckers.includes(type)) {
-        const attackingLine = kingLines.find((line) => line.includes(cellId));
+        const attackingLine = lingLinesAndDiagonals.find((line) =>
+          line.includes(cellId)
+        );
         const attackerCellIndex = attackingLine?.findIndex(
           (id) => id === cellId
         );
@@ -166,75 +174,97 @@ export class Piece implements IPiece {
 
   getKingBounders() {
     const activePieceColor = this.color;
-    const { kingLines } = this.getKingInfo();
-    const possibleBounders = [
-      PieceType.Bishop,
-      PieceType.Rook,
-      PieceType.Queen,
-    ];
-    const boundingPiecesLines = kingLines
-      .map((line) => ({
-        line,
-        pieces: line.map((cellId, index) => ({
-          piece: this.pieces.find((p) => p.cellId === cellId),
-          index,
-        })),
-      }))
-      .filter((l) =>
-        l.pieces.some(
-          (p) =>
-            p.piece !== undefined &&
-            possibleBounders.includes(p.piece.type) &&
-            p.piece.color !== activePieceColor
+    const { kingLines, kingDiagonals } = this.getKingInfo();
+    const possibleLineBounders = [PieceType.Rook, PieceType.Queen];
+    const possibleDiagonalBounders = [PieceType.Bishop, PieceType.Queen];
+
+    const getBoundingPiecesLines = (
+      lines: number[][],
+      possibleBounders: PieceType[]
+    ): IBoundingLine[] => {
+      return lines
+        .map((line) => ({
+          line,
+          pieces: line.map((cellId, index) => ({
+            piece: this.pieces.find((p) => p.cellId === cellId),
+            index,
+          })),
+        }))
+        .filter((l) =>
+          l.pieces.some(
+            (p) =>
+              p.piece !== undefined &&
+              possibleBounders.includes(p.piece.type) &&
+              p.piece.color !== activePieceColor
+          )
         )
-      )
-      .filter((l) => {
-        const { pieces } = l;
+        .filter((l) => {
+          const { pieces } = l;
+          const firstFriendlyPiece = pieces.find(
+            (p) => p.piece?.color === activePieceColor
+          );
+          const boundingPiece = pieces.find(
+            (p) =>
+              p.piece !== undefined &&
+              possibleBounders.includes(p.piece.type) &&
+              p.piece.color !== activePieceColor
+          );
+          return (
+            firstFriendlyPiece !== undefined &&
+            boundingPiece !== undefined &&
+            !pieces.some(
+              (p) =>
+                p.piece !== undefined &&
+                p.index > firstFriendlyPiece.index &&
+                p.index < boundingPiece.index
+            )
+          );
+        });
+    };
+
+    const boundingPiecesLines = getBoundingPiecesLines(
+      kingLines,
+      possibleLineBounders
+    );
+    const boundingPiecesDiagonals = getBoundingPiecesLines(
+      kingDiagonals,
+      possibleDiagonalBounders
+    );
+
+    const getBounders = (
+      boundingLines: IBoundingLine[],
+      bounders: PieceType[]
+    ): IKingBounder[] =>
+      boundingLines.map((l) => {
+        const { pieces, line } = l;
         const firstFriendlyPiece = pieces.find(
           (p) => p.piece?.color === activePieceColor
         );
         const boundingPiece = pieces.find(
           (p) =>
             p.piece !== undefined &&
-            possibleBounders.includes(p.piece.type) &&
+            bounders.includes(p.piece.type) &&
             p.piece.color !== activePieceColor
         );
-        return (
-          firstFriendlyPiece !== undefined &&
-          boundingPiece !== undefined &&
-          !pieces.some(
-            (p) =>
-              p.piece !== undefined &&
-              p.index > firstFriendlyPiece.index &&
-              p.index < boundingPiece.index
-          )
-        );
+        if (
+          firstFriendlyPiece?.piece === undefined ||
+          boundingPiece?.piece === undefined
+        ) {
+          throw new Error("getKingBounders(): Failed to form a bounding line");
+        }
+        return {
+          boundingEnemyPiece: boundingPiece.piece,
+          boundPiece: firstFriendlyPiece.piece,
+          boundingLine: line.filter(
+            (_, i) => i > firstFriendlyPiece.index && i <= boundingPiece.index
+          ),
+        };
       });
-    return boundingPiecesLines.map((l) => {
-      const { pieces, line } = l;
-      const firstFriendlyPiece = pieces.find(
-        (p) => p.piece?.color === activePieceColor
-      );
-      const boundingPiece = pieces.find(
-        (p) =>
-          p.piece !== undefined &&
-          possibleBounders.includes(p.piece.type) &&
-          p.piece.color !== activePieceColor
-      );
-      if (
-        firstFriendlyPiece?.piece === undefined ||
-        boundingPiece?.piece === undefined
-      ) {
-        throw new Error("getKingBounders(): Failed to form a bounding line");
-      }
-      return {
-        boundingEnemyPiece: boundingPiece.piece,
-        boundPiece: firstFriendlyPiece.piece,
-        boundingLine: line.filter(
-          (_, i) => i > firstFriendlyPiece.index && i <= boundingPiece.index
-        ),
-      };
-    });
+
+    return [
+      ...getBounders(boundingPiecesLines, possibleLineBounders),
+      ...getBounders(boundingPiecesDiagonals, possibleDiagonalBounders),
+    ];
   }
 
   getValidMoves() {

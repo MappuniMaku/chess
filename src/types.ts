@@ -42,7 +42,11 @@ export interface IPiece {
   setPosition: (position: IPiecePosition) => void;
   getProtectedPiecesCells: () => number[];
   getMoves: () => number[];
-  getKingInfo: () => { king: IKing; kingLines: number[][] };
+  getKingInfo: () => {
+    king: IKing;
+    kingLines: number[][];
+    kingDiagonals: number[][];
+  };
   getKingCheckers: () => IKingChecker[];
   getKingBounders: () => IKingBounder[];
   getValidMoves: () => number[];
@@ -113,3 +117,8 @@ export type IGetProtectedPiecesCellsFromIdsFunction = ({
   ids,
   selectedPiece,
 }: IGetProtectedPiecesCellsFromIdsFunctionProps) => number[];
+
+export interface IBoundingLine {
+  line: number[];
+  pieces: { piece: IPiece | undefined; index: number }[];
+}
