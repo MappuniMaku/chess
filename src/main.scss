@@ -9,6 +9,8 @@ body {
 }
 
 .Chess {
+  $chess: &;
+
   padding: 100px 150px;
 
   &__boardWrapper {
@@ -24,6 +26,23 @@ body {
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
+
+    &--withOverlay {
+      #{$chess}__board {
+        &::before {
+          content: "";
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background-color: #e2e4e6;
+          pointer-events: none;
+          opacity: 0.5;
+          z-index: 5;
+        }
+      }
+    }
   }
 
   &__letters,
@@ -64,6 +83,7 @@ body {
   &__cell {
     $cell: &;
 
+    position: relative;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -103,6 +123,38 @@ body {
 
     &--availableHit {
       background-color: red;
+    }
+
+    &--blackFirstRow {
+      #{$chess}__transformationElement {
+        top: 0;
+      }
+    }
+
+    &--whiteFirstRow {
+      #{$chess}__transformationElement {
+        bottom: 0;
+      }
+    }
+  }
+
+  &__transformationElement {
+    position: absolute;
+    left: 0;
+    display: flex;
+    flex-direction: column;
+    background-color: #d6d8df;
+    z-index: 10;
+  }
+
+  &__transformationElementPiece {
+    width: 60px;
+    height: 60px;
+    cursor: pointer;
+    transition: background-color 0.25s ease-in-out;
+
+    &:hover {
+      background-color: #00a300;
     }
   }
 

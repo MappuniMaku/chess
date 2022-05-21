@@ -4,7 +4,7 @@ import { Cell } from "./Cell";
 import { isEven } from "../utils";
 import { Piece } from "./Piece";
 import { Bishop, King, Knight, Pawn, Queen, Rook } from "./pieces";
-import { getCellIdFromPosition } from "../helpers";
+import { getCellIdFromPosition, getPositionFromCellId } from "../helpers";
 
 const PIECES_DICTIONARY: Record<PieceType, typeof Piece> = {
   bishop: Bishop,
@@ -26,6 +26,7 @@ export class Board {
   pieces: Piece[];
   $activePiece: Piece | null;
   activePiecePossibleMoves: number[];
+  pieceIdCounter: number;
 
   constructor($el: HTMLDivElement) {
     this.$el = $el;
@@ -40,9 +41,11 @@ export class Board {
     this.$board.addEventListener("mousedown", this.handleMouseDown.bind(this));
     this.$activePiece = null;
     this.activePiecePossibleMoves = [];
+    this.pieceIdCounter = 0;
     this.handleMouseMove = this.handleMouseMove.bind(this);
     this.handleMouseUp = this.handleMouseUp.bind(this);
     this.handleMouseLeave = this.handleMouseLeave.bind(this);
+    this.transformPawnToPiece = this.transformPawnToPiece.bind(this);
   }
 
   render(): void {
@@ -100,6 +103,14 @@ export class Board {
     this.cells.forEach((cell) => this.$cellsContainer.appendChild(cell.$el));
   }
 
+  addOverlay(): void {
+    this.$el.classList.add("Chess__boardWrapper--withOverlay");
+  }
+
+  removeOverlay(): void {
+    this.$el.classList.remove("Chess__boardWrapper--withOverlay");
+  }
+
   addPiece(
     pieceType: PieceType,
     color: PieceColor,
@@ -110,11 +121,12 @@ export class Board {
       color,
       position,
       cellId: getCellIdFromPosition(position),
-      id: this.pieces.length,
+      id: this.pieceIdCounter,
       pieces: this.pieces,
       type: pieceType,
       hasMadeAnyMoves: false,
     });
+    this.pieceIdCounter += 1;
     this.pieces.push(piece);
     this.$board.appendChild(piece.$el);
   }
@@ -163,7 +175,7 @@ export class Board {
       item.style.pointerEvents = "none";
     });
 
-    this.clearListeners = this.clearListeners.bind(this, piecesArr);
+    this.clearListeners = this.clearListeners.bind(this);
 
     // eslint-disable-next-line @typescript-eslint/unbound-method
     this.$board.addEventListener("mouseup", this.handleMouseUp);
@@ -227,6 +239,20 @@ export class Board {
         this.movePiece(rook.id, targetPosition);
       }
     }
+    if (
+      isMoveAvailable &&
+      this.$activePiece.type === PieceType.Pawn &&
+      (targetRow === 1 || targetRow === 8)
+    ) {
+      const cell = this.cells.find((cell) => cell.id === targetCellId);
+      if (cell === undefined) {
+        throw new Error(
+          `handleMouseUp(): Cell with id ${targetCellId} not found`
+        );
+      }
+      cell.addPawnTransformationState(this.transformPawnToPiece);
+      this.addOverlay();
+    }
     this.movePiece(
       pieceId,
       isMoveAvailable
@@ -253,12 +279,18 @@ export class Board {
     this.clearListeners();
   }
 
-  clearListeners(piecesArr?: NodeListOf<HTMLImageElement>): void {
-    if (piecesArr === undefined) {
-      throw new Error(
-        "clearListeners(): Pieces array passed undefined to clearListeners"
-      );
+  transformPawnToPiece(cellId: number, newPieceType: PieceType): void {
+    const pawn = this.pieces.find((p) => p.cellId === cellId);
+    if (pawn === undefined) {
+      throw new Error("transformPawnToPiece(): pawn not found");
     }
+    const { color } = pawn;
+    this.removePiece(pawn);
+    this.addPiece(newPieceType, color, getPositionFromCellId(cellId));
+    this.removeOverlay();
+  }
+
+  clearListeners(): void {
     // eslint-disable-next-line @typescript-eslint/unbound-method
     this.$board.removeEventListener("mousemove", this.handleMouseMove);
     // eslint-disable-next-line @typescript-eslint/unbound-method
@@ -268,8 +300,8 @@ export class Board {
       // eslint-disable-next-line @typescript-eslint/unbound-method
       this.handleMouseLeave
     );
-    piecesArr.forEach((item) => {
-      item.style.pointerEvents = "auto";
+    this.pieces.forEach((item) => {
+      item.$el.style.pointerEvents = "auto";
     });
     this.$board.style.cursor = "default";
   }

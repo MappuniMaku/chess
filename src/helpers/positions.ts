@@ -11,6 +11,11 @@ export const getCellIdFromPosition = (position: IPiecePosition): number => {
   return (row - 1) * 8 + col - 1;
 };
 
+export const getPositionFromCellId = (cellId: number): IPiecePosition => ({
+  row: Math.ceil((cellId + 1) / 8),
+  col: (cellId % 8) + 1,
+});
+
 export const cutLinesIfNecessary: ICutLinesIfNecessaryFunction = ({
   lines,
   selectedPiece,
