@@ -1,10 +1,10 @@
-import { IPiecePosition } from "../types";
-import { Color, PieceColor, PieceType } from "../enums";
+import { IMove, IPiecePosition } from "../types";
+import { CastlingType, Color, PieceColor, PieceType } from "../enums";
 import { Cell } from "./Cell";
 import { isEven } from "../utils";
 import { Piece } from "./Piece";
 import { Bishop, King, Knight, Pawn, Queen, Rook } from "./pieces";
-import { getCellIdFromPosition, getPositionFromCellId } from "../helpers";
+import { getCellIdFromPosition, getMoveString } from "../helpers";
 
 const PIECES_DICTIONARY: Record<PieceType, typeof Piece> = {
   bishop: Bishop,
@@ -17,16 +17,20 @@ const PIECES_DICTIONARY: Record<PieceType, typeof Piece> = {
 
 const boardId = "board";
 const cellsContainerId = "cells-container";
+const movesLogContainerId = "moves-log";
 
 export class Board {
   $el: HTMLDivElement;
   $board: HTMLDivElement;
   $cellsContainer: HTMLDivElement;
+  $movesLogContainer: HTMLDivElement;
   cells: Cell[];
   pieces: Piece[];
   $activePiece: Piece | null;
   activePiecePossibleMoves: number[];
   pieceIdCounter: number;
+  currentlyMovingColor: PieceColor;
+  movesLog: IMove[];
 
   constructor($el: HTMLDivElement) {
     this.$el = $el;
@@ -35,6 +39,9 @@ export class Board {
     this.$cellsContainer = document.getElementById(
       cellsContainerId
     ) as HTMLDivElement;
+    this.$movesLogContainer = document.getElementById(
+      movesLogContainerId
+    ) as HTMLDivElement;
     this.cells = this.getInitialCells();
     this.renderCells();
     this.pieces = [];
@@ -42,10 +49,11 @@ export class Board {
     this.$activePiece = null;
     this.activePiecePossibleMoves = [];
     this.pieceIdCounter = 0;
+    this.currentlyMovingColor = PieceColor.White;
+    this.movesLog = [];
     this.handleMouseMove = this.handleMouseMove.bind(this);
     this.handleMouseUp = this.handleMouseUp.bind(this);
     this.handleMouseLeave = this.handleMouseLeave.bind(this);
-    this.transformPawnToPiece = this.transformPawnToPiece.bind(this);
   }
 
   render(): void {
@@ -71,6 +79,8 @@ export class Board {
         <div class="Chess__board" id="${boardId}">
           <div class="Chess__cellsContainer" id="${cellsContainerId}"></div>
         </div>
+        
+        <div class="Chess__movesLog" id="${movesLogContainerId}"></div>
       </div>
   `;
     this.$el.insertAdjacentHTML("beforeend", html);
@@ -219,29 +229,70 @@ export class Board {
     }
     const targetRow = Number(row);
     const targetCol = Number(column);
+    const targetPosition: IPiecePosition = {
+      row: targetRow,
+      col: targetCol,
+    };
 
     if (this.$activePiece === null) {
       throw new Error("handleMouseUp(): Active piece is null");
     }
-    const { id: pieceId, position: startingPosition } = this.$activePiece;
+    const {
+      id: pieceId,
+      position: startingPosition,
+      type: activePieceType,
+    } = this.$activePiece;
 
-    const targetCellId = getCellIdFromPosition({
-      row: targetRow,
-      col: targetCol,
-    });
+    const targetCellId = getCellIdFromPosition(targetPosition);
 
     const isMoveAvailable =
       this.activePiecePossibleMoves.includes(targetCellId);
-    if (isMoveAvailable && this.$activePiece.type === PieceType.King) {
+
+    if (!isMoveAvailable) {
+      this.movePiece(pieceId, startingPosition);
+      this.clearActivePiece();
+      this.clearAvailableCells();
+      this.clearListeners();
+      return;
+    }
+
+    let castlingType: CastlingType | undefined;
+    if (activePieceType === PieceType.King) {
       const { king } = this.$activePiece.getKingInfo();
       if (king.getPossibleCastles().includes(targetCellId)) {
-        const { rook, targetPosition } = king.getCastlingRook(targetCellId);
+        const {
+          rook,
+          targetPosition,
+          castlingType: kingCastlingType,
+        } = king.getCastlingRook(targetCellId);
         this.movePiece(rook.id, targetPosition);
+        castlingType = kingCastlingType;
       }
     }
+
+    let wasCaptureMade = false;
+    const enemyPiece = this.pieces.find(
+      (piece) =>
+        piece.color !== this.$activePiece?.color &&
+        piece.cellId === targetCellId
+    );
+
+    if (enemyPiece !== undefined) {
+      this.removePiece(enemyPiece);
+      wasCaptureMade = true;
+    }
+
+    const move: IMove = {
+      piece: this.$activePiece,
+      initialPosition: startingPosition,
+      finalPosition: targetPosition,
+      wasCaptureMade,
+      castlingType,
+    };
+
+    let shouldAddMoveToLog = true;
     if (
-      isMoveAvailable &&
-      this.$activePiece.type === PieceType.Pawn &&
+      activePieceType === PieceType.Pawn &&
       (targetRow === 1 || targetRow === 8)
     ) {
       const cell = this.cells.find((cell) => cell.id === targetCellId);
@@ -250,28 +301,21 @@ export class Board {
           `handleMouseUp(): Cell with id ${targetCellId} not found`
         );
       }
-      cell.addPawnTransformationState(this.transformPawnToPiece);
-      this.addOverlay();
-    }
-    this.movePiece(
-      pieceId,
-      isMoveAvailable
-        ? {
-            row: targetRow,
-            col: targetCol,
-          }
-        : startingPosition
-    );
-    if (isMoveAvailable) {
-      this.$activePiece.hasMadeAnyMoves = true;
-      const enemyPiece = this.pieces.find(
-        (piece) =>
-          piece.color !== this.$activePiece?.color &&
-          piece.cellId === targetCellId
+      const boundTransformPawnToPiece = this.transformPawnToPiece.bind(
+        this,
+        move
       );
-      if (enemyPiece !== undefined) {
-        this.removePiece(enemyPiece);
-      }
+      cell.addPawnTransformationState(boundTransformPawnToPiece);
+      this.addOverlay();
+      shouldAddMoveToLog = false;
+    }
+
+    this.movePiece(pieceId, targetPosition);
+
+    this.$activePiece.hasMadeAnyMoves = true;
+
+    if (shouldAddMoveToLog) {
+      this.addMoveToLog(move);
     }
 
     this.clearActivePiece();
@@ -279,15 +323,70 @@ export class Board {
     this.clearListeners();
   }
 
-  transformPawnToPiece(cellId: number, newPieceType: PieceType): void {
+  transformPawnToPiece(
+    boundMove: IMove,
+    cellId: number,
+    newPieceType: PieceType
+  ): void {
     const pawn = this.pieces.find((p) => p.cellId === cellId);
     if (pawn === undefined) {
       throw new Error("transformPawnToPiece(): pawn not found");
     }
     const { color } = pawn;
     this.removePiece(pawn);
-    this.addPiece(newPieceType, color, getPositionFromCellId(cellId));
+    this.addPiece(newPieceType, color, boundMove.finalPosition);
     this.removeOverlay();
+    this.addMoveToLog({
+      ...boundMove,
+      selectedPieceTypeToTransform: newPieceType,
+    });
+  }
+
+  addMoveToLog(move: IMove): void {
+    const pieceColor = move.piece.color;
+    const enemyKing = this.pieces.find(
+      (p) => p.type === PieceType.King && p.color !== pieceColor
+    );
+
+    if (enemyKing === undefined) {
+      throw new Error("addMoveToLog() enemy king not found");
+    }
+
+    this.movesLog.push({
+      ...move,
+      wasCheckMade: enemyKing.getKingCheckers().length > 0,
+    });
+    this.renderMovesLog();
+  }
+
+  renderMovesLog(): void {
+    const { firstChild } = this.$movesLogContainer;
+    if (firstChild !== null) {
+      this.$movesLogContainer.removeChild(firstChild);
+    }
+
+    const $list = document.createElement("ol");
+    $list.classList.add("Chess__movesLogList");
+    this.movesLog.forEach((move, index) => {
+      const $moveEl = document.createElement("span");
+      $moveEl.textContent = getMoveString(move);
+      if (index % 2 === 0) {
+        const $listItem = document.createElement("li");
+        $listItem.classList.add("Chess__movesLogListItem");
+        const $listItemContentWrapper = document.createElement("span");
+        $listItemContentWrapper.classList.add(
+          "Chess__movesLogListItemContentWrapper"
+        );
+        $listItemContentWrapper.appendChild($moveEl);
+        $listItem.appendChild($listItemContentWrapper);
+        $list.appendChild($listItem);
+        return;
+      }
+      ($list.lastChild as HTMLLIElement)?.children[0]?.appendChild($moveEl);
+    });
+
+    this.$movesLogContainer.appendChild($list);
+    $list.scrollTo({ top: $list.scrollHeight });
   }
 
   clearListeners(): void {

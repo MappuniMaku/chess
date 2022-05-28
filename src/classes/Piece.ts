@@ -12,6 +12,7 @@ import {
   IRook,
 } from "../types";
 import {
+  CastlingType,
   cellMovingPieces,
   ICellMovingPiece,
   ILineMovingPiece,
@@ -325,6 +326,7 @@ export class Piece implements IPiece {
           row: 1,
           col: 4,
         },
+        castlingType: CastlingType.Long,
       },
       6: {
         rookCell: 7,
@@ -332,6 +334,7 @@ export class Piece implements IPiece {
           row: 1,
           col: 6,
         },
+        castlingType: CastlingType.Short,
       },
       58: {
         rookCell: 56,
@@ -339,6 +342,7 @@ export class Piece implements IPiece {
           row: 8,
           col: 4,
         },
+        castlingType: CastlingType.Long,
       },
       62: {
         rookCell: 63,
@@ -346,9 +350,10 @@ export class Piece implements IPiece {
           row: 8,
           col: 6,
         },
+        castlingType: CastlingType.Short,
       },
     };
-    const { rookCell, targetPosition } =
+    const { rookCell, targetPosition, castlingType } =
       rooksCellIdsDictionary[targetCastlingCell as 2 | 6 | 58 | 62];
     const rook = this.pieces.find((p) => p.cellId === rookCell) as
       | IRook
@@ -359,6 +364,7 @@ export class Piece implements IPiece {
     return {
       rook,
       targetPosition,
+      castlingType,
     };
   }
 }

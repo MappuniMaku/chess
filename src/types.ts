@@ -1,4 +1,4 @@
-import { PieceColor, PieceType } from "./enums";
+import { CastlingType, PieceColor, PieceType } from "./enums";
 
 export interface IPiecePosition {
   row: number;
@@ -54,6 +54,7 @@ export interface IPiece {
   getCastlingRook: (targetCastlingCell: number) => {
     rook: IRook;
     targetPosition: IPiecePosition;
+    castlingType: CastlingType;
   };
 }
 
@@ -121,4 +122,14 @@ export type IGetProtectedPiecesCellsFromIdsFunction = ({
 export interface IBoundingLine {
   line: number[];
   pieces: { piece: IPiece | undefined; index: number }[];
+}
+
+export interface IMove {
+  piece: IPiece;
+  initialPosition: IPiecePosition;
+  finalPosition: IPiecePosition;
+  wasCaptureMade?: boolean;
+  castlingType?: CastlingType;
+  selectedPieceTypeToTransform?: PieceType;
+  wasCheckMade?: boolean;
 }

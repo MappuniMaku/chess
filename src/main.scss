@@ -15,9 +15,9 @@ body {
 
   &__boardWrapper {
     display: grid;
-    grid-template-columns: 60px 1fr;
+    grid-template-columns: 60px 1fr 300px;
     grid-template-rows: 1fr 60px;
-    grid-template-areas: "numbers board" ". letters";
+    grid-template-areas: "numbers board moves-log" ". letters .";
     width: fit-content;
 
     -webkit-touch-callout: none;
@@ -163,6 +163,30 @@ body {
     width: 60px;
     height: 60px;
     cursor: grab;
+  }
+
+  &__movesLog {
+    grid-area: moves-log;
+    padding-left: 20px;
+  }
+
+  &__movesLogList {
+    display: flex;
+    flex-direction: column;
+    max-height: 480px;
+    overflow-y: auto;
+    list-style-position: inside;
+  }
+
+  &__movesLogListItem {
+    &:not(:first-child) {
+      margin-top: 8px;
+    }
+  }
+
+  &__movesLogListItemContentWrapper {
+    display: inline-grid;
+    grid-template-columns: 100px 100px;
   }
 }
 

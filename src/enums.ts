@@ -28,3 +28,28 @@ export type ILineMovingPiece = typeof lineMovingPieces[number];
 export const cellMovingPieces = [PieceType.Knight, PieceType.King] as const;
 
 export type ICellMovingPiece = typeof cellMovingPieces[number];
+
+export enum CastlingType {
+  Short = "short",
+  Long = "long",
+}
+
+export const SHORT_PIECES_NAMES_DICTIONARY: Record<PieceType, string> = {
+  pawn: "",
+  bishop: "B",
+  knight: "N",
+  rook: "R",
+  king: "K",
+  queen: "Q",
+};
+
+export const COLUMN_NAMES = {
+  1: "a",
+  2: "b",
+  3: "c",
+  4: "d",
+  5: "e",
+  6: "f",
+  7: "g",
+  8: "h",
+};
