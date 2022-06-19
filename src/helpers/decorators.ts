@@ -5,6 +5,6 @@ export const setPieceElementProperties = (
   pieceName: PieceType,
   color: PieceColor
 ): void => {
-  $el.src = `/src/images/pieces/${pieceName}-${color}.png`;
+  $el.src = `/images/pieces/${pieceName}-${color}.png`;
   $el.alt = `${color} ${pieceName}`;
 };
