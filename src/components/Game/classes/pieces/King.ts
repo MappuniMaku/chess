@@ -1,6 +1,6 @@
 import { Piece } from "../Piece";
-import { IKing, IPieceProps, IRook } from "../../types";
-import { PieceColor, PieceType } from "../../enums";
+import { IKing, IPieceProps, IRook } from "types";
+import { PieceColor, PieceType } from "enums";
 import {
   getBottomLeftDiagonal,
   getBottomLine,

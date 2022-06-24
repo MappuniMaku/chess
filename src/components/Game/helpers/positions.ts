@@ -4,7 +4,7 @@ import {
   IGetProtectedPiecesCellsFromLinesFunction,
   IPiecePosition,
   IRemoveCellsIfNecessaryFunction,
-} from "../types";
+} from "types";
 
 export const getCellIdFromPosition = (position: IPiecePosition): number => {
   const { row, col } = position;

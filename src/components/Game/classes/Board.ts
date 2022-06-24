@@ -1,7 +1,7 @@
-import { IMove, IPiecePosition } from "../types";
-import { CastlingType, Color, PieceColor, PieceType } from "../enums";
+import { IMove, IPiecePosition } from "types";
+import { CastlingType, Color, PieceColor, PieceType } from "enums";
+import { isEven } from "utils";
 import { Cell } from "./Cell";
-import { isEven } from "../utils";
 import { Piece } from "./Piece";
 import { Bishop, King, Knight, Pawn, Queen, Rook } from "./pieces";
 import { getCellIdFromPosition, getMoveString } from "../helpers";

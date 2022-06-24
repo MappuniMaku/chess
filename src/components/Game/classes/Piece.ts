@@ -10,7 +10,7 @@ import {
   IPieceProps,
   IQueen,
   IRook,
-} from "../types";
+} from "types";
 import {
   CastlingType,
   cellMovingPieces,
@@ -19,7 +19,7 @@ import {
   lineMovingPieces,
   PieceColor,
   PieceType,
-} from "../enums";
+} from "enums";
 import {
   calculatePositionStyles,
   cutLinesIfNecessary,

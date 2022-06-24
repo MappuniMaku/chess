@@ -1,13 +1,15 @@
-import { Board } from "./Board";
-import { PieceColor, PieceType } from "../enums";
+import "./index.scss";
+import { Board } from "./classes/Board";
+import { PieceColor, PieceType } from "enums";
 
-export class App {
-  $el: HTMLDivElement;
+export class Game {
   board: Board;
 
   constructor($el: HTMLDivElement) {
-    this.$el = $el;
-    this.board = new Board($el);
+    const $boardEl = document.createElement("div");
+    $boardEl.classList.add("Chess");
+    $el.appendChild($boardEl);
+    this.board = new Board($boardEl);
     this.init();
   }
 

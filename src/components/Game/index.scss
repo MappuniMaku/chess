@@ -1,0 +1,201 @@
+.Chess {
+  $chess: &;
+
+  padding: 100px 150px;
+
+  &__boardWrapper {
+    display: grid;
+    grid-template-columns: 60px 1fr 300px;
+    grid-template-rows: 1fr 60px;
+    grid-template-areas: "numbers board moves-log" ". letters .";
+    width: fit-content;
+
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+
+    &--withOverlay {
+      #{$chess}__board {
+        &::before {
+          content: "";
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background-color: #e2e4e6;
+          pointer-events: none;
+          opacity: 0.5;
+          z-index: 5;
+        }
+      }
+    }
+  }
+
+  &__letters,
+  &__numbers {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  &__letters {
+    grid-area: letters;
+  }
+
+  &__numbers {
+    grid-area: numbers;
+    flex-direction: column-reverse;
+  }
+
+  &__letter,
+  &__number {
+    flex-grow: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  &__board {
+    position: relative;
+    grid-area: board;
+  }
+
+  &__cellsContainer {
+    display: grid;
+    grid-template-columns: repeat(8, 60px);
+    grid-template-rows: repeat(8, 60px);
+    grid-auto-flow: row;
+  }
+
+  &__cell {
+    $cell: &;
+
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+
+    &--light {
+      background-color: antiquewhite;
+
+      &#{$cell}--checked {
+        animation: animateLightCellCheck;
+        animation-duration: 200ms;
+        animation-iteration-count: 3;
+      }
+    }
+
+    &--dark {
+      background-color: saddlebrown;
+
+      &#{$cell}--checked {
+        animation: animateDarkCellCheck;
+        animation-duration: 200ms;
+        animation-iteration-count: 3;
+      }
+    }
+
+    &--availableMove {
+      &::before {
+        content: "";
+        display: block;
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background-color: gray;
+      }
+    }
+
+    &--availableHit {
+      background-color: red;
+    }
+
+    &--blackFirstRow {
+      #{$chess}__transformationElement {
+        top: 0;
+      }
+    }
+
+    &--whiteFirstRow {
+      #{$chess}__transformationElement {
+        bottom: 0;
+      }
+    }
+  }
+
+  &__transformationElement {
+    position: absolute;
+    left: 0;
+    display: flex;
+    flex-direction: column;
+    background-color: #d6d8df;
+    z-index: 10;
+  }
+
+  &__transformationElementPiece {
+    width: 60px;
+    height: 60px;
+    cursor: pointer;
+    transition: background-color 0.25s ease-in-out;
+
+    &:hover {
+      background-color: #00a300;
+    }
+  }
+
+  &__piece {
+    position: absolute;
+    width: 60px;
+    height: 60px;
+    cursor: grab;
+  }
+
+  &__movesLog {
+    grid-area: moves-log;
+    padding-left: 20px;
+  }
+
+  &__movesLogList {
+    display: flex;
+    flex-direction: column;
+    max-height: 480px;
+    overflow-y: auto;
+    list-style-position: inside;
+  }
+
+  &__movesLogListItem {
+    &:not(:first-child) {
+      margin-top: 8px;
+    }
+  }
+
+  &__movesLogListItemContentWrapper {
+    display: inline-grid;
+    grid-template-columns: 100px 100px;
+  }
+}
+
+@keyframes animateLightCellCheck {
+  10% {
+    background-color: red;
+  }
+
+  100% {
+    background-color: antiquewhite;
+  }
+}
+
+@keyframes animateDarkCellCheck {
+  10% {
+    background-color: red;
+  }
+
+  100% {
+    background-color: saddlebrown;
+  }
+}

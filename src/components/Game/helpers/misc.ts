@@ -1,10 +1,10 @@
-import { IMove } from "../types";
+import { IMove } from "types";
 import {
   CastlingType,
   COLUMN_NAMES,
   PieceType,
   SHORT_PIECES_NAMES_DICTIONARY,
-} from "../enums";
+} from "enums";
 
 const reverseRows = Array.from({ length: 10 })
   .fill("")

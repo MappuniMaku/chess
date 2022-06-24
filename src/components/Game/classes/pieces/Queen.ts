@@ -1,6 +1,6 @@
 import { Piece } from "../Piece";
-import { IPieceProps, IQueen } from "../../types";
-import { PieceType } from "../../enums";
+import { IPieceProps, IQueen } from "types";
+import { PieceType } from "enums";
 import {
   getBottomLeftDiagonal,
   getBottomLine,

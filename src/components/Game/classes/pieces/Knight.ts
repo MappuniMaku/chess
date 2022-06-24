@@ -1,6 +1,6 @@
 import { Piece } from "../Piece";
-import { IKnight, IPiecePosition, IPieceProps } from "../../types";
-import { PieceType } from "../../enums";
+import { IKnight, IPiecePosition, IPieceProps } from "types";
+import { PieceType } from "enums";
 import {
   getCellIdFromPosition,
   removeInvalidPositions,
