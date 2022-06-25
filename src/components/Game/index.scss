@@ -1,8 +1,6 @@
 .Chess {
   $chess: &;
 
-  padding: 100px 150px;
-
   &__boardWrapper {
     display: grid;
     grid-template-columns: 60px 1fr 300px;

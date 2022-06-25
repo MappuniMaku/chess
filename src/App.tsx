@@ -1,21 +1,13 @@
-import React, { FC, useEffect, useRef } from "react";
+import React, { FC } from "react";
+import { Route, Routes } from "react-router-dom";
 
-import { Game } from "components";
+import { GamePage, MainPage } from "./pages";
 
 export const App: FC = () => {
-  const ref = useRef<HTMLDivElement>(null);
-  const isGameInitialized = useRef(false);
-
-  useEffect(() => {
-    const div = ref.current;
-
-    if (div === null || isGameInitialized.current) {
-      return;
-    }
-
-    new Game(div);
-    isGameInitialized.current = true;
-  }, [ref]);
-
-  return <div ref={ref} />;
+  return (
+    <Routes>
+      <Route path="/" element={<MainPage />} />
+      <Route path="/game" element={<GamePage />} />
+    </Routes>
+  );
 };

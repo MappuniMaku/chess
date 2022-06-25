@@ -7,3 +7,10 @@
 body {
   font-family: sans-serif;
 }
+
+a {
+  text-decoration: none;
+
+  transition-property: color;
+  transition: 0.25s ease-in-out;
+}
