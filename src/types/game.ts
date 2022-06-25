@@ -1,4 +1,4 @@
-import { CastlingType, PieceColor, PieceType } from "./enums";
+import { CastlingType, PieceColor, PieceType } from "enums";
 
 export interface IPiecePosition {
   row: number;
