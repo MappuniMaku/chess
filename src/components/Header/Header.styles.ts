@@ -12,6 +12,8 @@ export default createUseStyles({
 
   content: {
     display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
     padding: [16, 0],
   },
 
@@ -37,4 +39,16 @@ export default createUseStyles({
   menuLink: {
     ...linkStyles,
   },
+
+  accountSection: {
+    display: "flex",
+  },
+
+  loginLink: {
+    fontWeight: "bold",
+
+    ...linkStyles,
+  },
+
+  account: {},
 });

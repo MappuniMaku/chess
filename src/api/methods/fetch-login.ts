@@ -12,5 +12,4 @@ export interface IFetchLoginResponse {
 export const fetchLoginOptions: ISendRequestOptions = {
   method: "POST",
   path: "/auth/login",
-  shouldRedirectOnUnauthorized: false,
 };

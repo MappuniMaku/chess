@@ -1,8 +1,7 @@
 import { ISendRequestOptions } from "api/types";
+import { IProfile } from "types";
 
-export interface IFetchProfileResponse {
-  username: string;
-}
+export type IFetchProfileResponse = IProfile;
 
 export const fetchProfileOptions: ISendRequestOptions = {
   method: "GET",

@@ -2,7 +2,8 @@ import React, { FC } from "react";
 import { Link } from "react-router-dom";
 import clsx from "clsx";
 
-import { Container } from "components";
+import { Container, Preloader } from "components";
+import { useAppSelector } from "hooks";
 
 import useStyles from "./Header.styles";
 
@@ -29,6 +30,10 @@ const pages: Array<{
 
 export const Header: FC<IHeaderProps> = ({ currentPage }) => {
   const classes = useStyles();
+
+  const { value: user, isLoading: isUserLoading } = useAppSelector(
+    (state) => state.user
+  );
 
   const links = pages.map((p) => ({
     ...p,
@@ -64,6 +69,18 @@ export const Header: FC<IHeaderProps> = ({ currentPage }) => {
                 </Link>
               );
             })}
+          </div>
+
+          <div className={classes.accountSection}>
+            {isUserLoading ? (
+              <Preloader />
+            ) : user === undefined ? (
+              <Link to="/login" className={classes.loginLink}>
+                Войти
+              </Link>
+            ) : (
+              <div className={classes.account}>{user.username}</div>
+            )}
           </div>
         </div>
       </Container>

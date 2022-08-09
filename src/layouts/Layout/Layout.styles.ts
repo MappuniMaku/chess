@@ -11,4 +11,9 @@ export default createUseStyles({
     flexGrow: 1,
     padding: [40, 0],
   },
+
+  loader: {
+    display: "flex",
+    justifyContent: "center",
+  },
 });
