@@ -8,7 +8,7 @@ import { useAppSelector } from "hooks";
 import useStyles from "./Header.styles";
 
 export interface IHeaderProps {
-  currentPage: "main" | "game";
+  currentPage: "main" | "game" | "playersList";
 }
 
 const pages: Array<{
@@ -26,6 +26,11 @@ const pages: Array<{
     link: "/game",
     text: "Играть",
   },
+  {
+    name: "playersList",
+    link: "/players",
+    text: "Список игроков",
+  },
 ];
 
 export const Header: FC<IHeaderProps> = ({ currentPage }) => {
@@ -34,6 +39,7 @@ export const Header: FC<IHeaderProps> = ({ currentPage }) => {
   const { value: user, isLoading: isUserLoading } = useAppSelector(
     (state) => state.user
   );
+  const { username, rating } = user ?? {};
 
   const links = pages.map((p) => ({
     ...p,
@@ -79,7 +85,10 @@ export const Header: FC<IHeaderProps> = ({ currentPage }) => {
                 Войти
               </Link>
             ) : (
-              <div className={classes.account}>{user.username}</div>
+              <div className={classes.account}>
+                <span className={classes.username}>{username}</span>
+                <span className={classes.rating}>Рейтинг: {rating}</span>
+              </div>
             )}
           </div>
         </div>

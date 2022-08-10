@@ -32,7 +32,7 @@ export default createUseStyles({
 
   activeMenuItem: {
     borderColor: colors.GREEN,
-    color: colors.GRAY,
+    color: colors.BLACK,
     cursor: "default",
   },
 
@@ -50,5 +50,18 @@ export default createUseStyles({
     ...linkStyles,
   },
 
-  account: {},
+  account: {
+    display: "flex",
+    flexDirection: "column",
+  },
+
+  username: {
+    fontSize: 14,
+  },
+
+  rating: {
+    marginTop: 2,
+    fontSize: 12,
+    color: colors.GRAY,
+  },
 });

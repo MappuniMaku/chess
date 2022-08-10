@@ -2,7 +2,7 @@ import React, { FC } from "react";
 import { Route, Routes } from "react-router-dom";
 
 import { fetchUser } from "store/slices";
-import { GamePage, LoginPage, MainPage } from "pages";
+import { GamePage, LoginPage, MainPage, PlayersListPage } from "pages";
 import { useAppDispatch } from "./hooks";
 
 export const App: FC = () => {
@@ -14,6 +14,7 @@ export const App: FC = () => {
       <Route path="/" element={<MainPage />} />
       <Route path="/game" element={<GamePage />} />
       <Route path="/login" element={<LoginPage />} />
+      <Route path="/players" element={<PlayersListPage />} />
     </Routes>
   );
 };

@@ -4,3 +4,4 @@ export * from "./Container";
 export * from "./Footer";
 export * from "./LoginForm";
 export * from "./Preloader";
+export * from "./PlayersList";
