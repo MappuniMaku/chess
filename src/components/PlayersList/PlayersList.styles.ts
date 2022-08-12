@@ -22,7 +22,16 @@ export default createUseStyles({
     gridAutoFlow: "column",
     gridAutoColumns: "1fr",
     padding: [8, 16],
-    borderBottom: [1, "solid", colors.LIGHT_GRAY],
+
+    "&:not(:last-child)": {
+      borderBottom: [1, "solid", colors.LIGHT_GRAY],
+    },
+  },
+
+  scrollLoader: {
+    display: "flex",
+    justifyContent: "center",
+    marginTop: 16,
   },
 
   loader: {

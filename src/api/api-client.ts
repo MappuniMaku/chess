@@ -22,7 +22,7 @@ class ApiClient {
     options: ISendRequestOptions;
     body?: unknown;
     pathParams?: Record<string, string>;
-    params?: Record<string, string>;
+    params?: Record<string, string | number>;
   }): Promise<ResponseType> {
     const { method, path, shouldRedirectOnUnauthorized = false } = options;
 
@@ -37,7 +37,16 @@ class ApiClient {
         ? "http://localhost:3001"
         : "https://chess-backend-nest.herokuapp.com";
 
-    const queryParamsString = new URLSearchParams(params).toString();
+    const stringifiedParams: Record<string, string> = Object.keys(
+      params ?? {}
+    ).reduce(
+      (acc, k) => ({
+        ...acc,
+        [k]: String(params?.[k]),
+      }),
+      {}
+    );
+    const queryParamsString = new URLSearchParams(stringifiedParams).toString();
     const queryParams = queryParamsString !== "" ? `?${queryParamsString}` : "";
 
     const response = await fetch(`${baseUrl}${mappedPath}${queryParams}`, {

@@ -1,29 +1,52 @@
 import React, { FC, useCallback, useEffect, useState } from "react";
 import { debounce } from "ts-debounce";
 
-import { IUser, IUsersFilters } from "types";
+import { IUsersFilters, IUsersListData } from "types";
 import { Layout } from "layouts";
 import { Container, Input, PlayersList } from "components";
 import { api } from "api";
 
 import useStyles from "./PlayersListPage.styles";
 
+const PLAYERS_LIST_PAGE_SIZE = 30;
+
 export const PlayersListPage: FC = () => {
   const classes = useStyles();
 
-  const [players, setPlayers] = useState<IUser[]>([]);
+  const [playersData, setPlayersData] = useState<IUsersListData>();
   const [filters, setFilters] = useState<IUsersFilters>({});
   const [isLoading, setIsLoading] = useState(false);
+  const [isLoadingOnScroll, setIsLoadingOnScroll] = useState(false);
 
-  const fetchPlayers = async (filtersValues?: IUsersFilters) => {
-    setIsLoading(true);
+  const fetchPlayers = async (
+    currentPage: number,
+    filtersValues?: IUsersFilters
+  ) => {
+    if (currentPage > 1) {
+      setIsLoadingOnScroll(true);
+    } else {
+      setIsLoading(true);
+    }
     try {
-      const response = await api.fetchUsers({ params: filtersValues });
-      setPlayers(response);
+      const response = await api.fetchUsers({
+        params: {
+          ...filtersValues,
+          page: currentPage,
+          pageSize: PLAYERS_LIST_PAGE_SIZE,
+        },
+      });
+      setPlayersData({
+        ...response,
+        items:
+          currentPage > 1
+            ? [...(playersData?.items ?? []), ...response.items]
+            : response.items,
+      });
     } catch (e) {
       console.error(e);
     } finally {
       setIsLoading(false);
+      setIsLoadingOnScroll(false);
     }
   };
 
@@ -31,12 +54,18 @@ export const PlayersListPage: FC = () => {
   const debouncedFetchPlayers = useCallback(debounce(fetchPlayers, 500), []);
 
   const handleFiltersChange = (filtersValues: IUsersFilters) => {
-    setFilters(filtersValues);
-    debouncedFetchPlayers(filtersValues);
+    setFilters({ ...filtersValues, page: 1 });
+    debouncedFetchPlayers(1, filtersValues);
+  };
+
+  const handleScrollLoad = (page: number) => {
+    setFilters({ ...filters, page });
+    fetchPlayers(page, filters);
   };
 
   useEffect(() => {
-    fetchPlayers();
+    fetchPlayers(1, filters);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
@@ -46,16 +75,23 @@ export const PlayersListPage: FC = () => {
           <Input
             value={filters.username ?? ""}
             label="Имя пользователя"
-            isDisabled={isLoading}
-            onChange={(v) => handleFiltersChange({ ...filters, username: v })}
+            isDisabled={isLoading || isLoadingOnScroll}
+            onChange={(v) =>
+              handleFiltersChange({
+                ...filters,
+                username: v,
+              })
+            }
           />
         </div>
         <div className={classes.playersList}>
           <PlayersList
-            items={players}
+            data={playersData}
             filters={filters}
             isLoading={isLoading}
+            isLoadingOnScroll={isLoadingOnScroll}
             onFiltersChange={handleFiltersChange}
+            onScrollLoad={handleScrollLoad}
           />
         </div>
       </Container>

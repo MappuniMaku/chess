@@ -1,56 +1,106 @@
-import React, { FC } from "react";
+import React, { FC, useEffect, useRef } from "react";
 
-import { IUser, IUsersFilters } from "types";
+import { IUsersFilters, IUsersListData } from "types";
 import { Preloader } from "components";
 import { HeadingButton } from "./components";
 
 import useStyles from "./PlayersList.styles";
 
 interface IPlayersListProps {
-  items: IUser[];
+  data?: IUsersListData;
   filters: IUsersFilters;
   isLoading: boolean;
+  isLoadingOnScroll: boolean;
   onFiltersChange: (filters: IUsersFilters) => void;
+  onScrollLoad: (page: number) => void;
 }
 
 export const PlayersList: FC<IPlayersListProps> = ({
-  items,
+  data,
   filters,
   isLoading,
+  isLoadingOnScroll,
   onFiltersChange,
+  onScrollLoad,
 }) => {
   const classes = useStyles();
 
+  const { items, page, totalPages } = data ?? {};
+
+  const listWrapperRef = useRef<HTMLDivElement>(null);
+  const scrollLoaderRef = useRef<HTMLDivElement>(null);
+
+  const isLastPage = (page ?? 1) === (totalPages ?? 0);
+
+  useEffect(() => {
+    const listWrapper = listWrapperRef.current;
+    const scrollLoader = scrollLoaderRef.current;
+
+    if (listWrapper === null || scrollLoader === null || isLoadingOnScroll) {
+      return;
+    }
+
+    const options = {
+      root: document,
+      rootMargin: "0px",
+      threshold: 0.0,
+    };
+    const intersectionCallback: IntersectionObserverCallback = (entries) => {
+      if (!entries[0].isIntersecting) {
+        return;
+      }
+      onScrollLoad((page ?? 1) + 1);
+    };
+
+    const observer = new IntersectionObserver(intersectionCallback, options);
+    observer.observe(scrollLoader);
+
+    return () => observer.disconnect();
+  }, [isLoading, items, page, isLoadingOnScroll, onScrollLoad]);
+
   return (
-    <div className={classes.root}>
+    <div className={classes.root} ref={listWrapperRef}>
       <div className={classes.header}>
         <HeadingButton
           heading="Имя пользователя"
           filterKey="username"
           filters={filters}
-          isDisabled={isLoading}
+          isDisabled={isLoading || isLoadingOnScroll}
           onFiltersChange={onFiltersChange}
         />
         <HeadingButton
           heading="Рейтинг"
           filterKey="rating"
           filters={filters}
-          isDisabled={isLoading}
+          isDisabled={isLoading || isLoadingOnScroll}
           onFiltersChange={onFiltersChange}
         />
       </div>
       {!isLoading ? (
-        <ul className={classes.list}>
-          {items.map((i) => {
-            const { username, rating } = i;
-            return (
-              <li key={username} className={classes.listItem}>
-                <span>{username}</span>
-                <span>{rating}</span>
-              </li>
-            );
-          })}
-        </ul>
+        <>
+          {items !== undefined && items.length > 0 ? (
+            <>
+              <ul className={classes.list}>
+                {items.map((i) => {
+                  const { username, rating } = i;
+                  return (
+                    <li key={username} className={classes.listItem}>
+                      <span>{username}</span>
+                      <span>{rating}</span>
+                    </li>
+                  );
+                })}
+              </ul>
+              {!isLastPage && (
+                <div ref={scrollLoaderRef} className={classes.scrollLoader}>
+                  <Preloader />
+                </div>
+              )}
+            </>
+          ) : (
+            <span>Ничего не найдено</span>
+          )}
+        </>
       ) : (
         <div className={classes.loader}>
           <Preloader size={40} />
