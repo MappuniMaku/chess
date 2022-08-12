@@ -6,7 +6,7 @@ export default createUseStyles({
     position: "sticky",
     top: 0,
     backgroundColor: "white",
-    borderBottom: [1, "solid", colors.LIGHTEST_GRAY],
+    borderBottom: [1, "solid", colors.LIGHT_GRAY],
     zIndex: 100,
   },
 

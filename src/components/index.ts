@@ -5,3 +5,5 @@ export * from "./Footer";
 export * from "./LoginForm";
 export * from "./Preloader";
 export * from "./PlayersList";
+export * from "./Input";
+export * from "./Icon";

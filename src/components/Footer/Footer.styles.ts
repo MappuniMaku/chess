@@ -4,7 +4,7 @@ import { colors } from "theme";
 export default createUseStyles({
   root: {
     flexShrink: 0,
-    borderTop: [1, "solid", colors.LIGHTEST_GRAY],
+    borderTop: [1, "solid", colors.LIGHT_GRAY],
   },
 
   content: {

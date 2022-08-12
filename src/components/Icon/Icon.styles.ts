@@ -1,10 +1,7 @@
 import { createUseStyles } from "react-jss";
 
 export default createUseStyles({
-  usernameInput: {
-    width: 320,
-    marginBottom: 24,
+  root: {
+    fontSize: (props: { size: number }) => props.size,
   },
-
-  playersList: {},
 });

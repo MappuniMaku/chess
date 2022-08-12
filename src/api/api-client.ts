@@ -10,16 +10,19 @@ import {
   IFetchUserResponse,
   IFetchUsersResponse,
 } from "./methods";
+import { IUsersFilters } from "types";
 
 class ApiClient {
   async sendRequest<ResponseType>({
     options,
     body,
     pathParams,
+    params,
   }: {
     options: ISendRequestOptions;
     body?: unknown;
     pathParams?: Record<string, string>;
+    params?: Record<string, string>;
   }): Promise<ResponseType> {
     const { method, path, shouldRedirectOnUnauthorized = false } = options;
 
@@ -34,7 +37,10 @@ class ApiClient {
         ? "http://localhost:3001"
         : "https://chess-backend-nest.herokuapp.com";
 
-    const response = await fetch(`${baseUrl}${mappedPath}`, {
+    const queryParamsString = new URLSearchParams(params).toString();
+    const queryParams = queryParamsString !== "" ? `?${queryParamsString}` : "";
+
+    const response = await fetch(`${baseUrl}${mappedPath}${queryParams}`, {
       method,
       body: body !== undefined ? JSON.stringify(body) : undefined,
       headers: {
@@ -59,9 +65,10 @@ class ApiClient {
     return response.json();
   }
 
-  async fetchUsers() {
+  async fetchUsers({ params }: { params?: IUsersFilters }) {
     return this.sendRequest<IFetchUsersResponse>({
       options: fetchUsersOptions,
+      params,
     });
   }
 

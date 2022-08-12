@@ -9,7 +9,7 @@ export default createUseStyles({
     gridAutoFlow: "column",
     gridAutoColumns: "1fr",
     padding: [8, 16],
-    borderBottom: [1, "solid", colors.LIGHTEST_GRAY],
+    borderBottom: [1, "solid", colors.LIGHT_GRAY],
     fontWeight: "bold",
   },
 
@@ -22,7 +22,7 @@ export default createUseStyles({
     gridAutoFlow: "column",
     gridAutoColumns: "1fr",
     padding: [8, 16],
-    borderBottom: [1, "solid", colors.LIGHTEST_GRAY],
+    borderBottom: [1, "solid", colors.LIGHT_GRAY],
   },
 
   loader: {

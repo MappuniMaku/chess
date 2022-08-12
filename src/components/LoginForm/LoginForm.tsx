@@ -2,6 +2,7 @@ import React, { FC, useState } from "react";
 
 import { IHandleValuesChangeFunction } from "types";
 import { api } from "api";
+import { Input } from "components";
 
 import useStyles from "./LoginForm.styles";
 
@@ -41,25 +42,25 @@ export const LoginForm: FC = () => {
         handleSubmit();
       }}
     >
-      <div>
-        <input
+      <div className={classes.element}>
+        <Input
           type="text"
           value={username}
-          placeholder="Имя пользователя"
-          onChange={(e) => handleValuesChange("username")(e.target.value)}
+          label="Имя пользователя"
+          onChange={handleValuesChange("username")}
         />
       </div>
 
-      <div>
-        <input
+      <div className={classes.element}>
+        <Input
           type="password"
           value={password}
-          placeholder="Пароль"
-          onChange={(e) => handleValuesChange("password")(e.target.value)}
+          label="Пароль"
+          onChange={handleValuesChange("password")}
         />
       </div>
 
-      <div>
+      <div className={classes.element}>
         <button type="submit">Войти</button>
       </div>
     </form>

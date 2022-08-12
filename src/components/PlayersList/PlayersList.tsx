@@ -1,23 +1,43 @@
 import React, { FC } from "react";
 
-import { IUser } from "types";
+import { IUser, IUsersFilters } from "types";
 import { Preloader } from "components";
+import { HeadingButton } from "./components";
 
 import useStyles from "./PlayersList.styles";
 
 interface IPlayersListProps {
   items: IUser[];
+  filters: IUsersFilters;
   isLoading: boolean;
+  onFiltersChange: (filters: IUsersFilters) => void;
 }
 
-export const PlayersList: FC<IPlayersListProps> = ({ items, isLoading }) => {
+export const PlayersList: FC<IPlayersListProps> = ({
+  items,
+  filters,
+  isLoading,
+  onFiltersChange,
+}) => {
   const classes = useStyles();
 
   return (
     <div className={classes.root}>
       <div className={classes.header}>
-        <span>Имя пользователя</span>
-        <span>Рейтинг</span>
+        <HeadingButton
+          heading="Имя пользователя"
+          filterKey="username"
+          filters={filters}
+          isDisabled={isLoading}
+          onFiltersChange={onFiltersChange}
+        />
+        <HeadingButton
+          heading="Рейтинг"
+          filterKey="rating"
+          filters={filters}
+          isDisabled={isLoading}
+          onFiltersChange={onFiltersChange}
+        />
       </div>
       {!isLoading ? (
         <ul className={classes.list}>

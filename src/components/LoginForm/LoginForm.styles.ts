@@ -6,4 +6,10 @@ export default createUseStyles({
     flexDirection: "column",
     padding: [40, 0],
   },
+
+  element: {
+    "&:not(:last-child)": {
+      marginBottom: 20,
+    },
+  },
 });
