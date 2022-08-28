@@ -10,7 +10,9 @@ export const LoginPage: FC = () => {
   return (
     <div className={classes.root}>
       <Container>
-        <div>
+        <h1 className={classes.heading}>Вход</h1>
+
+        <div className={classes.form}>
           <LoginForm />
         </div>
       </Container>

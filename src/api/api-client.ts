@@ -2,11 +2,14 @@ import { ISendRequestOptions } from "./types";
 import {
   fetchLoginOptions,
   fetchProfileOptions,
+  fetchSignupOptions,
   fetchUserOptions,
   fetchUsersOptions,
   IFetchLoginBodyRequest,
   IFetchLoginResponse,
   IFetchProfileResponse,
+  IFetchSignupBodyRequest,
+  IFetchSignupResponse,
   IFetchUserResponse,
   IFetchUsersResponse,
 } from "./methods";
@@ -101,6 +104,13 @@ class ApiClient {
     });
     document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 GMT; Secure";
     document.cookie = `token=${result.access_token}; expires=Fri, 31 Dec 9999 23:59:59 GMT; Secure`;
+  }
+
+  async fetchSignup(body: IFetchSignupBodyRequest) {
+    return this.sendRequest<IFetchSignupResponse>({
+      options: fetchSignupOptions,
+      body,
+    });
   }
 }
 

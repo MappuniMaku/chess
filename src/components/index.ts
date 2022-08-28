@@ -7,3 +7,5 @@ export * from "./Preloader";
 export * from "./PlayersList";
 export * from "./Input";
 export * from "./Icon";
+export * from "./SignupForm";
+export * from "./Button";

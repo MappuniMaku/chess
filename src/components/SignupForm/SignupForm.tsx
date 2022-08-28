@@ -4,32 +4,35 @@ import { Link } from "react-router-dom";
 import { IHandleValuesChangeFunction } from "types";
 import { api } from "api";
 import { Button, Input } from "components";
+import { NUMBER_REGEXP } from "consts";
 
-import useStyles from "./LoginForm.styles";
+import useStyles from "./SignupForm.styles";
 
-interface ILoginFormValues {
+interface ISignupFormValues {
   username: string;
   password: string;
+  rating: string;
 }
 
-export const LoginForm: FC = () => {
+export const SignupForm: FC = () => {
   const classes = useStyles();
 
-  const [values, setValues] = useState<ILoginFormValues>({
+  const [values, setValues] = useState<ISignupFormValues>({
     username: "",
     password: "",
+    rating: "600",
   });
 
-  const { username, password } = values;
+  const { username, password, rating } = values;
 
-  const handleValuesChange: IHandleValuesChangeFunction<ILoginFormValues> =
+  const handleValuesChange: IHandleValuesChangeFunction<ISignupFormValues> =
     (key) => (value) =>
       setValues((prevState) => ({ ...prevState, [key]: value }));
 
   const handleSubmit = async () => {
     try {
-      await api.fetchLogin(values);
-      window.location.href = "/";
+      await api.fetchSignup({ ...values, rating: Number(values.rating) });
+      window.location.href = "/login";
     } catch (e) {
       console.error(e);
     }
@@ -48,7 +51,6 @@ export const LoginForm: FC = () => {
           type="text"
           value={username}
           label="Имя пользователя"
-          autoComplete="username"
           isRequired
           onChange={handleValuesChange("username")}
         />
@@ -59,20 +61,35 @@ export const LoginForm: FC = () => {
           type="password"
           value={password}
           label="Пароль"
-          autoComplete="current-password"
+          autoComplete="new-password"
           isRequired
           onChange={handleValuesChange("password")}
         />
       </div>
 
       <div className={classes.element}>
-        <Button type="submit">Войти</Button>
+        <Input
+          type="text"
+          value={rating}
+          label="Рейтинг"
+          maxLength={3}
+          isRequired
+          onChange={(v) => {
+            if (NUMBER_REGEXP.test(v)) {
+              handleValuesChange("rating")(v);
+            }
+          }}
+        />
       </div>
 
       <div className={classes.element}>
-        Еще не зарегистрированы?{" "}
-        <Link to="/signup" className={classes.link}>
-          Зарегистрироваться
+        <Button type="submit">Зарегистрироваться</Button>
+      </div>
+
+      <div className={classes.element}>
+        Уже зарегистрированы?{" "}
+        <Link to="/login" className={classes.link}>
+          Войти
         </Link>
       </div>
     </form>

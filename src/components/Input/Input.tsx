@@ -7,7 +7,10 @@ interface IInputProps {
   value: string;
   type?: "text" | "password";
   label?: string;
+  maxLength?: number;
+  autoComplete?: "username" | "current-password" | "new-password";
   isDisabled?: boolean;
+  isRequired?: boolean;
   onChange: (value: string) => void;
 }
 
@@ -15,7 +18,10 @@ export const Input: FC<IInputProps> = ({
   value,
   type = "text",
   label,
+  maxLength,
+  autoComplete,
   isDisabled,
+  isRequired,
   onChange,
 }) => {
   const classes = useStyles();
@@ -42,7 +48,10 @@ export const Input: FC<IInputProps> = ({
         className={classes.input}
         value={value}
         type={type}
+        maxLength={maxLength}
+        autoComplete={autoComplete}
         disabled={isDisabled}
+        required={isRequired}
         onChange={(e) => onChange(e.target.value)}
         onFocus={() => setIsFocused(true)}
         onBlur={() => setIsFocused(false)}
