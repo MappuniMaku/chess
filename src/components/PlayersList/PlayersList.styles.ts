@@ -34,6 +34,12 @@ export default createUseStyles({
     marginTop: 16,
   },
 
+  noItemsMessage: {
+    marginTop: 8,
+    paddingLeft: 16,
+    fontSize: 14,
+  },
+
   loader: {
     display: "flex",
     justifyContent: "center",

@@ -75,7 +75,6 @@ export const PlayersListPage: FC = () => {
           <Input
             value={filters.username ?? ""}
             label="Имя пользователя"
-            isDisabled={isLoading || isLoadingOnScroll}
             onChange={(v) =>
               handleFiltersChange({
                 ...filters,

@@ -98,7 +98,7 @@ export const PlayersList: FC<IPlayersListProps> = ({
               )}
             </>
           ) : (
-            <span>Ничего не найдено</span>
+            <div className={classes.noItemsMessage}>Ничего не найдено</div>
           )}
         </>
       ) : (
