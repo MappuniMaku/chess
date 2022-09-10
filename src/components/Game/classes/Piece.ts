@@ -1,9 +1,11 @@
 import {
   IBishop,
   IBoundingLine,
+  ICellMovingPiece,
   IKing,
   IKingBounder,
   IKnight,
+  ILineMovingPiece,
   IPawn,
   IPiece,
   IPiecePosition,
@@ -14,8 +16,6 @@ import {
 import {
   CastlingType,
   cellMovingPieces,
-  ICellMovingPiece,
-  ILineMovingPiece,
   lineMovingPieces,
   PieceColor,
   PieceType,

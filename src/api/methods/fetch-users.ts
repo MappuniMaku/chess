@@ -1,4 +1,4 @@
-import { IPaginatedResponse, ISendRequestOptions } from "api/types";
+import { IPaginatedResponse, ISendRequestOptions } from "api";
 import { IUser } from "types";
 
 export type IFetchUsersResponse = IPaginatedResponse<IUser>;

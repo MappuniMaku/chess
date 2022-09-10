@@ -1,4 +1,4 @@
-import { ISendRequestOptions } from "api/types";
+import { ISendRequestOptions } from "api";
 import { IUser } from "types";
 
 export type IFetchUserResponse = IUser;

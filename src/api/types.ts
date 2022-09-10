@@ -1,3 +1,5 @@
+import { IFormValidationErrors } from "types";
+
 export interface ISendRequestOptions {
   method: "GET" | "POST";
   path: string;
@@ -15,4 +17,9 @@ export interface IPaginatedResponse<ItemType> {
   totalItems: number;
   totalPages: number;
   items: ItemType[];
+}
+
+export interface IValidationErrorResponse<FormValues> {
+  error: string;
+  validationErrors: IFormValidationErrors<FormValues>;
 }

@@ -23,11 +23,7 @@ export const lineMovingPieces = [
   PieceType.Rook,
 ] as const;
 
-export type ILineMovingPiece = typeof lineMovingPieces[number];
-
 export const cellMovingPieces = [PieceType.Knight, PieceType.King] as const;
-
-export type ICellMovingPiece = typeof cellMovingPieces[number];
 
 export enum CastlingType {
   Short = "short",

@@ -7,6 +7,7 @@ export const colors = {
   GREEN: "#79d70f",
   GREEN_HOVER: "#3ec70b",
   GREEN_ACTIVE: "#61b15a",
+  RED: "#ff0800",
 };
 
 export const linkStyles = {

@@ -1,24 +1,21 @@
 import React, { FC, useState } from "react";
 import { Link } from "react-router-dom";
 
-import { IHandleValuesChangeFunction } from "types";
+import { IHandleValuesChangeFunction, ILoginFormValues } from "types";
 import { api } from "api";
 import { Button, Input } from "components";
 
 import useStyles from "./LoginForm.styles";
 
-interface ILoginFormValues {
-  username: string;
-  password: string;
-}
+const initialFormValues: ILoginFormValues = {
+  username: "",
+  password: "",
+};
 
 export const LoginForm: FC = () => {
   const classes = useStyles();
 
-  const [values, setValues] = useState<ILoginFormValues>({
-    username: "",
-    password: "",
-  });
+  const [values, setValues] = useState<ILoginFormValues>(initialFormValues);
 
   const { username, password } = values;
 

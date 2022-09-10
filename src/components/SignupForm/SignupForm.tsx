@@ -1,42 +1,76 @@
 import React, { FC, useState } from "react";
 import { Link } from "react-router-dom";
 
-import { IHandleValuesChangeFunction } from "types";
-import { api } from "api";
+import {
+  IFormValidationErrors,
+  IHandleValuesChangeFunction,
+  ISignupFormValues,
+} from "types";
+import { api, IValidationErrorResponse } from "api";
 import { Button, Input } from "components";
-import { NUMBER_REGEXP } from "consts";
+import { FAILED_VALIDATION_ERROR_CODE, NUMBER_REGEXP } from "consts";
+import { SIGNUP_FORM_VALIDATION_ERRORS } from "locale";
+import { isObjectEmpty } from "utils";
+import { getErrorTextFunction } from "helpers";
+import { useIsMounted } from "hooks";
 
 import useStyles from "./SignupForm.styles";
 
-interface ISignupFormValues {
-  username: string;
-  password: string;
-  rating: string;
-}
+type ISignupFormValidationErrors = IFormValidationErrors<ISignupFormValues>;
+
+const initialFormValues: ISignupFormValues = {
+  username: "",
+  password: "",
+  rating: "600",
+};
 
 export const SignupForm: FC = () => {
   const classes = useStyles();
+  const isMounted = useIsMounted();
 
-  const [values, setValues] = useState<ISignupFormValues>({
-    username: "",
-    password: "",
-    rating: "600",
-  });
+  const [values, setValues] = useState<ISignupFormValues>(initialFormValues);
+  const [errors, setErrors] = useState<ISignupFormValidationErrors>();
+  const [isLoading, setIsLoading] = useState(false);
 
   const { username, password, rating } = values;
 
   const handleValuesChange: IHandleValuesChangeFunction<ISignupFormValues> =
-    (key) => (value) =>
+    (key) => (value) => {
       setValues((prevState) => ({ ...prevState, [key]: value }));
+      setErrors({ ...errors, [key]: undefined });
+    };
 
   const handleSubmit = async () => {
+    setIsLoading(true);
     try {
       await api.fetchSignup({ ...values, rating: Number(values.rating) });
       window.location.href = "/login";
     } catch (e) {
       console.error(e);
+      if (!isMounted()) {
+        return;
+      }
+      const { error, validationErrors } =
+        e as IValidationErrorResponse<ISignupFormValues>;
+      if (
+        error === FAILED_VALIDATION_ERROR_CODE &&
+        validationErrors !== undefined
+      ) {
+        setErrors(validationErrors);
+      }
+    } finally {
+      if (isMounted()) {
+        setIsLoading(false);
+      }
     }
   };
+
+  const getErrorText = getErrorTextFunction(
+    SIGNUP_FORM_VALIDATION_ERRORS,
+    errors
+  );
+
+  const hasErrors = !isObjectEmpty(errors);
 
   return (
     <form
@@ -51,6 +85,9 @@ export const SignupForm: FC = () => {
           type="text"
           value={username}
           label="Имя пользователя"
+          errorText={getErrorText("username")}
+          isInvalid={errors?.username !== undefined}
+          isDisabled={isLoading}
           isRequired
           onChange={handleValuesChange("username")}
         />
@@ -62,6 +99,9 @@ export const SignupForm: FC = () => {
           value={password}
           label="Пароль"
           autoComplete="new-password"
+          errorText={getErrorText("password")}
+          isInvalid={errors?.password !== undefined}
+          isDisabled={isLoading}
           isRequired
           onChange={handleValuesChange("password")}
         />
@@ -72,7 +112,10 @@ export const SignupForm: FC = () => {
           type="text"
           value={rating}
           label="Рейтинг"
-          maxLength={3}
+          maxLength={4}
+          errorText={getErrorText("rating")}
+          isInvalid={errors?.rating !== undefined}
+          isDisabled={isLoading}
           isRequired
           onChange={(v) => {
             if (NUMBER_REGEXP.test(v)) {
@@ -83,7 +126,9 @@ export const SignupForm: FC = () => {
       </div>
 
       <div className={classes.element}>
-        <Button type="submit">Зарегистрироваться</Button>
+        <Button type="submit" isDisabled={hasErrors || isLoading}>
+          Зарегистрироваться
+        </Button>
       </div>
 
       <div className={classes.element}>

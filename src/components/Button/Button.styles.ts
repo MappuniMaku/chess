@@ -1,5 +1,6 @@
 import { createUseStyles } from "react-jss";
 import { colors } from "theme";
+import { rgba } from "helpers";
 
 export default createUseStyles({
   root: {
@@ -23,6 +24,11 @@ export default createUseStyles({
 
     "&:active": {
       backgroundColor: colors.GREEN_ACTIVE,
+    },
+
+    "&:disabled": {
+      backgroundColor: rgba(colors.GREEN, 0.5),
+      cursor: "default",
     },
   },
 });

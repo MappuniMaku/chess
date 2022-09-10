@@ -71,7 +71,7 @@ class ApiClient {
       if (shouldRedirectOnUnauthorized && status === 401) {
         window.location.href = "/login";
       }
-      throw response;
+      throw await response.json();
     }
 
     return response.json();

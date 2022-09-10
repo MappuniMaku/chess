@@ -2,9 +2,7 @@ import { createUseStyles } from "react-jss";
 import { colors } from "theme";
 
 export default createUseStyles({
-  root: {
-    position: "relative",
-  },
+  root: {},
 
   floatingLabel: {
     "& $label": {
@@ -24,14 +22,32 @@ export default createUseStyles({
     },
   },
 
+  invalid: {
+    "& $input": {
+      borderColor: colors.RED,
+
+      "&:hover": {
+        borderColor: colors.RED,
+      },
+    },
+
+    "& $label": {
+      color: colors.RED,
+    },
+  },
+
   hasValue: {
     extend: "floatingLabel",
+  },
+
+  inputWrapper: {
+    position: "relative",
   },
 
   input: {
     width: "100%",
     height: 48,
-    padding: [16, 12, 0],
+    padding: [16, 16, 0],
     backgroundColor: "white",
     border: [1, "solid", colors.LIGHT_GRAY],
     borderRadius: 4,
@@ -56,7 +72,7 @@ export default createUseStyles({
   label: {
     position: "absolute",
     top: "calc(50% + 1px)",
-    left: 12,
+    left: 16,
     display: "block",
     fontSize: 16,
     transform: "translateY(-50%)",
@@ -65,5 +81,12 @@ export default createUseStyles({
     color: colors.GRAY,
     transition: "0.25s ease-in-out",
     transitionProperty: "transform, color",
+  },
+
+  errorText: {
+    marginTop: 4,
+    paddingLeft: 16,
+    fontSize: 14,
+    color: colors.RED,
   },
 });

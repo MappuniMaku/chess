@@ -1,4 +1,4 @@
-import { ISendRequestOptions } from "api/types";
+import { ISendRequestOptions } from "api";
 import { IProfile } from "types";
 
 export type IFetchProfileResponse = IProfile;

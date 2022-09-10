@@ -1,1 +1,3 @@
 export const NUMBER_REGEXP = /^\d*$/;
+
+export const FAILED_VALIDATION_ERROR_CODE = "VALIDATION_FAILED";
