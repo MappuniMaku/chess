@@ -1,8 +1,10 @@
 import React, { FC, useEffect, useRef } from "react";
+import clsx from "clsx";
 
 import { IUsersFilters, IUsersListData } from "types";
 import { Preloader } from "components";
 import { HeadingButton } from "./components";
+import { useAppSelector } from "hooks";
 
 import useStyles from "./PlayersList.styles";
 
@@ -24,6 +26,10 @@ export const PlayersList: FC<IPlayersListProps> = ({
   onScrollLoad,
 }) => {
   const classes = useStyles();
+
+  const { connectedUsers } = useAppSelector(
+    (state) => state.connectedUsersList
+  );
 
   const { items, page, totalPages } = data ?? {};
 
@@ -75,6 +81,7 @@ export const PlayersList: FC<IPlayersListProps> = ({
           isDisabled={isLoading || isLoadingOnScroll}
           onFiltersChange={onFiltersChange}
         />
+        <span>Статус</span>
       </div>
       {!isLoading ? (
         <>
@@ -83,10 +90,19 @@ export const PlayersList: FC<IPlayersListProps> = ({
               <ul className={classes.list}>
                 {items.map((i) => {
                   const { username, rating } = i;
+                  const isOnline =
+                    connectedUsers.findIndex((u) => u.username === username) !==
+                    -1;
                   return (
                     <li key={username} className={classes.listItem}>
                       <span>{username}</span>
                       <span>{rating}</span>
+                      <span
+                        className={clsx(
+                          classes.statusBullet,
+                          isOnline && classes.statusBulletOnline
+                        )}
+                      />
                     </li>
                   );
                 })}

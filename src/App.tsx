@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+import React, { FC, useEffect } from "react";
 import { Route, Routes } from "react-router-dom";
 
 import { fetchUser } from "store/slices";
@@ -9,11 +9,16 @@ import {
   PlayersListPage,
   SignupPage,
 } from "pages";
-import { useAppDispatch } from "./hooks";
+import { useAppDispatch, useWebSockets } from "hooks";
 
 export const App: FC = () => {
   const dispatch = useAppDispatch();
-  dispatch(fetchUser());
+  useWebSockets();
+
+  useEffect(() => {
+    dispatch(fetchUser());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <Routes>

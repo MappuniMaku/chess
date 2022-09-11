@@ -14,6 +14,7 @@ import {
   IFetchUsersResponse,
 } from "./methods";
 import { IUsersFilters } from "types";
+import { LOCAL_BACKEND_ADDRESS, PRODUCTION_BACKEND_ADDRESS } from "consts";
 
 class ApiClient {
   async sendRequest<ResponseType>({
@@ -37,8 +38,8 @@ class ApiClient {
 
     const baseUrl =
       process.env.NODE_ENV === "development"
-        ? "http://localhost:3001"
-        : "https://chess-backend-nest.herokuapp.com";
+        ? LOCAL_BACKEND_ADDRESS
+        : PRODUCTION_BACKEND_ADDRESS;
 
     const stringifiedParams: Record<string, string> = Object.keys(
       params ?? {}

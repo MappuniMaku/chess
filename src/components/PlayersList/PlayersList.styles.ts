@@ -28,6 +28,19 @@ export default createUseStyles({
     },
   },
 
+  statusBullet: {
+    display: "block",
+    alignSelf: "center",
+    width: 8,
+    height: 8,
+    backgroundColor: colors.GRAY,
+    borderRadius: "50%",
+  },
+
+  statusBulletOnline: {
+    backgroundColor: colors.GREEN,
+  },
+
   scrollLoader: {
     display: "flex",
     justifyContent: "center",
