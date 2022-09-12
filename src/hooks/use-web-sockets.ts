@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { io } from "socket.io-client";
 
 import {
@@ -20,15 +20,20 @@ const socket = io(
 export const useWebSockets = () => {
   const dispatch = useAppDispatch();
 
+  const [isWsConnected, setWsConnected] = useState(false);
+
   const { value: user } = useAppSelector((state) => state.user);
 
   useEffect(() => {
-    socket.on("connect", () => {
-      console.log("connected");
+    socket.on(WS_EVENTS.CONNECT, () => {
+      console.log("ws connected");
+      socket.emit(WS_EVENTS.JOIN, { user });
+      setWsConnected(true);
     });
 
     socket.on(WS_EVENTS.DISCONNECT, () => {
-      console.log("disconnected");
+      console.log("ws disconnectedd");
+      setWsConnected(false);
     });
 
     socket.on(WS_EVENTS.UPDATE_LOBBY, (data: IUser[]) => {
@@ -36,14 +41,18 @@ export const useWebSockets = () => {
     });
 
     return () => {
+      socket.off(WS_EVENTS.CONNECT);
       socket.off(WS_EVENTS.UPDATE_LOBBY);
-      socket.off("connect");
       socket.off(WS_EVENTS.DISCONNECT);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
+    if (user === undefined || !isWsConnected) {
+      return;
+    }
+    console.log("sent user");
     socket.emit(WS_EVENTS.JOIN, { user });
-  }, [user]);
+  }, [user, isWsConnected]);
 };
