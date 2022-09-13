@@ -15,6 +15,7 @@ import {
 } from "./methods";
 import { IUsersFilters } from "types";
 import { LOCAL_BACKEND_ADDRESS, PRODUCTION_BACKEND_ADDRESS } from "consts";
+import { clearCookie } from "helpers";
 
 class ApiClient {
   async sendRequest<ResponseType>({
@@ -103,7 +104,7 @@ class ApiClient {
       options: fetchLoginOptions,
       body,
     });
-    document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 GMT; Secure";
+    clearCookie("token");
     document.cookie = `token=${result.access_token}; expires=Fri, 31 Dec 9999 23:59:59 GMT; Secure`;
   }
 

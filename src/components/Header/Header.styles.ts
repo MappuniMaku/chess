@@ -42,6 +42,7 @@ export default createUseStyles({
 
   accountSection: {
     display: "flex",
+    alignItems: "center",
   },
 
   loginLink: {
@@ -63,5 +64,9 @@ export default createUseStyles({
     marginTop: 2,
     fontSize: 12,
     color: colors.GRAY,
+  },
+
+  logoutButton: {
+    marginLeft: 20,
   },
 });

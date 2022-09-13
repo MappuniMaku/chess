@@ -9,3 +9,4 @@ export * from "./Input";
 export * from "./Icon";
 export * from "./SignupForm";
 export * from "./Button";
+export * from "./TextButton";
