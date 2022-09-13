@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useRef } from "react";
+import React, { FC, useEffect, useRef, useState } from "react";
 
 import { Layout } from "layouts";
 import { Container, Game } from "components";
@@ -7,24 +7,22 @@ import { useAppSelector } from "hooks";
 export const GamePage: FC = () => {
   const isUserLoading = useAppSelector((state) => state.user.isLoading);
 
-  const ref = useRef<HTMLDivElement>(null);
-  const isGameInitialized = useRef(false);
+  const gameContainerRef = useRef<HTMLDivElement>(null);
+  const [isGameInitialized, setIsGameInitialized] = useState(false);
 
   useEffect(() => {
-    const div = ref.current;
-
-    if (div === null || isGameInitialized.current || isUserLoading) {
+    const container = gameContainerRef.current;
+    if (container === null || isGameInitialized || isUserLoading) {
       return;
     }
-
-    new Game(div);
-    isGameInitialized.current = true;
-  }, [ref, isUserLoading]);
+    new Game(container);
+    setIsGameInitialized(true);
+  }, [gameContainerRef, isGameInitialized, isUserLoading]);
 
   return (
     <Layout currentPage="game">
       <Container>
-        <div ref={ref} />
+        <div ref={gameContainerRef} />
       </Container>
     </Layout>
   );

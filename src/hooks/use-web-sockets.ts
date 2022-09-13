@@ -52,7 +52,6 @@ export const useWebSockets = () => {
     if (user === undefined || !isWsConnected) {
       return;
     }
-    console.log("sent user");
     socket.emit(WS_EVENTS.JOIN, { user });
   }, [user, isWsConnected]);
 };

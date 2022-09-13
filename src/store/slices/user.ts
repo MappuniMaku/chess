@@ -9,7 +9,7 @@ export interface IUserState {
 
 const initialState: IUserState = {
   value: undefined,
-  isLoading: false,
+  isLoading: true,
 };
 
 export const fetchUser = createAsyncThunk("user/fetchUser", async () => {
