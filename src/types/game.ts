@@ -20,6 +20,7 @@ export interface IKnight extends IPiece {
 
 export interface IPawn extends IPiece {
   getPossibleHits: () => number[];
+  getPossibleUnPassantMove: () => number | undefined;
   getMoves: () => number[];
 }
 

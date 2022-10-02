@@ -33,6 +33,10 @@ export class Pawn extends Piece implements IPawn {
           ]).map(getCellIdFromPosition)
         );
     }
+    return possibleHits;
+  }
+
+  getPossibleUnPassantMove() {
     // Here we check if the pawn can be hit by en passant
     const prevMove =
       this.movesLog.length > 0
@@ -42,34 +46,33 @@ export class Pawn extends Piece implements IPawn {
       prevMove === undefined ||
       prevMove.piece.type !== PieceType.Pawn ||
       (prevMove.initialPosition.col !== this.position.col - 1 &&
-        prevMove.initialPosition.col !== this.position.col + 1) ||
-      (this.color === PieceColor.Black && this.position.row !== 5) ||
-      (this.color === PieceColor.White && this.position.row !== 4)
+        prevMove.initialPosition.col !== this.position.col + 1)
     ) {
-      return possibleHits;
+      return undefined;
     }
-    switch (this.color) {
-      case PieceColor.Black:
-        if (
-          prevMove.initialPosition.row === 7 &&
-          prevMove.finalPosition.row === 5
-        ) {
-          possibleHits.push(
-            getCellIdFromPosition({ row: 6, col: prevMove.initialPosition.col })
-          );
-        }
-        break;
-      case PieceColor.White:
-        if (
-          prevMove.initialPosition.row === 2 &&
-          prevMove.finalPosition.row === 4
-        ) {
-          possibleHits.push(
-            getCellIdFromPosition({ row: 3, col: prevMove.initialPosition.col })
-          );
-        }
+    if (
+      this.color === PieceColor.Black &&
+      this.position.row === 5 &&
+      prevMove.initialPosition.row === 7 &&
+      prevMove.finalPosition.row === 5
+    ) {
+      return getCellIdFromPosition({
+        row: 6,
+        col: prevMove.initialPosition.col,
+      });
     }
-    return possibleHits;
+    if (
+      this.color === PieceColor.White &&
+      this.position.row === 4 &&
+      prevMove.initialPosition.row === 2 &&
+      prevMove.finalPosition.row === 4
+    ) {
+      return getCellIdFromPosition({
+        row: 3,
+        col: prevMove.initialPosition.col,
+      });
+    }
+    return undefined;
   }
 
   getMoves() {
@@ -95,6 +98,11 @@ export class Pawn extends Piece implements IPawn {
         (piece) => piece.color !== this.color && piece.cellId === item
       )
     );
+    const enPassantMove = this.getPossibleUnPassantMove();
+    if (enPassantMove !== undefined) {
+      possibleHits.push(enPassantMove);
+    }
+
     const positionsIds = positions.map(getCellIdFromPosition);
 
     if (this.pieces.some((piece) => piece.cellId === positionsIds[0])) {
