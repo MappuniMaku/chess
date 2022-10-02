@@ -88,6 +88,22 @@ export class Piece implements IPiece {
     this.$el.style.top = top;
   }
 
+  enablePointerEvents(): void {
+    this.$el.style.pointerEvents = "auto";
+  }
+
+  disablePointerEvents(): void {
+    this.$el.style.pointerEvents = "none";
+  }
+
+  addActivePieceClassName(): void {
+    this.$el.classList.add("Chess__piece--active");
+  }
+
+  removeActivePieceClassName(): void {
+    this.$el.classList.remove("Chess__piece--active");
+  }
+
   getProtectedPiecesCells(): number[] {
     if (lineMovingPieces.includes(this.type as ILineMovingPiece)) {
       const lines = (this as unknown as IBishop | IQueen | IRook).getLines();

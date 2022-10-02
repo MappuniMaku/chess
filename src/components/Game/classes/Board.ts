@@ -194,10 +194,9 @@ export class Board {
 
     this.showAvailableCells();
     this.$board.style.cursor = "grabbing";
-    const piecesArr: NodeListOf<HTMLImageElement> =
-      this.$board.querySelectorAll("[data-piece-id]");
-    piecesArr.forEach((item) => {
-      item.style.pointerEvents = "none";
+    activePiece.addActivePieceClassName();
+    this.pieces.forEach((p) => {
+      p.disablePointerEvents();
     });
 
     this.$board.addEventListener("mouseup", this.handleMouseUp);
@@ -330,6 +329,7 @@ export class Board {
       );
       cell.addPawnTransformationState(boundTransformPawnToPiece);
       this.addOverlay();
+      this.disableMoving();
       shouldAddMoveToLog = false;
     }
 
@@ -363,6 +363,7 @@ export class Board {
       ...boundMove,
       selectedPieceTypeToTransform: newPieceType,
     });
+    this.enableMoving();
   }
 
   addMoveToLog(move: IMove): void {
@@ -426,8 +427,8 @@ export class Board {
     this.$board.removeEventListener("mousemove", this.handleMouseMove);
     this.$board.removeEventListener("mouseup", this.handleMouseUp);
     this.$board.removeEventListener("mouseleave", this.handleMouseLeave);
-    this.pieces.forEach((item) => {
-      item.$el.style.pointerEvents = "auto";
+    this.pieces.forEach((p) => {
+      p.enablePointerEvents();
     });
     this.$board.style.cursor = "default";
   }
@@ -476,6 +477,7 @@ export class Board {
   }
 
   clearActivePiece(): void {
+    this.$activePiece?.removeActivePieceClassName();
     this.$activePiece = null;
     this.activePiecePossibleMoves = [];
   }

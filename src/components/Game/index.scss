@@ -151,6 +151,10 @@
     width: 60px;
     height: 60px;
     cursor: grab;
+
+    &--active {
+      z-index: 1;
+    }
   }
 
   &__movesLog {
