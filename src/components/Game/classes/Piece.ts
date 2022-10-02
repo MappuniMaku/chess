@@ -146,7 +146,7 @@ export class Piece implements IPiece {
     const activePieceColor = this.color;
 
     const { king, kingLines, kingDiagonals } = this.getKingInfo();
-    const lingLinesAndDiagonals = [...kingLines, ...kingDiagonals];
+    const kingLinesAndDiagonals = [...kingLines, ...kingDiagonals];
     const { cellId: kingCellId } = king;
 
     const enemyPieces = this.pieces.filter((p) => p.color !== activePieceColor);
@@ -161,7 +161,7 @@ export class Piece implements IPiece {
     return checkers.map((piece) => {
       const { type, cellId } = piece;
       if (possibleLineCheckers.includes(type)) {
-        const attackingLine = lingLinesAndDiagonals.find((line) =>
+        const attackingLine = kingLinesAndDiagonals.find((line) =>
           line.includes(cellId)
         );
         const attackerCellIndex = attackingLine?.findIndex(
@@ -276,7 +276,7 @@ export class Piece implements IPiece {
     return [
       ...getBounders(boundingPiecesLines, possibleLineBounders),
       ...getBounders(boundingPiecesDiagonals, possibleDiagonalBounders),
-    ];
+    ].filter((i) => i.boundingLine.length > 0);
   }
 
   getValidMoves() {
