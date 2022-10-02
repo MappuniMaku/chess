@@ -17,13 +17,13 @@ export enum PieceType {
   Queen = "queen",
 }
 
-export const lineMovingPieces = [
+export const lineMovingPieces: PieceType[] = [
   PieceType.Bishop,
   PieceType.Queen,
   PieceType.Rook,
-] as const;
+];
 
-export const cellMovingPieces = [PieceType.Knight, PieceType.King] as const;
+export const cellMovingPieces: PieceType[] = [PieceType.Knight, PieceType.King];
 
 export enum CastlingType {
   Short = "short",

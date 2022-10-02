@@ -1,14 +1,4 @@
-import {
-  CastlingType,
-  cellMovingPieces,
-  lineMovingPieces,
-  PieceColor,
-  PieceType,
-} from "enums";
-
-export type ILineMovingPiece = typeof lineMovingPieces[number];
-
-export type ICellMovingPiece = typeof cellMovingPieces[number];
+import { CastlingType, PieceColor, PieceType } from "enums";
 
 export interface IPiecePosition {
   row: number;

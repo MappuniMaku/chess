@@ -1,26 +1,15 @@
 import {
-  IBishop,
   IBoundingLine,
-  ICellMovingPiece,
   IKing,
   IKingBounder,
-  IKnight,
-  ILineMovingPiece,
   IMove,
   IPawn,
   IPiece,
   IPiecePosition,
   IPieceProps,
-  IQueen,
   IRook,
 } from "types";
-import {
-  CastlingType,
-  cellMovingPieces,
-  lineMovingPieces,
-  PieceColor,
-  PieceType,
-} from "enums";
+import { CastlingType, PieceColor, PieceType } from "enums";
 import {
   calculatePositionStyles,
   cutLinesIfNecessary,
@@ -35,6 +24,8 @@ import {
   getTopLeftDiagonal,
   getTopLine,
   getTopRightDiagonal,
+  isCellMovingPiece,
+  isLineMovingPiece,
   removeCellsIfNecessary,
 } from "../helpers";
 
@@ -105,12 +96,12 @@ export class Piece implements IPiece {
   }
 
   getProtectedPiecesCells(): number[] {
-    if (lineMovingPieces.includes(this.type as ILineMovingPiece)) {
-      const lines = (this as unknown as IBishop | IQueen | IRook).getLines();
+    if (isLineMovingPiece(this)) {
+      const lines = this.getLines();
       return getProtectedPiecesCellsFromLines({ lines, selectedPiece: this });
     }
-    if (cellMovingPieces.includes(this.type as ICellMovingPiece)) {
-      const ids = (this as unknown as IKing | IKnight).getIds();
+    if (isCellMovingPiece(this)) {
+      const ids = this.getIds();
       return getProtectedPiecesCellsFromIds({ ids, selectedPiece: this });
     }
     throw new Error(
@@ -119,15 +110,15 @@ export class Piece implements IPiece {
   }
 
   getMoves(): number[] {
-    if (lineMovingPieces.includes(this.type as ILineMovingPiece)) {
-      const lines = (this as unknown as IBishop | IQueen | IRook).getLines();
+    if (isLineMovingPiece(this)) {
+      const lines = this.getLines();
       return cutLinesIfNecessary({ lines, selectedPiece: this });
     }
-    if (cellMovingPieces.includes(this.type as ICellMovingPiece)) {
-      const ids = (this as unknown as IKing | IKnight).getIds();
+    if (isCellMovingPiece(this)) {
+      const ids = this.getIds();
       return removeCellsIfNecessary({ ids, selectedPiece: this });
     }
-    return (this as unknown as IPawn).getMoves();
+    return this.getMoves();
   }
 
   getKingInfo() {

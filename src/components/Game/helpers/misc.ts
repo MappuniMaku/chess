@@ -1,7 +1,9 @@
-import { IMove } from "types";
+import { IBishop, IKing, IKnight, IMove, IPiece, IQueen, IRook } from "types";
 import {
   CastlingType,
+  cellMovingPieces,
   COLUMN_NAMES,
+  lineMovingPieces,
   PieceType,
   SHORT_PIECES_NAMES_DICTIONARY,
 } from "enums";
@@ -63,3 +65,10 @@ export const getMoveString = (move: IMove): string => {
 
   return `${columnName}${revertedRow}${transformedPieceName}${checkMateState}`;
 };
+
+export const isLineMovingPiece = (
+  piece: IPiece
+): piece is IRook | IQueen | IBishop => lineMovingPieces.includes(piece.type);
+
+export const isCellMovingPiece = (piece: IPiece): piece is IKing | IKnight =>
+  cellMovingPieces.includes(piece.type);
