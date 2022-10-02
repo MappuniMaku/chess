@@ -4,7 +4,11 @@ import { isEven } from "utils";
 import { Cell } from "./Cell";
 import { Piece } from "./Piece";
 import { Bishop, King, Knight, Pawn, Queen, Rook } from "./pieces";
-import { getCellIdFromPosition, getMoveString } from "../helpers";
+import {
+  getCellIdFromPosition,
+  getMoveString,
+  getPositionFromCellId,
+} from "../helpers";
 
 const PIECES_DICTIONARY: Record<PieceType, typeof Piece> = {
   bishop: Bishop,
@@ -133,6 +137,7 @@ export class Board {
       cellId: getCellIdFromPosition(position),
       id: this.pieceIdCounter,
       pieces: this.pieces,
+      movesLog: this.movesLog,
       type: pieceType,
       hasMadeAnyMoves: false,
     });
@@ -271,11 +276,24 @@ export class Board {
     }
 
     let wasCaptureMade = false;
-    const enemyPiece = this.pieces.find(
+    let enemyPiece = this.pieces.find(
       (piece) =>
         piece.color !== this.$activePiece?.color &&
         piece.cellId === targetCellId
     );
+
+    // Here we check if the pawn was hit by en passant
+    if (
+      enemyPiece === undefined &&
+      activePieceType === PieceType.Pawn &&
+      targetCol !== startingPosition.col
+    ) {
+      enemyPiece = this.pieces.find(
+        (p) =>
+          p.position.col === targetCol &&
+          p.position.row === startingPosition.row
+      );
+    }
 
     if (enemyPiece !== undefined) {
       this.removePiece(enemyPiece);
@@ -430,7 +448,11 @@ export class Board {
       if (cell === undefined) {
         throw new Error(`showAvailableCells(): Cell with id ${id} not found`);
       }
-      if (this.pieces.some((piece) => piece.cellId === id)) {
+      if (
+        this.pieces.some((piece) => piece.cellId === id) ||
+        (activePiece.type === PieceType.Pawn &&
+          getPositionFromCellId(id).col !== activePiece.position.col)
+      ) {
         cell.addAvailableHitState();
         return;
       }

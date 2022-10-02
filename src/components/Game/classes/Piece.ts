@@ -6,6 +6,7 @@ import {
   IKingBounder,
   IKnight,
   ILineMovingPiece,
+  IMove,
   IPawn,
   IPiece,
   IPiecePosition,
@@ -44,17 +45,27 @@ export class Piece implements IPiece {
   cellId: number;
   hasMadeAnyMoves: boolean;
   readonly pieces: IPiece[];
+  readonly movesLog: IMove[];
   readonly color: PieceColor;
   readonly $el: HTMLImageElement;
 
   constructor(props: IPieceProps) {
-    const { id, position, color, pieces, cellId, type, hasMadeAnyMoves } =
-      props;
+    const {
+      id,
+      position,
+      color,
+      pieces,
+      movesLog,
+      cellId,
+      type,
+      hasMadeAnyMoves,
+    } = props;
     this.id = id;
     this.position = position;
     this.cellId = cellId;
     this.color = color;
     this.pieces = pieces;
+    this.movesLog = movesLog;
     this.type = type;
     this.hasMadeAnyMoves = hasMadeAnyMoves;
     this.$el = this.getElement();

@@ -49,6 +49,7 @@ export interface IPiece {
   type: PieceType;
   hasMadeAnyMoves: boolean;
   pieces: IPiece[];
+  movesLog: IMove[];
   setPosition: (position: IPiecePosition) => void;
   getProtectedPiecesCells: () => number[];
   getMoves: () => number[];
@@ -76,6 +77,7 @@ export interface IPieceProps {
   type: PieceType;
   hasMadeAnyMoves: boolean;
   pieces: IPiece[];
+  movesLog: IMove[];
 }
 
 export interface ICutLinesIfNecessaryFunctionProps {

@@ -33,13 +33,53 @@ export class Pawn extends Piece implements IPawn {
           ]).map(getCellIdFromPosition)
         );
     }
-    return possibleHits;
+    const filteredPossibleHits = possibleHits.filter((item) =>
+      this.pieces.some(
+        (piece) => piece.color !== this.color && piece.cellId === item
+      )
+    );
+    // Here we check if the pawn can be hit by en passant
+    const prevMove =
+      this.movesLog.length > 0
+        ? this.movesLog[this.movesLog.length - 1]
+        : undefined;
+    if (
+      prevMove === undefined ||
+      prevMove.piece.type !== PieceType.Pawn ||
+      (prevMove.initialPosition.col !== this.position.col - 1 &&
+        prevMove.initialPosition.col !== this.position.col + 1) ||
+      (this.color === PieceColor.Black && this.position.row !== 5) ||
+      (this.color === PieceColor.White && this.position.row !== 4)
+    ) {
+      return filteredPossibleHits;
+    }
+    switch (this.color) {
+      case PieceColor.Black:
+        if (
+          prevMove.initialPosition.row === 7 &&
+          prevMove.finalPosition.row === 5
+        ) {
+          filteredPossibleHits.push(
+            getCellIdFromPosition({ row: 6, col: prevMove.initialPosition.col })
+          );
+        }
+        break;
+      case PieceColor.White:
+        if (
+          prevMove.initialPosition.row === 2 &&
+          prevMove.finalPosition.row === 4
+        ) {
+          filteredPossibleHits.push(
+            getCellIdFromPosition({ row: 3, col: prevMove.initialPosition.col })
+          );
+        }
+    }
+    return filteredPossibleHits;
   }
 
   getMoves() {
     const { row, col } = this.position;
     const positions: IPiecePosition[] = [];
-    const possibleHits = this.getPossibleHits();
     switch (this.color) {
       case PieceColor.Black:
         if (row === 2) {
@@ -55,21 +95,17 @@ export class Pawn extends Piece implements IPawn {
         }
         positions.push({ row: row - 1, col });
     }
-    const filteredPossibleHits = possibleHits.filter((item) =>
-      this.pieces.some(
-        (piece) => piece.color !== this.color && piece.cellId === item
-      )
-    );
+    const possibleHits = this.getPossibleHits();
     const positionsIds = positions.map(getCellIdFromPosition);
 
     if (this.pieces.some((piece) => piece.cellId === positionsIds[0])) {
-      return filteredPossibleHits;
+      return possibleHits;
     }
 
     if (this.pieces.some((piece) => piece.cellId === positionsIds[1])) {
-      return [...filteredPossibleHits, positionsIds[0]];
+      return [...possibleHits, positionsIds[0]];
     }
 
-    return [...filteredPossibleHits, ...positionsIds];
+    return [...possibleHits, ...positionsIds];
   }
 }
