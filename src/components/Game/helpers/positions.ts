@@ -5,6 +5,7 @@ import {
   IPiecePosition,
   IRemoveCellsIfNecessaryFunction,
 } from "types";
+import { PieceType } from "../../../enums";
 
 export const getCellIdFromPosition = (position: IPiecePosition): number => {
   const { row, col } = position;
@@ -25,11 +26,14 @@ export const cutLinesIfNecessary: ICutLinesIfNecessaryFunction = ({
   lines.forEach((line) => {
     for (const id of line) {
       const piece = pieces.find((item) => item.cellId === id);
-      if (piece === undefined) {
+      const { color } = piece ?? {};
+      if (
+        piece === undefined ||
+        (piece.type === PieceType.King && selectedPieceColor !== color)
+      ) {
         result.push(id);
         continue;
       }
-      const { color } = piece;
       if (selectedPieceColor !== color) {
         result.push(id);
       }
