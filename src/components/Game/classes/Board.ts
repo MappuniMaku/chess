@@ -359,11 +359,11 @@ export class Board {
     this.removePiece(pawn);
     this.addPiece(newPieceType, color, boundMove.finalPosition);
     this.removeOverlay();
+    this.enableMoving();
     this.addMoveToLog({
       ...boundMove,
       selectedPieceTypeToTransform: newPieceType,
     });
-    this.enableMoving();
   }
 
   addMoveToLog(move: IMove): void {

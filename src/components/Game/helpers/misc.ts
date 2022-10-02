@@ -29,7 +29,7 @@ export const getMoveString = (move: IMove): string => {
   const { row, col } = finalPosition;
 
   const checkMateState = isMate
-    ? "#"
+    ? " #"
     : isStalemate
     ? " 1/2 - 1/2"
     : wasCheckMade
