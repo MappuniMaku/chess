@@ -49,15 +49,25 @@ export class Board {
     this.cells = this.getInitialCells();
     this.renderCells();
     this.pieces = [];
-    this.$board.addEventListener("mousedown", this.handleMouseDown.bind(this));
     this.$activePiece = null;
     this.activePiecePossibleMoves = [];
     this.pieceIdCounter = 0;
     this.currentlyMovingColor = PieceColor.White;
     this.movesLog = [];
+    this.handleMouseDown = this.handleMouseDown.bind(this);
     this.handleMouseMove = this.handleMouseMove.bind(this);
     this.handleMouseUp = this.handleMouseUp.bind(this);
     this.handleMouseLeave = this.handleMouseLeave.bind(this);
+    this.clearListeners = this.clearListeners.bind(this);
+    this.enableMoving();
+  }
+
+  enableMoving(): void {
+    this.$board.addEventListener("mousedown", this.handleMouseDown);
+  }
+
+  disableMoving(): void {
+    this.$board.removeEventListener("mousedown", this.handleMouseDown);
   }
 
   render(): void {
@@ -190,13 +200,8 @@ export class Board {
       item.style.pointerEvents = "none";
     });
 
-    this.clearListeners = this.clearListeners.bind(this);
-
-    // eslint-disable-next-line @typescript-eslint/unbound-method
     this.$board.addEventListener("mouseup", this.handleMouseUp);
-    // eslint-disable-next-line @typescript-eslint/unbound-method
     this.$board.addEventListener("mousemove", this.handleMouseMove);
-    // eslint-disable-next-line @typescript-eslint/unbound-method
     this.$board.addEventListener("mouseleave", this.handleMouseLeave);
   }
 
@@ -370,10 +375,20 @@ export class Board {
       throw new Error("addMoveToLog() enemy king not found");
     }
 
+    const wasCheckMade = enemyKing.getKingCheckers().length > 0;
+
     this.movesLog.push({
       ...move,
-      wasCheckMade: enemyKing.getKingCheckers().length > 0,
+      wasCheckMade,
     });
+    const enemyPieces = this.pieces.filter((p) => p.color !== pieceColor);
+    const availableMoves = enemyPieces.flatMap((p) => p.getValidMoves());
+    if (availableMoves.length === 0) {
+      const lastMove = this.movesLog[this.movesLog.length - 1];
+      lastMove.isMate = wasCheckMade;
+      lastMove.isStalemate = !wasCheckMade;
+      this.disableMoving();
+    }
     this.renderMovesLog();
   }
 
@@ -408,15 +423,9 @@ export class Board {
   }
 
   clearListeners(): void {
-    // eslint-disable-next-line @typescript-eslint/unbound-method
     this.$board.removeEventListener("mousemove", this.handleMouseMove);
-    // eslint-disable-next-line @typescript-eslint/unbound-method
     this.$board.removeEventListener("mouseup", this.handleMouseUp);
-    this.$board.removeEventListener(
-      "mouseleave",
-      // eslint-disable-next-line @typescript-eslint/unbound-method
-      this.handleMouseLeave
-    );
+    this.$board.removeEventListener("mouseleave", this.handleMouseLeave);
     this.pieces.forEach((item) => {
       item.$el.style.pointerEvents = "auto";
     });

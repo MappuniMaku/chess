@@ -19,19 +19,27 @@ export const getMoveString = (move: IMove): string => {
     wasCaptureMade,
     castlingType,
     wasCheckMade,
+    isMate,
+    isStalemate,
     selectedPieceTypeToTransform,
   } = move;
   const { type: pieceType } = piece;
   const { row, col } = finalPosition;
 
-  const checkState = wasCheckMade ? "+" : "";
+  const checkMateState = isMate
+    ? "#"
+    : isStalemate
+    ? " 1/2 - 1/2"
+    : wasCheckMade
+    ? "+"
+    : "";
 
   if (castlingType === CastlingType.Short) {
-    return `0-0${checkState}`;
+    return `0-0${checkMateState}`;
   }
 
   if (castlingType === CastlingType.Long) {
-    return `0-0-0${checkState}`;
+    return `0-0-0${checkMateState}`;
   }
 
   const revertedRow = reverseRows[row];
@@ -46,12 +54,12 @@ export const getMoveString = (move: IMove): string => {
       : "";
 
   if (pieceType !== PieceType.Pawn) {
-    return `${pieceName}${delimiter}${columnName}${revertedRow}${checkState}`;
+    return `${pieceName}${delimiter}${columnName}${revertedRow}${checkMateState}`;
   }
 
   if (wasCaptureMade) {
-    return `${initialColumnName}${delimiter}${columnName}${revertedRow}${transformedPieceName}${checkState}`;
+    return `${initialColumnName}${delimiter}${columnName}${revertedRow}${transformedPieceName}${checkMateState}`;
   }
 
-  return `${columnName}${revertedRow}${transformedPieceName}${checkState}`;
+  return `${columnName}${revertedRow}${transformedPieceName}${checkMateState}`;
 };

@@ -144,4 +144,6 @@ export interface IMove {
   castlingType?: CastlingType;
   selectedPieceTypeToTransform?: PieceType;
   wasCheckMade?: boolean;
+  isMate?: boolean;
+  isStalemate?: boolean;
 }
