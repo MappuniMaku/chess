@@ -33,11 +33,6 @@ export class Pawn extends Piece implements IPawn {
           ]).map(getCellIdFromPosition)
         );
     }
-    const filteredPossibleHits = possibleHits.filter((item) =>
-      this.pieces.some(
-        (piece) => piece.color !== this.color && piece.cellId === item
-      )
-    );
     // Here we check if the pawn can be hit by en passant
     const prevMove =
       this.movesLog.length > 0
@@ -51,7 +46,7 @@ export class Pawn extends Piece implements IPawn {
       (this.color === PieceColor.Black && this.position.row !== 5) ||
       (this.color === PieceColor.White && this.position.row !== 4)
     ) {
-      return filteredPossibleHits;
+      return possibleHits;
     }
     switch (this.color) {
       case PieceColor.Black:
@@ -59,7 +54,7 @@ export class Pawn extends Piece implements IPawn {
           prevMove.initialPosition.row === 7 &&
           prevMove.finalPosition.row === 5
         ) {
-          filteredPossibleHits.push(
+          possibleHits.push(
             getCellIdFromPosition({ row: 6, col: prevMove.initialPosition.col })
           );
         }
@@ -69,12 +64,12 @@ export class Pawn extends Piece implements IPawn {
           prevMove.initialPosition.row === 2 &&
           prevMove.finalPosition.row === 4
         ) {
-          filteredPossibleHits.push(
+          possibleHits.push(
             getCellIdFromPosition({ row: 3, col: prevMove.initialPosition.col })
           );
         }
     }
-    return filteredPossibleHits;
+    return possibleHits;
   }
 
   getMoves() {
@@ -95,7 +90,11 @@ export class Pawn extends Piece implements IPawn {
         }
         positions.push({ row: row - 1, col });
     }
-    const possibleHits = this.getPossibleHits();
+    const possibleHits = this.getPossibleHits().filter((item) =>
+      this.pieces.some(
+        (piece) => piece.color !== this.color && piece.cellId === item
+      )
+    );
     const positionsIds = positions.map(getCellIdFromPosition);
 
     if (this.pieces.some((piece) => piece.cellId === positionsIds[0])) {
