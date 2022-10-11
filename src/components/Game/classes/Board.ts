@@ -9,6 +9,7 @@ import {
   getMoveString,
   getPositionFromCellId,
 } from "../helpers";
+import { pickPropsFromObj } from "helpers";
 
 const PIECES_DICTIONARY: Record<PieceType, typeof Piece> = {
   bishop: Bishop,
@@ -304,8 +305,15 @@ export class Board {
       wasCaptureMade = true;
     }
 
+    this.$activePiece.hasMadeAnyMoves = true;
+
     const move: IMove = {
-      piece: this.$activePiece,
+      piece: pickPropsFromObj(this.$activePiece, [
+        "id",
+        "type",
+        "color",
+        "hasMadeAnyMoves",
+      ]),
       initialPosition: startingPosition,
       finalPosition: targetPosition,
       wasCaptureMade,
@@ -334,8 +342,6 @@ export class Board {
     }
 
     this.movePiece(pieceId, targetPosition);
-
-    this.$activePiece.hasMadeAnyMoves = true;
 
     if (shouldAddMoveToLog) {
       this.addMoveToLog(move);

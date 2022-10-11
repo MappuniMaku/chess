@@ -128,7 +128,7 @@ export interface IBoundingLine {
 }
 
 export interface IMove {
-  piece: IPiece;
+  piece: Pick<IPiece, "id" | "type" | "color" | "hasMadeAnyMoves">;
   initialPosition: IPiecePosition;
   finalPosition: IPiecePosition;
   wasCaptureMade?: boolean;
