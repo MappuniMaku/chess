@@ -1,11 +1,16 @@
 import { Action, configureStore, ThunkAction } from "@reduxjs/toolkit";
 
-import { userReducer, connectedUsersListReducer } from "./slices";
+import {
+  userReducer,
+  connectedUsersListReducer,
+  searchingForGameUsersListReducer,
+} from "./slices";
 
 export const store = configureStore({
   reducer: {
     user: userReducer,
     connectedUsersList: connectedUsersListReducer,
+    searchingForGameUsersList: searchingForGameUsersListReducer,
   },
 });
 

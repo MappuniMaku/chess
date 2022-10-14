@@ -1,21 +1,23 @@
 import { useEffect, useState } from "react";
 import { io } from "socket.io-client";
 
+import { LOCAL_BACKEND_ADDRESS, PRODUCTION_BACKEND_ADDRESS } from "consts";
 import {
-  LOCAL_BACKEND_ADDRESS,
-  PRODUCTION_BACKEND_ADDRESS,
-  WS_EVENTS,
-} from "consts";
-import { updateConnectedUsers } from "store/slices";
+  updateConnectedUsers,
+  updateSearchingForGameUsers,
+} from "store/slices";
 import { useAppDispatch, useAppSelector } from "./store";
 import { IUser } from "types";
+import { WsEvents } from "enums";
 
-const socket = io(
+export const socket = io(
   process.env.NODE_ENV === "development"
     ? LOCAL_BACKEND_ADDRESS
     : PRODUCTION_BACKEND_ADDRESS,
   { transports: ["websocket"] }
 );
+
+let isSocketInitialized = false;
 
 export const useWebSockets = () => {
   const dispatch = useAppDispatch();
@@ -25,25 +27,44 @@ export const useWebSockets = () => {
   const { value: user } = useAppSelector((state) => state.user);
 
   useEffect(() => {
-    socket.on(WS_EVENTS.CONNECT, () => {
+    if (isSocketInitialized) {
+      throw new Error("useWebSockets hook can be called only once");
+    }
+    isSocketInitialized = true;
+
+    socket.on(WsEvents.Connect, () => {
       console.log("ws connected");
-      socket.emit(WS_EVENTS.JOIN, { user });
+      socket.emit(WsEvents.Join, { user });
       setWsConnected(true);
     });
 
-    socket.on(WS_EVENTS.DISCONNECT, () => {
+    socket.on(WsEvents.Disconnect, () => {
       console.log("ws disconnectedd");
       setWsConnected(false);
     });
 
-    socket.on(WS_EVENTS.UPDATE_LOBBY, (data: IUser[]) => {
-      dispatch(updateConnectedUsers(data));
-    });
+    socket.on(
+      WsEvents.UpdateLobby,
+      ({
+        users,
+        searchingForGameUsers,
+      }: {
+        users?: IUser[];
+        searchingForGameUsers?: IUser[];
+      }) => {
+        if (users !== undefined) {
+          dispatch(updateConnectedUsers(users));
+        }
+        if (searchingForGameUsers !== undefined) {
+          dispatch(updateSearchingForGameUsers(searchingForGameUsers));
+        }
+      }
+    );
 
     return () => {
-      socket.off(WS_EVENTS.CONNECT);
-      socket.off(WS_EVENTS.UPDATE_LOBBY);
-      socket.off(WS_EVENTS.DISCONNECT);
+      socket.off(WsEvents.Connect);
+      socket.off(WsEvents.UpdateLobby);
+      socket.off(WsEvents.Disconnect);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -52,6 +73,6 @@ export const useWebSockets = () => {
     if (user === undefined || !isWsConnected) {
       return;
     }
-    socket.emit(WS_EVENTS.JOIN, { user });
+    socket.emit(WsEvents.Join, { user });
   }, [user, isWsConnected]);
 };
