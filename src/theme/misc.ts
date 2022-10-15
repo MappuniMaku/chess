@@ -3,7 +3,8 @@ export const colors = {
   DARK_GRAY: "#73777B",
   GRAY: "#999999",
   LIGHT_GRAY: "#d4d6d8",
-  LIGHTEST_GRAY: "#eeeeee",
+  LIGHTER_GRAY: "#eeeeee",
+  LIGHTEST_GRAY: "#f8f8f8",
   GREEN: "#79d70f",
   GREEN_HOVER: "#3ec70b",
   GREEN_ACTIVE: "#61b15a",
@@ -11,6 +12,7 @@ export const colors = {
 };
 
 export const linkStyles = {
+  outline: "none",
   color: colors.GREEN,
 
   "&:hover, &:focus": {
@@ -20,4 +22,8 @@ export const linkStyles = {
   "&:active": {
     color: colors.GREEN_ACTIVE,
   },
+};
+
+export const boxShadows = {
+  LIGHT: `0px 8px 24px ${colors.LIGHTER_GRAY}`,
 };

@@ -50,23 +50,4 @@ export default createUseStyles({
 
     ...linkStyles,
   },
-
-  account: {
-    display: "flex",
-    flexDirection: "column",
-  },
-
-  username: {
-    fontSize: 14,
-  },
-
-  rating: {
-    marginTop: 2,
-    fontSize: 12,
-    color: colors.GRAY,
-  },
-
-  logoutButton: {
-    marginLeft: 20,
-  },
 });

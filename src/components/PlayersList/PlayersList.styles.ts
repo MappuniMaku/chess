@@ -13,9 +13,7 @@ export default createUseStyles({
     fontWeight: "bold",
   },
 
-  list: {
-    listStyle: "none",
-  },
+  list: {},
 
   listItem: {
     display: "grid",

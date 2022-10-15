@@ -2,11 +2,10 @@ import React, { FC } from "react";
 import { Link } from "react-router-dom";
 import clsx from "clsx";
 
-import { Container, Preloader, TextButton } from "components";
+import { Account, Container, Preloader } from "components";
 import { useAppSelector } from "hooks";
 
 import useStyles from "./Header.styles";
-import { clearCookie } from "../../helpers";
 
 export interface IHeaderProps {
   currentPage: "main" | "game" | "playersList";
@@ -40,17 +39,11 @@ export const Header: FC<IHeaderProps> = ({ currentPage }) => {
   const { value: user, isLoading: isUserLoading } = useAppSelector(
     (state) => state.user
   );
-  const { username, rating } = user ?? {};
 
   const links = pages.map((p) => ({
     ...p,
     isActive: p.name === currentPage,
   }));
-
-  const handleLogout = () => {
-    clearCookie("token");
-    window.location.reload();
-  };
 
   return (
     <header className={classes.root}>
@@ -91,15 +84,7 @@ export const Header: FC<IHeaderProps> = ({ currentPage }) => {
                 Войти
               </Link>
             ) : (
-              <>
-                <div className={classes.account}>
-                  <span className={classes.username}>{username}</span>
-                  <span className={classes.rating}>Рейтинг: {rating}</span>
-                </div>
-                <div className={classes.logoutButton}>
-                  <TextButton onClick={handleLogout}>Выйти</TextButton>
-                </div>
-              </>
+              <Account />
             )}
           </div>
         </div>

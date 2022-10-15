@@ -61,7 +61,7 @@ export default createUseStyles({
     },
 
     "&:disabled": {
-      borderColor: colors.LIGHTEST_GRAY,
+      borderColor: colors.LIGHTER_GRAY,
 
       "& + $label": {
         color: colors.LIGHT_GRAY,

@@ -9,12 +9,9 @@ export default createUseStyles({
     alignItems: "center",
     padding: [16, 32],
     backgroundColor: colors.GREEN,
-    border: "none",
     borderRadius: 12,
-    outline: "none",
     fontSize: 16,
     color: "white",
-    cursor: "pointer",
     transitionProperty: "color, background-color",
     transition: "0.25s ease-in-out",
 

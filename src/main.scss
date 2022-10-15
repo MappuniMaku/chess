@@ -15,3 +15,15 @@ a {
   transition-property: color;
   transition: 0.25s ease-in-out;
 }
+
+button {
+  background: none;
+  border: none;
+  outline: none;
+  text-align: left;
+  cursor: pointer;
+}
+
+ul {
+  list-style: none;
+}

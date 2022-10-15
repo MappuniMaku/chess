@@ -10,3 +10,5 @@ export * from "./Icon";
 export * from "./SignupForm";
 export * from "./Button";
 export * from "./TextButton";
+export * from "./Account";
+export * from "./DropdownMenu";
