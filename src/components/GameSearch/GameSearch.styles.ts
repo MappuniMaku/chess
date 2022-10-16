@@ -1,7 +1,13 @@
 import { createUseStyles } from 'react-jss';
 
 export default createUseStyles({
-  root: {
+  root: {},
+
+  banInfo: {
+    marginBottom: 24,
+  },
+
+  buttons: {
     display: 'grid',
     gridAutoFlow: 'column',
     gridAutoColumns: 'max-content',

@@ -155,3 +155,10 @@ export interface IGame {
     secondsLeft: number;
   };
 }
+
+export interface IBannedPlayer {
+  user: IUser;
+  consequentlyDeclinedGamesCount: number;
+  isBanActive: boolean;
+  timeLeft: number;
+}

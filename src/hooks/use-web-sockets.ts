@@ -2,9 +2,14 @@ import { useEffect, useState } from 'react';
 import { io } from 'socket.io-client';
 
 import { LOCAL_BACKEND_ADDRESS, PRODUCTION_BACKEND_ADDRESS } from 'consts';
-import { updateConnectedUsers, updateSearchingForGameUsers, updateActiveGame } from 'store/slices';
+import {
+  updateConnectedUsers,
+  updateSearchingForGameUsers,
+  updateActiveGame,
+  updateBannedPlayers,
+} from 'store/slices';
 import { useAppDispatch, useAppSelector } from './store';
-import { IGame, IUser } from 'types';
+import { IBannedPlayer, IGame, IUser } from 'types';
 import { WsEvents } from 'enums';
 
 export const socket = io(
@@ -40,12 +45,23 @@ export const useWebSockets = () => {
 
     socket.on(
       WsEvents.UpdateLobby,
-      ({ users, searchingForGameUsers }: { users?: IUser[]; searchingForGameUsers?: IUser[] }) => {
+      ({
+        users,
+        searchingForGameUsers,
+        bannedPlayers,
+      }: {
+        users?: IUser[];
+        searchingForGameUsers?: IUser[];
+        bannedPlayers?: IBannedPlayer[];
+      }) => {
         if (users !== undefined) {
           dispatch(updateConnectedUsers(users));
         }
         if (searchingForGameUsers !== undefined) {
           dispatch(updateSearchingForGameUsers(searchingForGameUsers));
+        }
+        if (bannedPlayers !== undefined) {
+          dispatch(updateBannedPlayers(bannedPlayers));
         }
       },
     );
