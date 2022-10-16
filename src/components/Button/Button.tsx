@@ -30,7 +30,7 @@ export const Button: FC<IButtonProps> = ({
     >
       {isLoading && (
         <span className={classes.loader}>
-          <Preloader type="sync" size={8} color="white" />
+          <Preloader type="sync" size={8} color="white" speed={0.7} />
         </span>
       )}
       {children}

@@ -13,3 +13,5 @@ export * from "./TextButton";
 export * from "./Account";
 export * from "./DropdownMenu";
 export * from "./GameLauncher";
+export * from "./GameSearch";
+export * from "./GameConfirm";

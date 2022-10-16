@@ -150,4 +150,5 @@ export interface IGame {
   black: IPlayer;
   white: IPlayer;
   movesLog: IMove[];
+  isStarted: boolean;
 }

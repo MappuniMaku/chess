@@ -20,12 +20,14 @@ interface IPreloaderProps {
   type?: IPreloaderType;
   size?: number;
   color?: string;
+  speed?: number;
 }
 
 export const Preloader: FC<IPreloaderProps> = ({
   type = "hash",
   size = 20,
   color = colors.GREEN,
+  speed = 1,
 }) => {
   const classes = useStyles();
 
@@ -33,7 +35,7 @@ export const Preloader: FC<IPreloaderProps> = ({
 
   return (
     <div className={classes.root}>
-      <Loader size={size} color={color} />
+      <Loader size={size} color={color} speedMultiplier={speed} />
     </div>
   );
 };

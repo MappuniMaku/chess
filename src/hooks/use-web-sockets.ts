@@ -62,8 +62,20 @@ export const useWebSockets = () => {
       }
     );
 
-    socket.on(WsEvents.UpdateGame, ({ game }: { game?: IGame }) =>
-      dispatch(updateActiveGame(game))
+    socket.on(
+      WsEvents.UpdateGame,
+      ({
+        game,
+        isDeclinedByOpponent,
+      }: {
+        game?: IGame;
+        isDeclinedByOpponent?: boolean;
+      }) => {
+        dispatch(updateActiveGame(game));
+        if (isDeclinedByOpponent) {
+          socket.emit(WsEvents.StartSearching);
+        }
+      }
     );
 
     return () => {
