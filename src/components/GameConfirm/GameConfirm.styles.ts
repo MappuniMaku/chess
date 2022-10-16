@@ -14,6 +14,10 @@ export default createUseStyles({
     marginBottom: 24,
   },
 
+  timeLeft: {
+    marginBottom: 12,
+  },
+
   buttons: {
     display: 'grid',
     gridAutoFlow: 'column',

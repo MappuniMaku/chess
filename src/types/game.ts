@@ -151,4 +151,7 @@ export interface IGame {
   white: IPlayer;
   movesLog: IMove[];
   isStarted: boolean;
+  acceptanceStatus?: {
+    secondsLeft: number;
+  };
 }
