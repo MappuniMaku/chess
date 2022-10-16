@@ -1,4 +1,5 @@
 import { CastlingType, PieceColor, PieceType } from "enums";
+import { IUser } from "types";
 
 export interface IPiecePosition {
   row: number;
@@ -137,4 +138,16 @@ export interface IMove {
   wasCheckMade?: boolean;
   isMate?: boolean;
   isStalemate?: boolean;
+}
+
+export interface IPlayer {
+  user: IUser;
+  isGameAccepted: boolean;
+}
+
+export interface IGame {
+  id: string;
+  black: IPlayer;
+  white: IPlayer;
+  movesLog: IMove[];
 }

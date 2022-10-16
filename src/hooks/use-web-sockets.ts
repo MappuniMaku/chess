@@ -5,9 +5,10 @@ import { LOCAL_BACKEND_ADDRESS, PRODUCTION_BACKEND_ADDRESS } from "consts";
 import {
   updateConnectedUsers,
   updateSearchingForGameUsers,
+  updateActiveGame,
 } from "store/slices";
 import { useAppDispatch, useAppSelector } from "./store";
-import { IUser } from "types";
+import { IGame, IUser } from "types";
 import { WsEvents } from "enums";
 
 export const socket = io(
@@ -59,6 +60,10 @@ export const useWebSockets = () => {
           dispatch(updateSearchingForGameUsers(searchingForGameUsers));
         }
       }
+    );
+
+    socket.on(WsEvents.UpdateGame, ({ game }: { game?: IGame }) =>
+      dispatch(updateActiveGame(game))
     );
 
     return () => {

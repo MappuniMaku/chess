@@ -4,6 +4,7 @@ import {
   userReducer,
   connectedUsersListReducer,
   searchingForGameUsersListReducer,
+  activeGameReducer,
 } from "./slices";
 
 export const store = configureStore({
@@ -11,6 +12,7 @@ export const store = configureStore({
     user: userReducer,
     connectedUsersList: connectedUsersListReducer,
     searchingForGameUsersList: searchingForGameUsersListReducer,
+    activeGame: activeGameReducer,
   },
 });
 

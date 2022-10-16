@@ -16,4 +16,5 @@ export enum WsEvents {
   Disconnect = "disconnect",
   StartSearching = "start-searching",
   CancelSearching = "cancel-searching",
+  UpdateGame = "update-game",
 }

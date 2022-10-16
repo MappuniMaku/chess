@@ -12,3 +12,4 @@ export * from "./Button";
 export * from "./TextButton";
 export * from "./Account";
 export * from "./DropdownMenu";
+export * from "./GameLauncher";

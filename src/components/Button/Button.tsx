@@ -1,11 +1,14 @@
 import React, { FC, ReactNode } from "react";
 
+import { Preloader } from "components";
+
 import useStyles from "./Button.styles";
 
 export interface IButtonProps {
   children: ReactNode | ReactNode[];
   type?: "submit" | "button";
   isDisabled?: boolean;
+  isLoading?: boolean;
   onClick?: () => void;
 }
 
@@ -13,6 +16,7 @@ export const Button: FC<IButtonProps> = ({
   children,
   type = "button",
   isDisabled,
+  isLoading,
   onClick,
 }) => {
   const classes = useStyles();
@@ -21,9 +25,14 @@ export const Button: FC<IButtonProps> = ({
     <button
       type={type}
       className={classes.root}
-      disabled={isDisabled}
+      disabled={isDisabled || isLoading}
       onClick={onClick}
     >
+      {isLoading && (
+        <span className={classes.loader}>
+          <Preloader type="sync" size={8} color="white" />
+        </span>
+      )}
       {children}
     </button>
   );

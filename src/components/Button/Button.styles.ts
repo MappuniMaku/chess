@@ -28,4 +28,8 @@ export default createUseStyles({
       cursor: "default",
     },
   },
+
+  loader: {
+    marginRight: 8,
+  },
 });
