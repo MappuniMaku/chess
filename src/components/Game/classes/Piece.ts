@@ -8,8 +8,8 @@ import {
   IPiecePosition,
   IPieceProps,
   IRook,
-} from "types";
-import { CastlingType, PieceColor, PieceType } from "enums";
+} from 'types';
+import { CastlingType, PieceColor, PieceType } from 'enums';
 import {
   calculatePositionStyles,
   cutLinesIfNecessary,
@@ -27,7 +27,7 @@ import {
   isCellMovingPiece,
   isLineMovingPiece,
   removeCellsIfNecessary,
-} from "../helpers";
+} from '../helpers';
 
 export class Piece implements IPiece {
   readonly id: number;
@@ -41,16 +41,7 @@ export class Piece implements IPiece {
   readonly $el: HTMLImageElement;
 
   constructor(props: IPieceProps) {
-    const {
-      id,
-      position,
-      color,
-      pieces,
-      movesLog,
-      cellId,
-      type,
-      hasMadeAnyMoves,
-    } = props;
+    const { id, position, color, pieces, movesLog, cellId, type, hasMadeAnyMoves } = props;
     this.id = id;
     this.position = position;
     this.cellId = cellId;
@@ -64,10 +55,10 @@ export class Piece implements IPiece {
   }
 
   private getElement(): HTMLImageElement {
-    const el = document.createElement("img");
+    const el = document.createElement('img');
     el.dataset.pieceId = String(this.id);
     el.draggable = false;
-    el.classList.add("Chess__piece");
+    el.classList.add('Chess__piece');
     return el;
   }
 
@@ -80,19 +71,19 @@ export class Piece implements IPiece {
   }
 
   enablePointerEvents(): void {
-    this.$el.style.pointerEvents = "auto";
+    this.$el.style.pointerEvents = 'auto';
   }
 
   disablePointerEvents(): void {
-    this.$el.style.pointerEvents = "none";
+    this.$el.style.pointerEvents = 'none';
   }
 
   addActivePieceClassName(): void {
-    this.$el.classList.add("Chess__piece--active");
+    this.$el.classList.add('Chess__piece--active');
   }
 
   removeActivePieceClassName(): void {
-    this.$el.classList.remove("Chess__piece--active");
+    this.$el.classList.remove('Chess__piece--active');
   }
 
   getProtectedPiecesCells(): number[] {
@@ -105,7 +96,7 @@ export class Piece implements IPiece {
       return getProtectedPiecesCellsFromIds({ ids, selectedPiece: this });
     }
     throw new Error(
-      "getProtectedPiecesCells(): Pawn has getPossibleHits() method that is used to get protected pieces cells"
+      'getProtectedPiecesCells(): Pawn has getPossibleHits() method that is used to get protected pieces cells',
     );
   }
 
@@ -124,10 +115,10 @@ export class Piece implements IPiece {
   getKingInfo() {
     const activePieceColor = this.color;
     const king = this.pieces.find(
-      (p) => p.type === PieceType.King && p.color === activePieceColor
+      (p) => p.type === PieceType.King && p.color === activePieceColor,
     ) as IKing | undefined;
     if (king === undefined) {
-      throw new Error("getKingInfo(): King not found");
+      throw new Error('getKingInfo(): King not found');
     }
     const { position: kingPosition } = king;
     const kingLines = [
@@ -157,27 +148,15 @@ export class Piece implements IPiece {
     const { cellId: kingCellId } = king;
 
     const enemyPieces = this.pieces.filter((p) => p.color !== activePieceColor);
-    const checkers = enemyPieces.filter((p) =>
-      p.getMoves().includes(kingCellId)
-    );
-    const possibleLineCheckers = [
-      PieceType.Bishop,
-      PieceType.Rook,
-      PieceType.Queen,
-    ];
+    const checkers = enemyPieces.filter((p) => p.getMoves().includes(kingCellId));
+    const possibleLineCheckers = [PieceType.Bishop, PieceType.Rook, PieceType.Queen];
     return checkers.map((piece) => {
       const { type, cellId } = piece;
       if (possibleLineCheckers.includes(type)) {
-        const attackingLine = kingLinesAndDiagonals.find((line) =>
-          line.includes(cellId)
-        );
-        const attackerCellIndex = attackingLine?.findIndex(
-          (id) => id === cellId
-        );
+        const attackingLine = kingLinesAndDiagonals.find((line) => line.includes(cellId));
+        const attackerCellIndex = attackingLine?.findIndex((id) => id === cellId);
         if (attackingLine === undefined || attackerCellIndex === undefined) {
-          throw new Error(
-            "getKingCheckers(): Cannot find checker on checking line"
-          );
+          throw new Error('getKingCheckers(): Cannot find checker on checking line');
         }
         return {
           piece,
@@ -199,7 +178,7 @@ export class Piece implements IPiece {
 
     const getBoundingPiecesLines = (
       lines: number[][],
-      possibleBounders: PieceType[]
+      possibleBounders: PieceType[],
     ): IBoundingLine[] => {
       return lines
         .map((line) => ({
@@ -214,19 +193,17 @@ export class Piece implements IPiece {
             (p) =>
               p.piece !== undefined &&
               possibleBounders.includes(p.piece.type) &&
-              p.piece.color !== activePieceColor
-          )
+              p.piece.color !== activePieceColor,
+          ),
         )
         .filter((l) => {
           const { pieces } = l;
-          const firstFriendlyPiece = pieces.find(
-            (p) => p.piece?.color === activePieceColor
-          );
+          const firstFriendlyPiece = pieces.find((p) => p.piece?.color === activePieceColor);
           const boundingPiece = pieces.find(
             (p) =>
               p.piece !== undefined &&
               possibleBounders.includes(p.piece.type) &&
-              p.piece.color !== activePieceColor
+              p.piece.color !== activePieceColor,
           );
           return (
             firstFriendlyPiece !== undefined &&
@@ -235,47 +212,33 @@ export class Piece implements IPiece {
               (p) =>
                 p.piece !== undefined &&
                 p.index > firstFriendlyPiece.index &&
-                p.index < boundingPiece.index
+                p.index < boundingPiece.index,
             )
           );
         });
     };
 
-    const boundingPiecesLines = getBoundingPiecesLines(
-      kingLines,
-      possibleLineBounders
-    );
-    const boundingPiecesDiagonals = getBoundingPiecesLines(
-      kingDiagonals,
-      possibleDiagonalBounders
-    );
+    const boundingPiecesLines = getBoundingPiecesLines(kingLines, possibleLineBounders);
+    const boundingPiecesDiagonals = getBoundingPiecesLines(kingDiagonals, possibleDiagonalBounders);
 
-    const getBounders = (
-      boundingLines: IBoundingLine[],
-      bounders: PieceType[]
-    ): IKingBounder[] =>
+    const getBounders = (boundingLines: IBoundingLine[], bounders: PieceType[]): IKingBounder[] =>
       boundingLines.map((l) => {
         const { pieces, line } = l;
-        const firstFriendlyPiece = pieces.find(
-          (p) => p.piece?.color === activePieceColor
-        );
+        const firstFriendlyPiece = pieces.find((p) => p.piece?.color === activePieceColor);
         const boundingPiece = pieces.find(
           (p) =>
             p.piece !== undefined &&
             bounders.includes(p.piece.type) &&
-            p.piece.color !== activePieceColor
+            p.piece.color !== activePieceColor,
         );
-        if (
-          firstFriendlyPiece?.piece === undefined ||
-          boundingPiece?.piece === undefined
-        ) {
-          throw new Error("getKingBounders(): Failed to form a bounding line");
+        if (firstFriendlyPiece?.piece === undefined || boundingPiece?.piece === undefined) {
+          throw new Error('getKingBounders(): Failed to form a bounding line');
         }
         return {
           boundingEnemyPiece: boundingPiece.piece,
           boundPiece: firstFriendlyPiece.piece,
           boundingLine: line.filter(
-            (_, i) => i > firstFriendlyPiece.index && i <= boundingPiece.index
+            (_, i) => i > firstFriendlyPiece.index && i <= boundingPiece.index,
           ),
         };
       });
@@ -287,15 +250,11 @@ export class Piece implements IPiece {
   }
 
   getValidMoves() {
-    const boundingLineObj = this.getKingBounders().find(
-      (l) => l.boundPiece.id === this.id
-    );
+    const boundingLineObj = this.getKingBounders().find((l) => l.boundPiece.id === this.id);
     const targetCellsIds = this.getMoves();
     let possibleMoves =
       boundingLineObj !== undefined
-        ? targetCellsIds.filter((cellId) =>
-            boundingLineObj.boundingLine.includes(cellId)
-          )
+        ? targetCellsIds.filter((cellId) => boundingLineObj.boundingLine.includes(cellId))
         : targetCellsIds;
     if (this.type === PieceType.King) {
       const { king } = this.getKingInfo();
@@ -373,11 +332,9 @@ export class Piece implements IPiece {
     };
     const { rookCell, targetPosition, castlingType } =
       rooksCellIdsDictionary[targetCastlingCell as 2 | 6 | 58 | 62];
-    const rook = this.pieces.find((p) => p.cellId === rookCell) as
-      | IRook
-      | undefined;
+    const rook = this.pieces.find((p) => p.cellId === rookCell) as IRook | undefined;
     if (rook === undefined) {
-      throw new Error("getCastlingRook(): Castling rook not found");
+      throw new Error('getCastlingRook(): Castling rook not found');
     }
     return {
       rook,

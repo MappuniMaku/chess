@@ -1,14 +1,14 @@
-import React, { FC, useEffect, useRef, useState } from "react";
-import clsx from "clsx";
+import React, { FC, useEffect, useRef, useState } from 'react';
+import clsx from 'clsx';
 
-import useStyles from "./Input.styles";
+import useStyles from './Input.styles';
 
 interface IInputProps {
   value: string;
-  type?: "text" | "password";
+  type?: 'text' | 'password';
   label?: string;
   maxLength?: number;
-  autoComplete?: "username" | "current-password" | "new-password";
+  autoComplete?: 'username' | 'current-password' | 'new-password';
   errorText?: string;
   isDisabled?: boolean;
   isRequired?: boolean;
@@ -18,7 +18,7 @@ interface IInputProps {
 
 export const Input: FC<IInputProps> = ({
   value,
-  type = "text",
+  type = 'text',
   label,
   maxLength,
   autoComplete,
@@ -44,7 +44,7 @@ export const Input: FC<IInputProps> = ({
     <div
       className={clsx(classes.root, {
         [classes.focused]: isFocused,
-        [classes.hasValue]: value !== "",
+        [classes.hasValue]: value !== '',
         [classes.invalid]: isInvalid,
       })}
     >
@@ -65,9 +65,7 @@ export const Input: FC<IInputProps> = ({
         <span className={classes.label}>{label}</span>
       </div>
 
-      {errorText !== undefined && (
-        <div className={classes.errorText}>{errorText}</div>
-      )}
+      {errorText !== undefined && <div className={classes.errorText}>{errorText}</div>}
     </div>
   );
 };

@@ -1,16 +1,16 @@
-import React, { FC, useState } from "react";
-import { Link } from "react-router-dom";
+import React, { FC, useState } from 'react';
+import { Link } from 'react-router-dom';
 
-import { IHandleValuesChangeFunction, ILoginFormValues } from "types";
-import { api } from "api";
-import { Button, Input } from "components";
-import { useIsMounted } from "hooks";
+import { IHandleValuesChangeFunction, ILoginFormValues } from 'types';
+import { api } from 'api';
+import { Button, Input } from 'components';
+import { useIsMounted } from 'hooks';
 
-import useStyles from "./LoginForm.styles";
+import useStyles from './LoginForm.styles';
 
 const initialFormValues: ILoginFormValues = {
-  username: "",
-  password: "",
+  username: '',
+  password: '',
 };
 
 export const LoginForm: FC = () => {
@@ -23,17 +23,16 @@ export const LoginForm: FC = () => {
 
   const { username, password } = values;
 
-  const handleValuesChange: IHandleValuesChangeFunction<ILoginFormValues> =
-    (key) => (value) => {
-      setValues((prevState) => ({ ...prevState, [key]: value }));
-      setHasError(false);
-    };
+  const handleValuesChange: IHandleValuesChangeFunction<ILoginFormValues> = (key) => (value) => {
+    setValues((prevState) => ({ ...prevState, [key]: value }));
+    setHasError(false);
+  };
 
   const handleSubmit = async () => {
     setIsLoading(true);
     try {
       await api.fetchLogin(values);
-      window.location.href = "/";
+      window.location.href = '/';
     } catch (e) {
       console.error(e);
       if (isMounted()) {
@@ -63,7 +62,7 @@ export const LoginForm: FC = () => {
           isDisabled={isLoading}
           isInvalid={hasError}
           isRequired
-          onChange={handleValuesChange("username")}
+          onChange={handleValuesChange('username')}
         />
       </div>
 
@@ -75,11 +74,9 @@ export const LoginForm: FC = () => {
           autoComplete="current-password"
           isDisabled={isLoading}
           isInvalid={hasError}
-          errorText={
-            hasError ? "Неверное имя пользователя или пароль" : undefined
-          }
+          errorText={hasError ? 'Неверное имя пользователя или пароль' : undefined}
           isRequired
-          onChange={handleValuesChange("password")}
+          onChange={handleValuesChange('password')}
         />
       </div>
 
@@ -90,7 +87,7 @@ export const LoginForm: FC = () => {
       </div>
 
       <div className={classes.element}>
-        Еще не зарегистрированы?{" "}
+        Еще не зарегистрированы?{' '}
         <Link to="/signup" className={classes.link}>
           Зарегистрироваться
         </Link>

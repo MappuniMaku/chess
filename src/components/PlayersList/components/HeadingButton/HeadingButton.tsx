@@ -1,13 +1,13 @@
-import React, { FC } from "react";
+import React, { FC } from 'react';
 
-import { IUsersFilters } from "types";
-import { Icon } from "components";
+import { IUsersFilters } from 'types';
+import { Icon } from 'components';
 
-import useStyles from "./HeadingButton.styles";
+import useStyles from './HeadingButton.styles';
 
 interface IHeadingButtonProps {
   heading: string;
-  filterKey: "username" | "rating";
+  filterKey: 'username' | 'rating';
   filters: IUsersFilters;
   isDisabled: boolean;
   onFiltersChange: (filters: IUsersFilters) => void;
@@ -22,8 +22,8 @@ export const HeadingButton: FC<IHeadingButtonProps> = ({
 }) => {
   const classes = useStyles();
 
-  const ascValue: IUsersFilters["sort"] = `${filterKey}_asc`;
-  const descValue: IUsersFilters["sort"] = `${filterKey}_desc`;
+  const ascValue: IUsersFilters['sort'] = `${filterKey}_asc`;
+  const descValue: IUsersFilters['sort'] = `${filterKey}_desc`;
 
   const selectedSortOption = filters.sort;
   const isAsc = selectedSortOption === ascValue;
@@ -42,9 +42,7 @@ export const HeadingButton: FC<IHeadingButtonProps> = ({
       }
     >
       <span>{heading}</span>
-      {(isAsc || isDesc) && (
-        <Icon type={isAsc ? "expand_less" : "expand_more"} />
-      )}
+      {(isAsc || isDesc) && <Icon type={isAsc ? 'expand_less' : 'expand_more'} />}
     </button>
   );
 };

@@ -1,8 +1,8 @@
-import React, { FC } from "react";
+import React, { FC } from 'react';
 
-import { Container } from "components";
+import { Container } from 'components';
 
-import useStyles from "./Footer.styles";
+import useStyles from './Footer.styles';
 
 export const Footer: FC = () => {
   const classes = useStyles();

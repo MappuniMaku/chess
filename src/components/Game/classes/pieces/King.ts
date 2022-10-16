@@ -1,6 +1,6 @@
-import { Piece } from "../Piece";
-import { IKing, IPieceProps, IRook } from "types";
-import { PieceColor, PieceType } from "enums";
+import { Piece } from '../Piece';
+import { IKing, IPieceProps, IRook } from 'types';
+import { PieceColor, PieceType } from 'enums';
 import {
   getBottomLeftDiagonal,
   getBottomLine,
@@ -11,7 +11,7 @@ import {
   getTopLine,
   getTopRightDiagonal,
   setPieceElementProperties,
-} from "../../helpers";
+} from '../../helpers';
 
 export class King extends Piece implements IKing {
   constructor(props: IPieceProps) {
@@ -40,15 +40,13 @@ export class King extends Piece implements IKing {
       rook: IRook | undefined,
       castlingCells: number[],
       targetCell: number,
-      isCastlingLong = false
+      isCastlingLong = false,
     ): number | undefined => {
       if (
         rook !== undefined &&
         !rook.hasMadeAnyMoves &&
         !this.pieces.some((p) => castlingCells.includes(p.cellId)) &&
-        !castlingCells
-          .slice(isCastlingLong ? 1 : 0)
-          .some((id) => attackedCells.includes(id))
+        !castlingCells.slice(isCastlingLong ? 1 : 0).some((id) => attackedCells.includes(id))
       ) {
         return targetCell;
       }
@@ -61,66 +59,48 @@ export class King extends Piece implements IKing {
     switch (color) {
       case PieceColor.White:
         const whiteLeftRook = this.pieces.find(
-          (p) =>
-            p.cellId === 56 && p.type === PieceType.Rook && p.color === color
+          (p) => p.cellId === 56 && p.type === PieceType.Rook && p.color === color,
         ) as IRook | undefined;
         const whiteLeftCastlingCells = [57, 58, 59];
         const whiteLeftTargetCell = 58;
         if (
-          getCastlingCell(
-            whiteLeftRook,
-            whiteLeftCastlingCells,
-            whiteLeftTargetCell,
-            true
-          ) !== undefined
+          getCastlingCell(whiteLeftRook, whiteLeftCastlingCells, whiteLeftTargetCell, true) !==
+          undefined
         ) {
           result.push(whiteLeftTargetCell);
         }
         const whiteRightRook = this.pieces.find(
-          (p) =>
-            p.cellId === 63 && p.type === PieceType.Rook && p.color === color
+          (p) => p.cellId === 63 && p.type === PieceType.Rook && p.color === color,
         ) as IRook | undefined;
         const whiteRightCastlingCells = [61, 62];
         const whiteRightTargetCell = 62;
         if (
-          getCastlingCell(
-            whiteRightRook,
-            whiteRightCastlingCells,
-            whiteRightTargetCell
-          ) !== undefined
+          getCastlingCell(whiteRightRook, whiteRightCastlingCells, whiteRightTargetCell) !==
+          undefined
         ) {
           result.push(whiteRightTargetCell);
         }
         break;
       case PieceColor.Black:
         const blackLeftRook = this.pieces.find(
-          (p) =>
-            p.cellId === 0 && p.type === PieceType.Rook && p.color === color
+          (p) => p.cellId === 0 && p.type === PieceType.Rook && p.color === color,
         ) as IRook | undefined;
         const blackLeftCastlingCells = [1, 2, 3];
         const blackLeftTargetCell = 2;
         if (
-          getCastlingCell(
-            blackLeftRook,
-            blackLeftCastlingCells,
-            blackLeftTargetCell,
-            true
-          ) !== undefined
+          getCastlingCell(blackLeftRook, blackLeftCastlingCells, blackLeftTargetCell, true) !==
+          undefined
         ) {
           result.push(blackLeftTargetCell);
         }
         const blackRightRook = this.pieces.find(
-          (p) =>
-            p.cellId === 7 && p.type === PieceType.Rook && p.color === color
+          (p) => p.cellId === 7 && p.type === PieceType.Rook && p.color === color,
         ) as IRook | undefined;
         const blackRightCastlingCells = [5, 6];
         const blackRightTargetCell = 6;
         if (
-          getCastlingCell(
-            blackRightRook,
-            blackRightCastlingCells,
-            blackRightTargetCell
-          ) !== undefined
+          getCastlingCell(blackRightRook, blackRightCastlingCells, blackRightTargetCell) !==
+          undefined
         ) {
           result.push(blackRightTargetCell);
         }

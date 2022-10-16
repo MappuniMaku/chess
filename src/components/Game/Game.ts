@@ -1,13 +1,13 @@
-import "./index.scss";
-import { Board } from "./classes/Board";
-import { PieceColor, PieceType } from "enums";
+import './index.scss';
+import { Board } from './classes/Board';
+import { PieceColor, PieceType } from 'enums';
 
 export class Game {
   board: Board;
 
   constructor($el: HTMLDivElement) {
-    const $boardEl = document.createElement("div");
-    $boardEl.classList.add("Chess");
+    const $boardEl = document.createElement('div');
+    $boardEl.classList.add('Chess');
     $el.appendChild($boardEl);
     this.board = new Board($boardEl);
     this.init();

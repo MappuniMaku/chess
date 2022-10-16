@@ -1,7 +1,7 @@
-import { IFormValidationErrors } from "types";
+import { IFormValidationErrors } from 'types';
 
 export interface ISendRequestOptions {
-  method: "GET" | "POST";
+  method: 'GET' | 'POST';
   path: string;
   shouldRedirectOnUnauthorized?: boolean;
 }

@@ -1,12 +1,12 @@
-import React, { FC, ReactNode } from "react";
+import React, { FC, ReactNode } from 'react';
 
-import { Preloader } from "components";
+import { Preloader } from 'components';
 
-import useStyles from "./Button.styles";
+import useStyles from './Button.styles';
 
 export interface IButtonProps {
   children: ReactNode | ReactNode[];
-  type?: "submit" | "button";
+  type?: 'submit' | 'button';
   isDisabled?: boolean;
   isLoading?: boolean;
   onClick?: () => void;
@@ -14,7 +14,7 @@ export interface IButtonProps {
 
 export const Button: FC<IButtonProps> = ({
   children,
-  type = "button",
+  type = 'button',
   isDisabled,
   isLoading,
   onClick,

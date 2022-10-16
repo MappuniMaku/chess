@@ -1,31 +1,31 @@
-import { createUseStyles } from "react-jss";
-import { colors, linkStyles } from "theme";
+import { createUseStyles } from 'react-jss';
+import { colors, linkStyles } from 'theme';
 
 export default createUseStyles({
   root: {
-    position: "sticky",
+    position: 'sticky',
     top: 0,
-    backgroundColor: "white",
-    borderBottom: [1, "solid", colors.LIGHT_GRAY],
+    backgroundColor: 'white',
+    borderBottom: [1, 'solid', colors.LIGHT_GRAY],
     zIndex: 100,
   },
 
   content: {
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
     padding: [16, 0],
   },
 
   menu: {
-    display: "flex",
+    display: 'flex',
   },
 
   menuItem: {
-    fontWeight: "bold",
-    borderBottom: [2, "solid", "transparent"],
+    fontWeight: 'bold',
+    borderBottom: [2, 'solid', 'transparent'],
 
-    "&:not(:first-child)": {
+    '&:not(:first-child)': {
       marginLeft: 16,
     },
   },
@@ -33,7 +33,7 @@ export default createUseStyles({
   activeMenuItem: {
     borderColor: colors.GREEN,
     color: colors.BLACK,
-    cursor: "default",
+    cursor: 'default',
   },
 
   menuLink: {
@@ -41,12 +41,12 @@ export default createUseStyles({
   },
 
   accountSection: {
-    display: "flex",
-    alignItems: "center",
+    display: 'flex',
+    alignItems: 'center',
   },
 
   loginLink: {
-    fontWeight: "bold",
+    fontWeight: 'bold',
 
     ...linkStyles,
   },

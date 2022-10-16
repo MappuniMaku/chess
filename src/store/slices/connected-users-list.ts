@@ -1,5 +1,5 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { IUser } from "types";
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { IUser } from 'types';
 
 export interface IConnectedUsersListState {
   connectedUsers: IUser[];
@@ -10,7 +10,7 @@ const initialState: IConnectedUsersListState = {
 };
 
 export const connectedUsersListSlice = createSlice({
-  name: "connectedUsersList",
+  name: 'connectedUsersList',
   initialState,
   reducers: {
     updateConnectedUsers(state, action: PayloadAction<IUser[]>) {

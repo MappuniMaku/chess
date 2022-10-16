@@ -1,5 +1,5 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { IUser } from "types";
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { IUser } from 'types';
 
 export interface ISearchingForGameUsersListState {
   searchingForGameUsers: IUser[];
@@ -10,7 +10,7 @@ const initialState: ISearchingForGameUsersListState = {
 };
 
 export const searchingForGameUsersListSlice = createSlice({
-  name: "searchingForGameUsersList",
+  name: 'searchingForGameUsersList',
   initialState,
   reducers: {
     updateSearchingForGameUsers(state, action: PayloadAction<IUser[]>) {
@@ -19,8 +19,6 @@ export const searchingForGameUsersListSlice = createSlice({
   },
 });
 
-export const { updateSearchingForGameUsers } =
-  searchingForGameUsersListSlice.actions;
+export const { updateSearchingForGameUsers } = searchingForGameUsersListSlice.actions;
 
-export const searchingForGameUsersListReducer =
-  searchingForGameUsersListSlice.reducer;
+export const searchingForGameUsersListReducer = searchingForGameUsersListSlice.reducer;

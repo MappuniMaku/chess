@@ -1,27 +1,23 @@
-import React, { FC, useState } from "react";
-import { Link } from "react-router-dom";
+import React, { FC, useState } from 'react';
+import { Link } from 'react-router-dom';
 
-import {
-  IFormValidationErrors,
-  IHandleValuesChangeFunction,
-  ISignupFormValues,
-} from "types";
-import { api, IValidationErrorResponse } from "api";
-import { Button, Input } from "components";
-import { FAILED_VALIDATION_ERROR_CODE, NUMBER_REGEXP } from "consts";
-import { SIGNUP_FORM_VALIDATION_ERRORS } from "locale";
-import { isObjectEmpty } from "utils";
-import { getErrorTextFunction } from "helpers";
-import { useIsMounted } from "hooks";
+import { IFormValidationErrors, IHandleValuesChangeFunction, ISignupFormValues } from 'types';
+import { api, IValidationErrorResponse } from 'api';
+import { Button, Input } from 'components';
+import { FAILED_VALIDATION_ERROR_CODE, NUMBER_REGEXP } from 'consts';
+import { SIGNUP_FORM_VALIDATION_ERRORS } from 'locale';
+import { isObjectEmpty } from 'utils';
+import { getErrorTextFunction } from 'helpers';
+import { useIsMounted } from 'hooks';
 
-import useStyles from "./SignupForm.styles";
+import useStyles from './SignupForm.styles';
 
 type ISignupFormValidationErrors = IFormValidationErrors<ISignupFormValues>;
 
 const initialFormValues: ISignupFormValues = {
-  username: "",
-  password: "",
-  rating: "600",
+  username: '',
+  password: '',
+  rating: '600',
 };
 
 export const SignupForm: FC = () => {
@@ -34,28 +30,23 @@ export const SignupForm: FC = () => {
 
   const { username, password, rating } = values;
 
-  const handleValuesChange: IHandleValuesChangeFunction<ISignupFormValues> =
-    (key) => (value) => {
-      setValues((prevState) => ({ ...prevState, [key]: value }));
-      setErrors({ ...errors, [key]: undefined });
-    };
+  const handleValuesChange: IHandleValuesChangeFunction<ISignupFormValues> = (key) => (value) => {
+    setValues((prevState) => ({ ...prevState, [key]: value }));
+    setErrors({ ...errors, [key]: undefined });
+  };
 
   const handleSubmit = async () => {
     setIsLoading(true);
     try {
       await api.fetchSignup({ ...values, rating: Number(values.rating) });
-      window.location.href = "/login";
+      window.location.href = '/login';
     } catch (e) {
       console.error(e);
       if (!isMounted()) {
         return;
       }
-      const { error, validationErrors } =
-        e as IValidationErrorResponse<ISignupFormValues>;
-      if (
-        error === FAILED_VALIDATION_ERROR_CODE &&
-        validationErrors !== undefined
-      ) {
+      const { error, validationErrors } = e as IValidationErrorResponse<ISignupFormValues>;
+      if (error === FAILED_VALIDATION_ERROR_CODE && validationErrors !== undefined) {
         setErrors(validationErrors);
       }
     } finally {
@@ -65,10 +56,7 @@ export const SignupForm: FC = () => {
     }
   };
 
-  const getErrorText = getErrorTextFunction(
-    SIGNUP_FORM_VALIDATION_ERRORS,
-    errors
-  );
+  const getErrorText = getErrorTextFunction(SIGNUP_FORM_VALIDATION_ERRORS, errors);
 
   const hasErrors = !isObjectEmpty(errors);
 
@@ -85,11 +73,11 @@ export const SignupForm: FC = () => {
           type="text"
           value={username}
           label="Имя пользователя"
-          errorText={getErrorText("username")}
+          errorText={getErrorText('username')}
           isInvalid={errors?.username !== undefined}
           isDisabled={isLoading}
           isRequired
-          onChange={handleValuesChange("username")}
+          onChange={handleValuesChange('username')}
         />
       </div>
 
@@ -99,11 +87,11 @@ export const SignupForm: FC = () => {
           value={password}
           label="Пароль"
           autoComplete="new-password"
-          errorText={getErrorText("password")}
+          errorText={getErrorText('password')}
           isInvalid={errors?.password !== undefined}
           isDisabled={isLoading}
           isRequired
-          onChange={handleValuesChange("password")}
+          onChange={handleValuesChange('password')}
         />
       </div>
 
@@ -113,13 +101,13 @@ export const SignupForm: FC = () => {
           value={rating}
           label="Рейтинг"
           maxLength={4}
-          errorText={getErrorText("rating")}
+          errorText={getErrorText('rating')}
           isInvalid={errors?.rating !== undefined}
           isDisabled={isLoading}
           isRequired
           onChange={(v) => {
             if (NUMBER_REGEXP.test(v)) {
-              handleValuesChange("rating")(v);
+              handleValuesChange('rating')(v);
             }
           }}
         />
@@ -132,7 +120,7 @@ export const SignupForm: FC = () => {
       </div>
 
       <div className={classes.element}>
-        Уже зарегистрированы?{" "}
+        Уже зарегистрированы?{' '}
         <Link to="/login" className={classes.link}>
           Войти
         </Link>

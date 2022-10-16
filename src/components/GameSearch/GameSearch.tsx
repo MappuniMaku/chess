@@ -1,22 +1,18 @@
-import React, { FC } from "react";
+import React, { FC } from 'react';
 
-import { Button } from "components";
-import { socket, useAppSelector } from "hooks";
-import { WsEvents } from "enums";
+import { Button } from 'components';
+import { socket, useAppSelector } from 'hooks';
+import { WsEvents } from 'enums';
 
-import useStyles from "./GameSearch.styles";
+import useStyles from './GameSearch.styles';
 
 export const GameSearch: FC = () => {
   const classes = useStyles();
 
   const { value: user } = useAppSelector((state) => state.user);
-  const { searchingForGameUsers } = useAppSelector(
-    (state) => state.searchingForGameUsersList
-  );
+  const { searchingForGameUsers } = useAppSelector((state) => state.searchingForGameUsersList);
 
-  const isUserSearchingForGame = searchingForGameUsers.some(
-    (u) => u.username === user?.username
-  );
+  const isUserSearchingForGame = searchingForGameUsers.some((u) => u.username === user?.username);
 
   return (
     <div className={classes.root}>
@@ -30,9 +26,7 @@ export const GameSearch: FC = () => {
       </div>
       {isUserSearchingForGame && (
         <div>
-          <Button onClick={() => socket.emit(WsEvents.CancelSearching)}>
-            Отмена
-          </Button>
+          <Button onClick={() => socket.emit(WsEvents.CancelSearching)}>Отмена</Button>
         </div>
       )}
     </div>

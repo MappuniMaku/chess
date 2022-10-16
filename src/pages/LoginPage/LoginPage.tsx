@@ -1,8 +1,8 @@
-import React, { FC } from "react";
+import React, { FC } from 'react';
 
-import { Container, LoginForm } from "components";
+import { Container, LoginForm } from 'components';
 
-import useStyles from "./LoginPage.styles";
+import useStyles from './LoginPage.styles';
 
 export const LoginPage: FC = () => {
   const classes = useStyles();

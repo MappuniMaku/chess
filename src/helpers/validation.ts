@@ -1,13 +1,9 @@
-import {
-  IFormValidationErrors,
-  IFormValidationErrorsMessages,
-  IValidationError,
-} from "types";
+import { IFormValidationErrors, IFormValidationErrorsMessages, IValidationError } from 'types';
 
 export const getErrorTextFunction =
   <FormValues>(
     translationsObject: IFormValidationErrorsMessages<FormValues>,
-    errors?: IFormValidationErrors<FormValues>
+    errors?: IFormValidationErrors<FormValues>,
   ) =>
   (field: keyof FormValues): string | undefined => {
     const translations = translationsObject[field];

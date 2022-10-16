@@ -1,11 +1,11 @@
-import React, { FC } from "react";
+import React, { FC } from 'react';
 
-import { Button } from "components";
-import { socket, useAppSelector } from "hooks";
-import { WsEvents } from "enums";
-import { getCurrentPlayerFromGame, getOpponentFromGame } from "helpers";
+import { Button } from 'components';
+import { socket, useAppSelector } from 'hooks';
+import { WsEvents } from 'enums';
+import { getCurrentPlayerFromGame, getOpponentFromGame } from 'helpers';
 
-import useStyles from "./GameConfirm.styles";
+import useStyles from './GameConfirm.styles';
 
 export const GameConfirm: FC = () => {
   const classes = useStyles();
@@ -17,8 +17,7 @@ export const GameConfirm: FC = () => {
   const { isGameAccepted = false } = currentPlayer ?? {};
 
   const opponent = getOpponentFromGame(activeGame, user);
-  const { username: opponentUsername, rating: opponentRating } =
-    opponent?.user ?? {};
+  const { username: opponentUsername, rating: opponentRating } = opponent?.user ?? {};
 
   return (
     <div className={classes.root}>
@@ -33,9 +32,7 @@ export const GameConfirm: FC = () => {
         <div>
           <Button
             isLoading={isGameAccepted}
-            onClick={() =>
-              socket.emit(WsEvents.AcceptGame, { gameId: activeGame?.id })
-            }
+            onClick={() => socket.emit(WsEvents.AcceptGame, { gameId: activeGame?.id })}
           >
             Принять
           </Button>
@@ -43,9 +40,7 @@ export const GameConfirm: FC = () => {
         <div>
           <Button
             isDisabled={isGameAccepted}
-            onClick={() =>
-              socket.emit(WsEvents.DeclineGame, { gameId: activeGame?.id })
-            }
+            onClick={() => socket.emit(WsEvents.DeclineGame, { gameId: activeGame?.id })}
           >
             Отклонить
           </Button>

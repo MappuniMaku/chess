@@ -1,13 +1,13 @@
-import { linkStyles } from "./misc";
+import { linkStyles } from './misc';
 
 export const formStyles = {
   form: {
-    display: "flex",
-    flexDirection: "column",
+    display: 'flex',
+    flexDirection: 'column',
   },
 
   element: {
-    "&:not(:last-child)": {
+    '&:not(:last-child)': {
       marginBottom: 20,
     },
   },

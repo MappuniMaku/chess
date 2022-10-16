@@ -1,86 +1,86 @@
-import { createUseStyles } from "react-jss";
-import { colors } from "theme";
+import { createUseStyles } from 'react-jss';
+import { colors } from 'theme';
 
 export default createUseStyles({
   root: {},
 
   floatingLabel: {
-    "& $label": {
-      transform: "scale(0.8) translate(0, -125%)",
+    '& $label': {
+      transform: 'scale(0.8) translate(0, -125%)',
     },
   },
 
   focused: {
-    extend: "floatingLabel",
+    extend: 'floatingLabel',
 
-    "& $label": {
+    '& $label': {
       color: colors.GREEN_HOVER,
     },
 
-    "& $input": {
+    '& $input': {
       borderColor: colors.GREEN_HOVER,
     },
   },
 
   invalid: {
-    "& $input": {
+    '& $input': {
       borderColor: colors.RED,
 
-      "&:hover": {
+      '&:hover': {
         borderColor: colors.RED,
       },
     },
 
-    "& $label": {
+    '& $label': {
       color: colors.RED,
     },
   },
 
   hasValue: {
-    extend: "floatingLabel",
+    extend: 'floatingLabel',
   },
 
   inputWrapper: {
-    position: "relative",
+    position: 'relative',
   },
 
   input: {
-    width: "100%",
+    width: '100%',
     height: 48,
     padding: [16, 16, 0],
-    backgroundColor: "white",
-    border: [1, "solid", colors.LIGHT_GRAY],
+    backgroundColor: 'white',
+    border: [1, 'solid', colors.LIGHT_GRAY],
     borderRadius: 4,
-    outline: "none",
+    outline: 'none',
     fontSize: 16,
-    transition: "0.25s ease-in-out",
-    transitionProperty: "border, background-color",
+    transition: '0.25s ease-in-out',
+    transitionProperty: 'border, background-color',
 
-    "&:hover": {
+    '&:hover': {
       borderColor: colors.GREEN_HOVER,
     },
 
-    "&:disabled": {
+    '&:disabled': {
       borderColor: colors.LIGHTER_GRAY,
 
-      "& + $label": {
+      '& + $label': {
         color: colors.LIGHT_GRAY,
       },
     },
   },
 
   label: {
-    position: "absolute",
-    top: "calc(50% + 1px)",
+    position: 'absolute',
+    top: 'calc(50% + 1px)',
     left: 16,
-    display: "block",
+    display: 'block',
     fontSize: 16,
-    transform: "translateY(-50%)",
-    transformOrigin: "top left",
-    pointerEvents: "none",
+    transform: 'translateY(-50%)',
+    transformOrigin: 'top left',
+    pointerEvents: 'none',
     color: colors.GRAY,
-    transition: "0.25s ease-in-out",
-    transitionProperty: "transform, color",
+    transition: '0.25s ease-in-out',
+    transitionProperty: 'transform, color',
   },
 
   errorText: {

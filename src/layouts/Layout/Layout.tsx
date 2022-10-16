@@ -1,12 +1,12 @@
-import React, { FC, ReactNode } from "react";
+import React, { FC, ReactNode } from 'react';
 
-import { Footer, Header, IHeaderProps, Preloader } from "components";
-import { useAppSelector } from "hooks";
+import { Footer, Header, IHeaderProps, Preloader } from 'components';
+import { useAppSelector } from 'hooks';
 
-import useStyles from "./Layout.styles";
+import useStyles from './Layout.styles';
 
 export interface ILayoutProps {
-  currentPage: IHeaderProps["currentPage"];
+  currentPage: IHeaderProps['currentPage'];
   children: ReactNode | ReactNode[];
 }
 

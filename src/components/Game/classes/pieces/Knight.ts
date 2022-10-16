@@ -1,11 +1,11 @@
-import { Piece } from "../Piece";
-import { IKnight, IPiecePosition, IPieceProps } from "types";
-import { PieceType } from "enums";
+import { Piece } from '../Piece';
+import { IKnight, IPiecePosition, IPieceProps } from 'types';
+import { PieceType } from 'enums';
 import {
   getCellIdFromPosition,
   removeInvalidPositions,
   setPieceElementProperties,
-} from "../../helpers";
+} from '../../helpers';
 
 export class Knight extends Piece implements IKnight {
   constructor(props: IPieceProps) {

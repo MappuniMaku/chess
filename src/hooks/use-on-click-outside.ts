@@ -1,10 +1,10 @@
-import { useEffect, RefObject } from "react";
+import { useEffect, RefObject } from 'react';
 
 type MouseDownHandler = (event: MouseEvent | TouchEvent) => void;
 
 export const useOnClickOutside = <
   RefType extends HTMLElement = HTMLElement,
-  ExcludedRefType extends HTMLElement = HTMLElement
+  ExcludedRefType extends HTMLElement = HTMLElement,
 >({
   ref,
   handler,
@@ -29,12 +29,12 @@ export const useOnClickOutside = <
       handler(event);
     };
 
-    document.addEventListener("mousedown", listener);
-    document.addEventListener("touchstart", listener);
+    document.addEventListener('mousedown', listener);
+    document.addEventListener('touchstart', listener);
 
     return () => {
-      document.removeEventListener("mousedown", listener);
-      document.removeEventListener("touchstart", listener);
+      document.removeEventListener('mousedown', listener);
+      document.removeEventListener('touchstart', listener);
     };
   }, [ref, handler, excludedRef]);
 };

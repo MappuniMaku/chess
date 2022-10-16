@@ -1,13 +1,13 @@
-import { Piece } from "../Piece";
-import { IPieceProps, IRook } from "types";
-import { PieceType } from "enums";
+import { Piece } from '../Piece';
+import { IPieceProps, IRook } from 'types';
+import { PieceType } from 'enums';
 import {
   getBottomLine,
   getLeftLine,
   getRightLine,
   getTopLine,
   setPieceElementProperties,
-} from "../../helpers";
+} from '../../helpers';
 
 export class Rook extends Piece implements IRook {
   constructor(props: IPieceProps) {

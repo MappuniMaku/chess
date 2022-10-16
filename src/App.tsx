@@ -1,15 +1,9 @@
-import React, { FC, useEffect } from "react";
-import { Route, Routes } from "react-router-dom";
+import React, { FC, useEffect } from 'react';
+import { Route, Routes } from 'react-router-dom';
 
-import { fetchUser } from "store/slices";
-import {
-  GamePage,
-  LoginPage,
-  MainPage,
-  PlayersListPage,
-  SignupPage,
-} from "pages";
-import { useAppDispatch, useWebSockets } from "hooks";
+import { fetchUser } from 'store/slices';
+import { GamePage, LoginPage, MainPage, PlayersListPage, SignupPage } from 'pages';
+import { useAppDispatch, useWebSockets } from 'hooks';
 
 export const App: FC = () => {
   const dispatch = useAppDispatch();

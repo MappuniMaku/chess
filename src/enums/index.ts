@@ -1,2 +1,2 @@
-export * from "./game";
-export * from "./misc";
+export * from './game';
+export * from './misc';

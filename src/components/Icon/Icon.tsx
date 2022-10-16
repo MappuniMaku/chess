@@ -1,7 +1,7 @@
-import React, { FC } from "react";
-import clsx from "clsx";
+import React, { FC } from 'react';
+import clsx from 'clsx';
 
-import useStyles from "./Icon.styles";
+import useStyles from './Icon.styles';
 
 interface IIconProps {
   type: string;
@@ -11,5 +11,5 @@ interface IIconProps {
 export const Icon: FC<IIconProps> = ({ type, size = 24 }) => {
   const classes = useStyles({ size });
 
-  return <span className={clsx("material-icons", classes.root)}>{type}</span>;
+  return <span className={clsx('material-icons', classes.root)}>{type}</span>;
 };

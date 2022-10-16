@@ -1,4 +1,4 @@
-import { ISendRequestOptions } from "./types";
+import { ISendRequestOptions } from './types';
 import {
   fetchLoginOptions,
   fetchProfileOptions,
@@ -12,10 +12,10 @@ import {
   IFetchSignupResponse,
   IFetchUserResponse,
   IFetchUsersResponse,
-} from "./methods";
-import { IUsersFilters } from "types";
-import { LOCAL_BACKEND_ADDRESS, PRODUCTION_BACKEND_ADDRESS } from "consts";
-import { clearCookie } from "helpers";
+} from './methods';
+import { IUsersFilters } from 'types';
+import { LOCAL_BACKEND_ADDRESS, PRODUCTION_BACKEND_ADDRESS } from 'consts';
+import { clearCookie } from 'helpers';
 
 class ApiClient {
   async sendRequest<ResponseType>({
@@ -31,28 +31,24 @@ class ApiClient {
   }): Promise<ResponseType> {
     const { method, path, shouldRedirectOnUnauthorized = false } = options;
 
-    const dynamicPathKeys = path.split("/").filter((k) => k.startsWith(":"));
+    const dynamicPathKeys = path.split('/').filter((k) => k.startsWith(':'));
     let mappedPath = path;
     dynamicPathKeys.forEach((k) => {
-      mappedPath = mappedPath.replace(k, pathParams?.[k.slice(1)] ?? "");
+      mappedPath = mappedPath.replace(k, pathParams?.[k.slice(1)] ?? '');
     });
 
     const baseUrl =
-      process.env.NODE_ENV === "development"
-        ? LOCAL_BACKEND_ADDRESS
-        : PRODUCTION_BACKEND_ADDRESS;
+      process.env.NODE_ENV === 'development' ? LOCAL_BACKEND_ADDRESS : PRODUCTION_BACKEND_ADDRESS;
 
-    const stringifiedParams: Record<string, string> = Object.keys(
-      params ?? {}
-    ).reduce(
+    const stringifiedParams: Record<string, string> = Object.keys(params ?? {}).reduce(
       (acc, k) => ({
         ...acc,
         [k]: String(params?.[k]),
       }),
-      {}
+      {},
     );
     const queryParamsString = new URLSearchParams(stringifiedParams).toString();
-    const queryParams = queryParamsString !== "" ? `?${queryParamsString}` : "";
+    const queryParams = queryParamsString !== '' ? `?${queryParamsString}` : '';
 
     const response = await fetch(`${baseUrl}${mappedPath}${queryParams}`, {
       method,
@@ -60,18 +56,18 @@ class ApiClient {
       headers: {
         Authorization: `Bearer ${
           document.cookie
-            .split("; ")
-            .find((row) => row.startsWith("token="))
-            ?.split("=")[1]
+            .split('; ')
+            .find((row) => row.startsWith('token='))
+            ?.split('=')[1]
         }`,
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
     });
 
     if (!response.ok) {
       const { status } = response;
       if (shouldRedirectOnUnauthorized && status === 401) {
-        window.location.href = "/login";
+        window.location.href = '/login';
       }
       throw await response.json();
     }
@@ -104,7 +100,7 @@ class ApiClient {
       options: fetchLoginOptions,
       body,
     });
-    clearCookie("token");
+    clearCookie('token');
     document.cookie = `token=${result.access_token}; expires=Fri, 31 Dec 9999 23:59:59 GMT; Secure`;
   }
 

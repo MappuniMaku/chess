@@ -1,6 +1,6 @@
-import React, { FC, useEffect, useRef, useState } from "react";
+import React, { FC, useEffect, useRef, useState } from 'react';
 
-import { Game } from "components";
+import { Game } from 'components';
 
 export const GameLauncher: FC = () => {
   const [isGameInitialized, setIsGameInitialized] = useState(false);

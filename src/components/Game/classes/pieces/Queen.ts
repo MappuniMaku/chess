@@ -1,6 +1,6 @@
-import { Piece } from "../Piece";
-import { IPieceProps, IQueen } from "types";
-import { PieceType } from "enums";
+import { Piece } from '../Piece';
+import { IPieceProps, IQueen } from 'types';
+import { PieceType } from 'enums';
 import {
   getBottomLeftDiagonal,
   getBottomLine,
@@ -11,7 +11,7 @@ import {
   getTopLine,
   getTopRightDiagonal,
   setPieceElementProperties,
-} from "../../helpers";
+} from '../../helpers';
 
 export class Queen extends Piece implements IQueen {
   constructor(props: IPieceProps) {

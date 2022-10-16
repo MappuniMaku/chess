@@ -4,8 +4,8 @@ import {
   IGetProtectedPiecesCellsFromLinesFunction,
   IPiecePosition,
   IRemoveCellsIfNecessaryFunction,
-} from "types";
-import { PieceType } from "../../../enums";
+} from 'types';
+import { PieceType } from '../../../enums';
 
 export const getCellIdFromPosition = (position: IPiecePosition): number => {
   const { row, col } = position;
@@ -17,20 +17,14 @@ export const getPositionFromCellId = (cellId: number): IPiecePosition => ({
   col: (cellId % 8) + 1,
 });
 
-export const cutLinesIfNecessary: ICutLinesIfNecessaryFunction = ({
-  lines,
-  selectedPiece,
-}) => {
+export const cutLinesIfNecessary: ICutLinesIfNecessaryFunction = ({ lines, selectedPiece }) => {
   const { color: selectedPieceColor, pieces } = selectedPiece;
   const result: number[] = [];
   lines.forEach((line) => {
     for (const id of line) {
       const piece = pieces.find((item) => item.cellId === id);
       const { color } = piece ?? {};
-      if (
-        piece === undefined ||
-        (piece.type === PieceType.King && selectedPieceColor !== color)
-      ) {
+      if (piece === undefined || (piece.type === PieceType.King && selectedPieceColor !== color)) {
         result.push(id);
         continue;
       }
@@ -43,10 +37,7 @@ export const cutLinesIfNecessary: ICutLinesIfNecessaryFunction = ({
   return result;
 };
 
-export const removeCellsIfNecessary: IRemoveCellsIfNecessaryFunction = ({
-  ids,
-  selectedPiece,
-}) => {
+export const removeCellsIfNecessary: IRemoveCellsIfNecessaryFunction = ({ ids, selectedPiece }) => {
   const { color: selectedPieceColor, pieces } = selectedPiece;
   const result: number[] = [];
   ids.forEach((id) => {
@@ -159,38 +150,17 @@ export const getBottomRightDiagonal = (position: IPiecePosition): number[] => {
   return result;
 };
 
-export const removeInvalidPositions = (
-  positions: IPiecePosition[]
-): IPiecePosition[] =>
-  positions.filter(
-    (item) => item.row >= 1 && item.row <= 8 && item.col >= 1 && item.col <= 8
-  );
+export const removeInvalidPositions = (positions: IPiecePosition[]): IPiecePosition[] =>
+  positions.filter((item) => item.row >= 1 && item.row <= 8 && item.col >= 1 && item.col <= 8);
 
-export const getProtectedPiecesCellsFromLines: IGetProtectedPiecesCellsFromLinesFunction =
-  ({ lines, selectedPiece }) => {
-    const { color: selectedPieceColor, pieces } = selectedPiece;
-    const result: number[] = [];
-    lines.forEach((line) => {
-      for (const id of line) {
-        const piece = pieces.find((item) => item.cellId === id);
-        if (piece === undefined) {
-          continue;
-        }
-        const { color } = piece;
-        if (selectedPieceColor === color) {
-          result.push(id);
-        }
-        break;
-      }
-    });
-    return result;
-  };
-
-export const getProtectedPiecesCellsFromIds: IGetProtectedPiecesCellsFromIdsFunction =
-  ({ ids, selectedPiece }) => {
-    const { color: selectedPieceColor, pieces } = selectedPiece;
-    const result: number[] = [];
-    for (const id of ids) {
+export const getProtectedPiecesCellsFromLines: IGetProtectedPiecesCellsFromLinesFunction = ({
+  lines,
+  selectedPiece,
+}) => {
+  const { color: selectedPieceColor, pieces } = selectedPiece;
+  const result: number[] = [];
+  lines.forEach((line) => {
+    for (const id of line) {
       const piece = pieces.find((item) => item.cellId === id);
       if (piece === undefined) {
         continue;
@@ -201,5 +171,26 @@ export const getProtectedPiecesCellsFromIds: IGetProtectedPiecesCellsFromIdsFunc
       }
       break;
     }
-    return result;
-  };
+  });
+  return result;
+};
+
+export const getProtectedPiecesCellsFromIds: IGetProtectedPiecesCellsFromIdsFunction = ({
+  ids,
+  selectedPiece,
+}) => {
+  const { color: selectedPieceColor, pieces } = selectedPiece;
+  const result: number[] = [];
+  for (const id of ids) {
+    const piece = pieces.find((item) => item.cellId === id);
+    if (piece === undefined) {
+      continue;
+    }
+    const { color } = piece;
+    if (selectedPieceColor === color) {
+      result.push(id);
+    }
+    break;
+  }
+  return result;
+};

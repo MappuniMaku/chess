@@ -1,17 +1,14 @@
-import React, { FC } from "react";
-import HashLoader from "react-spinners/HashLoader";
-import SyncLoader from "react-spinners/SyncLoader";
+import React, { FC } from 'react';
+import HashLoader from 'react-spinners/HashLoader';
+import SyncLoader from 'react-spinners/SyncLoader';
 
-import { colors } from "theme";
+import { colors } from 'theme';
 
-import useStyles from "./Preloader.styles";
+import useStyles from './Preloader.styles';
 
-type IPreloaderType = "hash" | "sync";
+type IPreloaderType = 'hash' | 'sync';
 
-const loadersEnum: Record<
-  IPreloaderType,
-  typeof HashLoader | typeof SyncLoader
-> = {
+const loadersEnum: Record<IPreloaderType, typeof HashLoader | typeof SyncLoader> = {
   hash: HashLoader,
   sync: SyncLoader,
 };
@@ -24,7 +21,7 @@ interface IPreloaderProps {
 }
 
 export const Preloader: FC<IPreloaderProps> = ({
-  type = "hash",
+  type = 'hash',
   size = 20,
   color = colors.GREEN,
   speed = 1,

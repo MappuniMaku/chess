@@ -1,13 +1,13 @@
-import { Piece } from "../Piece";
-import { IBishop, IPieceProps } from "types";
-import { PieceType } from "enums";
+import { Piece } from '../Piece';
+import { IBishop, IPieceProps } from 'types';
+import { PieceType } from 'enums';
 import {
   getTopLeftDiagonal,
   getTopRightDiagonal,
   getBottomRightDiagonal,
   getBottomLeftDiagonal,
   setPieceElementProperties,
-} from "../../helpers";
+} from '../../helpers';
 
 export class Bishop extends Piece implements IBishop {
   constructor(props: IPieceProps) {

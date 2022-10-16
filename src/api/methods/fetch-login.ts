@@ -1,4 +1,4 @@
-import { ISendRequestOptions } from "api";
+import { ISendRequestOptions } from 'api';
 
 export interface IFetchLoginBodyRequest {
   username: string;
@@ -10,6 +10,6 @@ export interface IFetchLoginResponse {
 }
 
 export const fetchLoginOptions: ISendRequestOptions = {
-  method: "POST",
-  path: "/auth/login",
+  method: 'POST',
+  path: '/auth/login',
 };

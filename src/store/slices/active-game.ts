@@ -1,5 +1,5 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { IGame } from "types";
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { IGame } from 'types';
 
 export interface IActiveGameState {
   value?: IGame;
@@ -10,7 +10,7 @@ const initialState: IActiveGameState = {
 };
 
 export const activeGameSlice = createSlice({
-  name: "activeGame",
+  name: 'activeGame',
   initialState,
   reducers: {
     updateActiveGame(state, action: PayloadAction<IGame | undefined>) {

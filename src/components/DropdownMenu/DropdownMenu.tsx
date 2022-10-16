@@ -1,6 +1,6 @@
-import React, { FC } from "react";
+import React, { FC } from 'react';
 
-import useStyles from "./DropdownMenu.styles";
+import useStyles from './DropdownMenu.styles';
 
 export interface IDropdownMenuItem {
   text: string;
@@ -21,11 +21,7 @@ export const DropdownMenu: FC<IDropdownMenuProps> = ({ items }) => {
           const { text, onClick } = i;
           return (
             <li key={text} className={classes.item}>
-              <button
-                type="button"
-                className={classes.button}
-                onClick={onClick}
-              >
+              <button type="button" className={classes.button} onClick={onClick}>
                 {text}
               </button>
             </li>

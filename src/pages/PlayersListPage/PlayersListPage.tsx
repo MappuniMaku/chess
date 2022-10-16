@@ -1,12 +1,12 @@
-import React, { FC, useCallback, useEffect, useState } from "react";
-import { debounce } from "ts-debounce";
+import React, { FC, useCallback, useEffect, useState } from 'react';
+import { debounce } from 'ts-debounce';
 
-import { IUsersFilters, IUsersListData } from "types";
-import { Layout } from "layouts";
-import { Container, Input, PlayersList } from "components";
-import { api } from "api";
+import { IUsersFilters, IUsersListData } from 'types';
+import { Layout } from 'layouts';
+import { Container, Input, PlayersList } from 'components';
+import { api } from 'api';
 
-import useStyles from "./PlayersListPage.styles";
+import useStyles from './PlayersListPage.styles';
 
 const PLAYERS_LIST_PAGE_SIZE = 30;
 
@@ -18,10 +18,7 @@ export const PlayersListPage: FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isLoadingOnScroll, setIsLoadingOnScroll] = useState(false);
 
-  const fetchPlayers = async (
-    currentPage: number,
-    filtersValues?: IUsersFilters
-  ) => {
+  const fetchPlayers = async (currentPage: number, filtersValues?: IUsersFilters) => {
     if (currentPage > 1) {
       setIsLoadingOnScroll(true);
     } else {
@@ -38,9 +35,7 @@ export const PlayersListPage: FC = () => {
       setPlayersData({
         ...response,
         items:
-          currentPage > 1
-            ? [...(playersData?.items ?? []), ...response.items]
-            : response.items,
+          currentPage > 1 ? [...(playersData?.items ?? []), ...response.items] : response.items,
       });
     } catch (e) {
       console.error(e);
@@ -73,7 +68,7 @@ export const PlayersListPage: FC = () => {
       <Container>
         <div className={classes.usernameInput}>
           <Input
-            value={filters.username ?? ""}
+            value={filters.username ?? ''}
             label="Имя пользователя"
             onChange={(v) =>
               handleFiltersChange({

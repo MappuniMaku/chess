@@ -1,15 +1,11 @@
-import { IMove, IPiecePosition } from "types";
-import { CastlingType, Color, PieceColor, PieceType } from "enums";
-import { isEven } from "utils";
-import { Cell } from "./Cell";
-import { Piece } from "./Piece";
-import { Bishop, King, Knight, Pawn, Queen, Rook } from "./pieces";
-import {
-  getCellIdFromPosition,
-  getMoveString,
-  getPositionFromCellId,
-} from "../helpers";
-import { pickPropsFromObj } from "helpers";
+import { IMove, IPiecePosition } from 'types';
+import { CastlingType, Color, PieceColor, PieceType } from 'enums';
+import { isEven } from 'utils';
+import { Cell } from './Cell';
+import { Piece } from './Piece';
+import { Bishop, King, Knight, Pawn, Queen, Rook } from './pieces';
+import { getCellIdFromPosition, getMoveString, getPositionFromCellId } from '../helpers';
+import { pickPropsFromObj } from 'helpers';
 
 const PIECES_DICTIONARY: Record<PieceType, typeof Piece> = {
   bishop: Bishop,
@@ -20,9 +16,9 @@ const PIECES_DICTIONARY: Record<PieceType, typeof Piece> = {
   queen: Queen,
 };
 
-const boardId = "board";
-const cellsContainerId = "cells-container";
-const movesLogContainerId = "moves-log";
+const boardId = 'board';
+const cellsContainerId = 'cells-container';
+const movesLogContainerId = 'moves-log';
 
 export class Board {
   $el: HTMLDivElement;
@@ -41,12 +37,8 @@ export class Board {
     this.$el = $el;
     this.render();
     this.$board = document.getElementById(boardId) as HTMLDivElement;
-    this.$cellsContainer = document.getElementById(
-      cellsContainerId
-    ) as HTMLDivElement;
-    this.$movesLogContainer = document.getElementById(
-      movesLogContainerId
-    ) as HTMLDivElement;
+    this.$cellsContainer = document.getElementById(cellsContainerId) as HTMLDivElement;
+    this.$movesLogContainer = document.getElementById(movesLogContainerId) as HTMLDivElement;
     this.cells = this.getInitialCells();
     this.renderCells();
     this.pieces = [];
@@ -64,31 +56,28 @@ export class Board {
   }
 
   enableMoving(): void {
-    this.$board.addEventListener("mousedown", this.handleMouseDown);
+    this.$board.addEventListener('mousedown', this.handleMouseDown);
   }
 
   disableMoving(): void {
-    this.$board.removeEventListener("mousedown", this.handleMouseDown);
+    this.$board.removeEventListener('mousedown', this.handleMouseDown);
   }
 
   render(): void {
     const numbersArr = Array.from({ length: 8 }).map((_, index) => index + 1);
     const letters = numbersArr.map(
-      (item) =>
-        `<div class="Chess__letter">${String.fromCharCode(item + 64)}</div>`
+      (item) => `<div class="Chess__letter">${String.fromCharCode(item + 64)}</div>`,
     );
-    const numbers = numbersArr.map(
-      (item) => `<div class="Chess__number">${item}</div>`
-    );
+    const numbers = numbersArr.map((item) => `<div class="Chess__number">${item}</div>`);
 
     const html = `
       <div class="Chess__boardWrapper">
         <div class="Chess__letters">
-          ${letters.join("")}
+          ${letters.join('')}
         </div>
         
         <div class="Chess__numbers">
-          ${numbers.join("")}
+          ${numbers.join('')}
         </div>
         
         <div class="Chess__board" id="${boardId}">
@@ -98,7 +87,7 @@ export class Board {
         <div class="Chess__movesLog" id="${movesLogContainerId}"></div>
       </div>
   `;
-    this.$el.insertAdjacentHTML("beforeend", html);
+    this.$el.insertAdjacentHTML('beforeend', html);
   }
 
   getInitialCells(): Cell[] {
@@ -129,18 +118,14 @@ export class Board {
   }
 
   addOverlay(): void {
-    this.$el.classList.add("Chess__boardWrapper--withOverlay");
+    this.$el.classList.add('Chess__boardWrapper--withOverlay');
   }
 
   removeOverlay(): void {
-    this.$el.classList.remove("Chess__boardWrapper--withOverlay");
+    this.$el.classList.remove('Chess__boardWrapper--withOverlay');
   }
 
-  addPiece(
-    pieceType: PieceType,
-    color: PieceColor,
-    position: IPiecePosition
-  ): void {
+  addPiece(pieceType: PieceType, color: PieceColor, position: IPiecePosition): void {
     const TargetPiece = PIECES_DICTIONARY[pieceType];
     const piece = new TargetPiece({
       color,
@@ -158,9 +143,7 @@ export class Board {
   }
 
   removePiece(piece: Piece): void {
-    const targetPieceIndex = this.pieces.findIndex(
-      (item) => item.id === piece.id
-    );
+    const targetPieceIndex = this.pieces.findIndex((item) => item.id === piece.id);
     if (targetPieceIndex === -1) {
       throw new Error(`removePiece(): Cannot find piece with id ${piece.id}`);
     }
@@ -171,7 +154,7 @@ export class Board {
   movePiece(id: number, position: IPiecePosition): void {
     const targetPiece = this.pieces.find((item) => item.id === id);
     if (targetPiece === undefined) {
-      throw new Error("movePiece(): Piece object with target ID not found");
+      throw new Error('movePiece(): Piece object with target ID not found');
     }
     targetPiece.setPosition(position);
   }
@@ -187,27 +170,27 @@ export class Board {
     }
     const activePiece = this.pieces.find((item) => item.id === Number(pieceId));
     if (activePiece === undefined) {
-      throw new Error("handleMouseDown(): Active piece not found");
+      throw new Error('handleMouseDown(): Active piece not found');
     }
 
     this.$activePiece = activePiece;
     this.activePiecePossibleMoves = activePiece.getValidMoves();
 
     this.showAvailableCells();
-    this.$board.style.cursor = "grabbing";
+    this.$board.style.cursor = 'grabbing';
     activePiece.addActivePieceClassName();
     this.pieces.forEach((p) => {
       p.disablePointerEvents();
     });
 
-    this.$board.addEventListener("mouseup", this.handleMouseUp);
-    this.$board.addEventListener("mousemove", this.handleMouseMove);
-    this.$board.addEventListener("mouseleave", this.handleMouseLeave);
+    this.$board.addEventListener('mouseup', this.handleMouseUp);
+    this.$board.addEventListener('mousemove', this.handleMouseMove);
+    this.$board.addEventListener('mouseleave', this.handleMouseLeave);
   }
 
   handleMouseLeave(): void {
     if (this.$activePiece === null) {
-      throw new Error("handleMouseLeave(): Active piece is null");
+      throw new Error('handleMouseLeave(): Active piece is null');
     }
     const { id, position } = this.$activePiece;
     this.movePiece(id, position);
@@ -219,7 +202,7 @@ export class Board {
   handleMouseMove(mousemoveEvent: MouseEvent): void {
     const { offsetLeft, offsetTop } = this.$board;
     if (this.$activePiece === null) {
-      throw new Error("handleMouseMove(): Active piece is null");
+      throw new Error('handleMouseMove(): Active piece is null');
     }
     const { $el: activePieceElement } = this.$activePiece;
     const { offsetWidth, offsetHeight } = activePieceElement;
@@ -231,11 +214,11 @@ export class Board {
   handleMouseUp(mouseupEvent: MouseEvent): void {
     const mouseupTarget = mouseupEvent.target as HTMLElement;
     if (mouseupTarget === null) {
-      throw new Error("handleMouseUp(): Mouseup target is null");
+      throw new Error('handleMouseUp(): Mouseup target is null');
     }
     const { row, column } = mouseupTarget.dataset;
     if (row === undefined || column === undefined) {
-      throw new Error("handleMouseUp(): Mouseup target is not a cell");
+      throw new Error('handleMouseUp(): Mouseup target is not a cell');
     }
     const targetRow = Number(row);
     const targetCol = Number(column);
@@ -245,18 +228,13 @@ export class Board {
     };
 
     if (this.$activePiece === null) {
-      throw new Error("handleMouseUp(): Active piece is null");
+      throw new Error('handleMouseUp(): Active piece is null');
     }
-    const {
-      id: pieceId,
-      position: startingPosition,
-      type: activePieceType,
-    } = this.$activePiece;
+    const { id: pieceId, position: startingPosition, type: activePieceType } = this.$activePiece;
 
     const targetCellId = getCellIdFromPosition(targetPosition);
 
-    const isMoveAvailable =
-      this.activePiecePossibleMoves.includes(targetCellId);
+    const isMoveAvailable = this.activePiecePossibleMoves.includes(targetCellId);
 
     if (!isMoveAvailable) {
       this.movePiece(pieceId, startingPosition);
@@ -282,9 +260,7 @@ export class Board {
 
     let wasCaptureMade = false;
     let enemyPiece = this.pieces.find(
-      (piece) =>
-        piece.color !== this.$activePiece?.color &&
-        piece.cellId === targetCellId
+      (piece) => piece.color !== this.$activePiece?.color && piece.cellId === targetCellId,
     );
 
     // Here we check if the pawn was hit by en passant
@@ -294,9 +270,7 @@ export class Board {
       targetCol !== startingPosition.col
     ) {
       enemyPiece = this.pieces.find(
-        (p) =>
-          p.position.col === targetCol &&
-          p.position.row === startingPosition.row
+        (p) => p.position.col === targetCol && p.position.row === startingPosition.row,
       );
     }
 
@@ -308,12 +282,7 @@ export class Board {
     this.$activePiece.hasMadeAnyMoves = true;
 
     const move: IMove = {
-      piece: pickPropsFromObj(this.$activePiece, [
-        "id",
-        "type",
-        "color",
-        "hasMadeAnyMoves",
-      ]),
+      piece: pickPropsFromObj(this.$activePiece, ['id', 'type', 'color', 'hasMadeAnyMoves']),
       initialPosition: startingPosition,
       finalPosition: targetPosition,
       wasCaptureMade,
@@ -321,20 +290,12 @@ export class Board {
     };
 
     let shouldAddMoveToLog = true;
-    if (
-      activePieceType === PieceType.Pawn &&
-      (targetRow === 1 || targetRow === 8)
-    ) {
+    if (activePieceType === PieceType.Pawn && (targetRow === 1 || targetRow === 8)) {
       const cell = this.cells.find((cell) => cell.id === targetCellId);
       if (cell === undefined) {
-        throw new Error(
-          `handleMouseUp(): Cell with id ${targetCellId} not found`
-        );
+        throw new Error(`handleMouseUp(): Cell with id ${targetCellId} not found`);
       }
-      const boundTransformPawnToPiece = this.transformPawnToPiece.bind(
-        this,
-        move
-      );
+      const boundTransformPawnToPiece = this.transformPawnToPiece.bind(this, move);
       cell.addPawnTransformationState(boundTransformPawnToPiece);
       this.addOverlay();
       this.disableMoving();
@@ -352,14 +313,10 @@ export class Board {
     this.clearListeners();
   }
 
-  transformPawnToPiece(
-    boundMove: IMove,
-    cellId: number,
-    newPieceType: PieceType
-  ): void {
+  transformPawnToPiece(boundMove: IMove, cellId: number, newPieceType: PieceType): void {
     const pawn = this.pieces.find((p) => p.cellId === cellId);
     if (pawn === undefined) {
-      throw new Error("transformPawnToPiece(): pawn not found");
+      throw new Error('transformPawnToPiece(): pawn not found');
     }
     const { color } = pawn;
     this.removePiece(pawn);
@@ -374,12 +331,10 @@ export class Board {
 
   addMoveToLog(move: IMove): void {
     const pieceColor = move.piece.color;
-    const enemyKing = this.pieces.find(
-      (p) => p.type === PieceType.King && p.color !== pieceColor
-    );
+    const enemyKing = this.pieces.find((p) => p.type === PieceType.King && p.color !== pieceColor);
 
     if (enemyKing === undefined) {
-      throw new Error("addMoveToLog() enemy king not found");
+      throw new Error('addMoveToLog() enemy king not found');
     }
 
     const wasCheckMade = enemyKing.getKingCheckers().length > 0;
@@ -405,18 +360,16 @@ export class Board {
       this.$movesLogContainer.removeChild(firstChild);
     }
 
-    const $list = document.createElement("ol");
-    $list.classList.add("Chess__movesLogList");
+    const $list = document.createElement('ol');
+    $list.classList.add('Chess__movesLogList');
     this.movesLog.forEach((move, index) => {
-      const $moveEl = document.createElement("span");
+      const $moveEl = document.createElement('span');
       $moveEl.textContent = getMoveString(move);
       if (index % 2 === 0) {
-        const $listItem = document.createElement("li");
-        $listItem.classList.add("Chess__movesLogListItem");
-        const $listItemContentWrapper = document.createElement("span");
-        $listItemContentWrapper.classList.add(
-          "Chess__movesLogListItemContentWrapper"
-        );
+        const $listItem = document.createElement('li');
+        $listItem.classList.add('Chess__movesLogListItem');
+        const $listItemContentWrapper = document.createElement('span');
+        $listItemContentWrapper.classList.add('Chess__movesLogListItemContentWrapper');
         $listItemContentWrapper.appendChild($moveEl);
         $listItem.appendChild($listItemContentWrapper);
         $list.appendChild($listItem);
@@ -430,31 +383,24 @@ export class Board {
   }
 
   clearListeners(): void {
-    this.$board.removeEventListener("mousemove", this.handleMouseMove);
-    this.$board.removeEventListener("mouseup", this.handleMouseUp);
-    this.$board.removeEventListener("mouseleave", this.handleMouseLeave);
+    this.$board.removeEventListener('mousemove', this.handleMouseMove);
+    this.$board.removeEventListener('mouseup', this.handleMouseUp);
+    this.$board.removeEventListener('mouseleave', this.handleMouseLeave);
     this.pieces.forEach((p) => {
       p.enablePointerEvents();
     });
-    this.$board.style.cursor = "default";
+    this.$board.style.cursor = 'default';
   }
 
   showAvailableCells(): void {
     if (this.$activePiece === null) {
-      throw new Error(
-        "showAvailableCells(): Active piece is null in showAvailableCells"
-      );
+      throw new Error('showAvailableCells(): Active piece is null in showAvailableCells');
     }
     const activePiece = this.$activePiece;
-    if (
-      this.activePiecePossibleMoves.length === 0 &&
-      activePiece.getKingCheckers().length > 0
-    ) {
-      const kingCell = this.cells.find(
-        (cell) => cell.id === activePiece.getKingInfo().king.cellId
-      );
+    if (this.activePiecePossibleMoves.length === 0 && activePiece.getKingCheckers().length > 0) {
+      const kingCell = this.cells.find((cell) => cell.id === activePiece.getKingInfo().king.cellId);
       if (kingCell === undefined) {
-        throw new Error("showAvailableCells(): Cannot find king cell");
+        throw new Error('showAvailableCells(): Cannot find king cell');
       }
       kingCell.highlightCheck();
       return;

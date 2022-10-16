@@ -1,5 +1,5 @@
-import { CastlingType, PieceColor, PieceType } from "enums";
-import { IUser } from "types";
+import { CastlingType, PieceColor, PieceType } from 'enums';
+import { IUser } from 'types';
 
 export interface IPiecePosition {
   row: number;
@@ -129,7 +129,7 @@ export interface IBoundingLine {
 }
 
 export interface IMove {
-  piece: Pick<IPiece, "id" | "type" | "color" | "hasMadeAnyMoves">;
+  piece: Pick<IPiece, 'id' | 'type' | 'color' | 'hasMadeAnyMoves'>;
   initialPosition: IPiecePosition;
   finalPosition: IPiecePosition;
   wasCaptureMade?: boolean;

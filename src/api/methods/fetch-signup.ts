@@ -1,5 +1,5 @@
-import { IPaginatedResponse, ISendRequestOptions } from "api";
-import { IUser } from "types";
+import { IPaginatedResponse, ISendRequestOptions } from 'api';
+import { IUser } from 'types';
 
 export interface IFetchSignupBodyRequest {
   username: string;
@@ -10,6 +10,6 @@ export interface IFetchSignupBodyRequest {
 export type IFetchSignupResponse = IPaginatedResponse<IUser>;
 
 export const fetchSignupOptions: ISendRequestOptions = {
-  method: "POST",
-  path: "/users",
+  method: 'POST',
+  path: '/users',
 };

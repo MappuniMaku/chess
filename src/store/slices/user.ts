@@ -1,6 +1,6 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { api } from "api";
-import { IUser } from "types";
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { api } from 'api';
+import { IUser } from 'types';
 
 export interface IUserState {
   value?: IUser;
@@ -12,13 +12,13 @@ const initialState: IUserState = {
   isLoading: true,
 };
 
-export const fetchUser = createAsyncThunk("user/fetchUser", async () => {
+export const fetchUser = createAsyncThunk('user/fetchUser', async () => {
   const { username } = await api.fetchProfile();
   return await api.fetchUser({ username });
 });
 
 export const userSlice = createSlice({
-  name: "user",
+  name: 'user',
   initialState,
   reducers: {},
   extraReducers: (builder) => {

@@ -1,44 +1,42 @@
-import React, { FC } from "react";
-import { Link } from "react-router-dom";
-import clsx from "clsx";
+import React, { FC } from 'react';
+import { Link } from 'react-router-dom';
+import clsx from 'clsx';
 
-import { Account, Container, Preloader } from "components";
-import { useAppSelector } from "hooks";
+import { Account, Container, Preloader } from 'components';
+import { useAppSelector } from 'hooks';
 
-import useStyles from "./Header.styles";
+import useStyles from './Header.styles';
 
 export interface IHeaderProps {
-  currentPage: "main" | "game" | "playersList";
+  currentPage: 'main' | 'game' | 'playersList';
 }
 
 const pages: Array<{
-  name: IHeaderProps["currentPage"];
+  name: IHeaderProps['currentPage'];
   link: string;
   text: string;
 }> = [
   {
-    name: "main",
-    link: "/",
-    text: "Главная",
+    name: 'main',
+    link: '/',
+    text: 'Главная',
   },
   {
-    name: "game",
-    link: "/game",
-    text: "Играть",
+    name: 'game',
+    link: '/game',
+    text: 'Играть',
   },
   {
-    name: "playersList",
-    link: "/players",
-    text: "Список игроков",
+    name: 'playersList',
+    link: '/players',
+    text: 'Список игроков',
   },
 ];
 
 export const Header: FC<IHeaderProps> = ({ currentPage }) => {
   const classes = useStyles();
 
-  const { value: user, isLoading: isUserLoading } = useAppSelector(
-    (state) => state.user
-  );
+  const { value: user, isLoading: isUserLoading } = useAppSelector((state) => state.user);
 
   const links = pages.map((p) => ({
     ...p,
@@ -55,21 +53,14 @@ export const Header: FC<IHeaderProps> = ({ currentPage }) => {
 
               if (isActive) {
                 return (
-                  <span
-                    key={name}
-                    className={clsx(classes.menuItem, classes.activeMenuItem)}
-                  >
+                  <span key={name} className={clsx(classes.menuItem, classes.activeMenuItem)}>
                     {text}
                   </span>
                 );
               }
 
               return (
-                <Link
-                  key={name}
-                  to={link}
-                  className={clsx(classes.menuItem, classes.menuLink)}
-                >
+                <Link key={name} to={link} className={clsx(classes.menuItem, classes.menuLink)}>
                   {text}
                 </Link>
               );

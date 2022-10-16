@@ -1,10 +1,10 @@
-import { createUseStyles } from "react-jss";
+import { createUseStyles } from 'react-jss';
 
 export default createUseStyles({
   root: {
-    display: "flex",
-    flexDirection: "column",
-    minHeight: "100vh",
+    display: 'flex',
+    flexDirection: 'column',
+    minHeight: '100vh',
   },
 
   main: {
@@ -13,7 +13,7 @@ export default createUseStyles({
   },
 
   loader: {
-    display: "flex",
-    justifyContent: "center",
+    display: 'flex',
+    justifyContent: 'center',
   },
 });

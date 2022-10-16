@@ -1,6 +1,6 @@
-import React, { FC, ReactNode } from "react";
+import React, { FC, ReactNode } from 'react';
 
-import useStyles from "./Container.styles";
+import useStyles from './Container.styles';
 
 export interface IContainerProps {
   children: ReactNode | ReactNode[];
