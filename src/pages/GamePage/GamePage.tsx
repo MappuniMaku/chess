@@ -1,13 +1,15 @@
 import React, { FC } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import { Layout } from 'layouts';
-import { Container, GameConfirm, GameLauncher, GameSearch } from 'components';
+import { Button, Container, GameConfirm, GameLauncher, GameSearch } from 'components';
 import { useAppSelector } from 'hooks';
 
 import useStyles from './GamePage.styles';
 
 export const GamePage: FC = () => {
   const classes = useStyles();
+  const navigate = useNavigate();
 
   const { value: user } = useAppSelector((state) => state.user);
   const { value: activeGame } = useAppSelector((state) => state.activeGame);
@@ -17,7 +19,7 @@ export const GamePage: FC = () => {
     <Layout currentPage="game">
       <Container>
         <div className={classes.root}>
-          {user !== undefined && (
+          {user !== undefined ? (
             <>
               {activeGame === undefined ? (
                 <GameSearch />
@@ -25,6 +27,8 @@ export const GamePage: FC = () => {
                 <>{!isGameStarted ? <GameConfirm /> : <GameLauncher />}</>
               )}
             </>
+          ) : (
+            <Button onClick={() => navigate('/login')}>Войти</Button>
           )}
         </div>
       </Container>
