@@ -7,6 +7,7 @@
 /build
 
 # misc
+.idea
 .firebase
 .DS_Store
 .env.local
