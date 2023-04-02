@@ -1,4 +1,4 @@
-import { IBishop, IKing, IKnight, IMove, IPiece, IQueen, IRook } from 'types';
+import { IBishop, IKing, IKnight, IMove, IPiece, IQueen, IRook } from '@/types';
 import {
   CastlingType,
   cellMovingPieces,
@@ -6,7 +6,7 @@ import {
   lineMovingPieces,
   PieceType,
   SHORT_PIECES_NAMES_DICTIONARY,
-} from 'enums';
+} from '@/enums';
 
 const reverseRows = Array.from({ length: 10 })
   .fill('')

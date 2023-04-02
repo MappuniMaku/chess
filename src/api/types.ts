@@ -1,4 +1,4 @@
-import { IFormValidationErrors } from 'types';
+import { IFormValidationErrors } from '@/types';
 
 export interface ISendRequestOptions {
   method: 'GET' | 'POST';

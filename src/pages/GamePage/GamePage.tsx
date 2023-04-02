@@ -1,9 +1,9 @@
 import React, { FC } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { Layout } from 'layouts';
-import { Button, Container, GameConfirm, GameLauncher, GameSearch } from 'components';
-import { useAppSelector } from 'hooks';
+import { Layout } from '@/layouts';
+import { Button, Container, GameConfirm, GameLauncher, GameSearch } from '@/components';
+import { useAppSelector } from '@/hooks';
 
 import useStyles from './GamePage.styles';
 

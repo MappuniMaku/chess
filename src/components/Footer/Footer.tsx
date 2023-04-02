@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 
-import { Container } from 'components';
+import { Container } from '@/components';
 
 import useStyles from './Footer.styles';
 

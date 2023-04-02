@@ -1,4 +1,4 @@
-import { IFormValidationErrorsMessages, ISignupFormValues } from 'types';
+import { IFormValidationErrorsMessages, ISignupFormValues } from '@/types';
 
 export const SIGNUP_FORM_VALIDATION_ERRORS: IFormValidationErrorsMessages<ISignupFormValues> = {
   username: {

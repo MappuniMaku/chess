@@ -1,10 +1,10 @@
 import React, { FC, useCallback, useEffect, useState } from 'react';
 import { debounce } from 'ts-debounce';
 
-import { IUsersFilters, IUsersListData } from 'types';
-import { Layout } from 'layouts';
-import { Container, Input, PlayersList } from 'components';
-import { api } from 'api';
+import { IUsersFilters, IUsersListData } from '@/types';
+import { Layout } from '@/layouts';
+import { Container, Input, PlayersList } from '@/components';
+import { api } from '@/api';
 
 import useStyles from './PlayersListPage.styles';
 

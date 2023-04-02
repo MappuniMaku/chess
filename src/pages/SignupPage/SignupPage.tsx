@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 
-import { Container, SignupForm } from 'components';
+import { Container, SignupForm } from '@/components';
 
 import useStyles from './SignupPage.styles';
 

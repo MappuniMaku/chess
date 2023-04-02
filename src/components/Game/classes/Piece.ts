@@ -8,8 +8,8 @@ import {
   IPiecePosition,
   IPieceProps,
   IRook,
-} from 'types';
-import { CastlingType, PieceColor, PieceType } from 'enums';
+} from '@/types';
+import { CastlingType, PieceColor, PieceType } from '@/enums';
 import {
   calculatePositionStyles,
   cutLinesIfNecessary,

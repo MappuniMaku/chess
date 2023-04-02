@@ -1,4 +1,4 @@
-import { ISendRequestOptions } from 'api';
+import { ISendRequestOptions } from '@/api';
 
 export interface IFetchLoginBodyRequest {
   username: string;

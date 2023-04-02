@@ -1,6 +1,6 @@
 // @ts-nocheck
 
-import { PieceColor, PieceType } from 'enums';
+import { PieceColor, PieceType } from '@/enums';
 import bishopBlack from '../images/bishop-black.png';
 import bishopWhite from '../images/bishop-white.png';
 import kingBlack from '../images/king-black.png';

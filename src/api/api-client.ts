@@ -13,9 +13,9 @@ import {
   IFetchUserResponse,
   IFetchUsersResponse,
 } from './methods';
-import { IUsersFilters } from 'types';
-import { LOCAL_BACKEND_ADDRESS, PRODUCTION_BACKEND_ADDRESS } from 'consts';
-import { clearCookie } from 'helpers';
+import { IUsersFilters } from '@/types';
+import { LOCAL_BACKEND_ADDRESS, PRODUCTION_BACKEND_ADDRESS } from '@/consts';
+import { clearCookie } from '@/helpers';
 
 class ApiClient {
   async sendRequest<ResponseType>({

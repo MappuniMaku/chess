@@ -1,14 +1,14 @@
 import React, { FC, useState } from 'react';
 import { Link } from 'react-router-dom';
 
-import { IFormValidationErrors, IHandleValuesChangeFunction, ISignupFormValues } from 'types';
-import { api, IValidationErrorResponse } from 'api';
-import { Button, Input } from 'components';
-import { FAILED_VALIDATION_ERROR_CODE, NUMBER_REGEXP } from 'consts';
-import { SIGNUP_FORM_VALIDATION_ERRORS } from 'locale';
-import { isObjectEmpty } from 'utils';
-import { getErrorTextFunction } from 'helpers';
-import { useIsMounted } from 'hooks';
+import { IFormValidationErrors, IHandleValuesChangeFunction, ISignupFormValues } from '@/types';
+import { api, IValidationErrorResponse } from '@/api';
+import { Button, Input } from '@/components';
+import { FAILED_VALIDATION_ERROR_CODE, NUMBER_REGEXP } from '@/consts';
+import { SIGNUP_FORM_VALIDATION_ERRORS } from '@/locale';
+import { isObjectEmpty } from '@/utils';
+import { getErrorTextFunction } from '@/helpers';
+import { useIsMounted } from '@/hooks';
 
 import useStyles from './SignupForm.styles';
 

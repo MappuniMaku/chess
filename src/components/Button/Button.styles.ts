@@ -1,6 +1,6 @@
 import { createUseStyles } from 'react-jss';
-import { colors } from 'theme';
-import { rgba } from 'helpers';
+import { colors } from '@/theme';
+import { rgba } from '@/helpers';
 
 export default createUseStyles({
   root: {

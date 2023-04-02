@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { IGame } from 'types';
+import { IGame } from '@/types';
 
 export interface IActiveGameState {
   value?: IGame;

@@ -2,8 +2,8 @@ import React, { FC } from 'react';
 import { Link } from 'react-router-dom';
 import clsx from 'clsx';
 
-import { Account, Container, Preloader } from 'components';
-import { useAppSelector } from 'hooks';
+import { Account, Container, Preloader } from '@/components';
+import { useAppSelector } from '@/hooks';
 
 import useStyles from './Header.styles';
 

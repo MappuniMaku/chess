@@ -1,6 +1,6 @@
 import './index.scss';
 import { Board } from './classes/Board';
-import { PieceColor, PieceType } from 'enums';
+import { PieceColor, PieceType } from '@/enums';
 
 export class Game {
   board: Board;

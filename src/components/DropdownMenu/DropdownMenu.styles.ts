@@ -1,5 +1,5 @@
 import { createUseStyles } from 'react-jss';
-import { boxShadows, colors } from 'theme';
+import { boxShadows, colors } from '@/theme';
 
 export default createUseStyles({
   root: {

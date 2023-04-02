@@ -4,7 +4,7 @@ import {
   IGetProtectedPiecesCellsFromLinesFunction,
   IPiecePosition,
   IRemoveCellsIfNecessaryFunction,
-} from 'types';
+} from '@/types';
 import { PieceType } from '../../../enums';
 
 export const getCellIdFromPosition = (position: IPiecePosition): number => {

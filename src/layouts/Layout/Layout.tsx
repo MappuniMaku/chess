@@ -1,7 +1,7 @@
 import React, { FC, ReactNode } from 'react';
 
-import { Footer, Header, IHeaderProps, Preloader } from 'components';
-import { useAppSelector } from 'hooks';
+import { Footer, Header, IHeaderProps, Preloader } from '@/components';
+import { useAppSelector } from '@/hooks';
 
 import useStyles from './Layout.styles';
 

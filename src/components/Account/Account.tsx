@@ -1,8 +1,8 @@
 import React, { FC, useRef, useState } from 'react';
 
-import { DropdownMenu, Icon, IDropdownMenuItem } from 'components';
-import { clearCookie } from 'helpers';
-import { useAppSelector, useOnClickOutside } from 'hooks';
+import { DropdownMenu, Icon, IDropdownMenuItem } from '@/components';
+import { clearCookie } from '@/helpers';
+import { useAppSelector, useOnClickOutside } from '@/hooks';
 
 import useStyles from './Account.styles';
 

@@ -1,4 +1,4 @@
-import { IFormValidationErrors, IFormValidationErrorsMessages, IValidationError } from 'types';
+import { IFormValidationErrors, IFormValidationErrorsMessages, IValidationError } from '@/types';
 
 export const getErrorTextFunction =
   <FormValues>(

@@ -1,4 +1,4 @@
-import { Color, PieceColor, PieceType } from 'enums';
+import { Color, PieceColor, PieceType } from '@/enums';
 import { setPieceElementProperties } from '../helpers';
 
 interface ICellProps {

@@ -1,8 +1,8 @@
 import React, { FC, useEffect, useState } from 'react';
 
-import { Button } from 'components';
-import { socket, useAppSelector } from 'hooks';
-import { WsEvents } from 'enums';
+import { Button } from '@/components';
+import { socket, useAppSelector } from '@/hooks';
+import { WsEvents } from '@/enums';
 
 import useStyles from './GameSearch.styles';
 

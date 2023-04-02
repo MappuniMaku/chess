@@ -1,16 +1,16 @@
 import { useEffect, useState } from 'react';
 import { io } from 'socket.io-client';
 
-import { LOCAL_BACKEND_ADDRESS, PRODUCTION_BACKEND_ADDRESS } from 'consts';
+import { LOCAL_BACKEND_ADDRESS, PRODUCTION_BACKEND_ADDRESS } from '@/consts';
 import {
   updateConnectedUsers,
   updateSearchingForGameUsers,
   updateActiveGame,
   updateBannedPlayers,
-} from 'store/slices';
+} from '@/store/slices';
 import { useAppDispatch, useAppSelector } from './store';
-import { IBannedPlayer, IGame, IUser } from 'types';
-import { WsEvents } from 'enums';
+import { IBannedPlayer, IGame, IUser } from '@/types';
+import { WsEvents } from '@/enums';
 
 export const socket = io(
   process.env.NODE_ENV === 'development' ? LOCAL_BACKEND_ADDRESS : PRODUCTION_BACKEND_ADDRESS,

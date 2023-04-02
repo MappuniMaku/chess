@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { IBannedPlayer } from 'types';
+import { IBannedPlayer } from '@/types';
 
 export interface IBannedPlayersListState {
   bannedPlayers: IBannedPlayer[];

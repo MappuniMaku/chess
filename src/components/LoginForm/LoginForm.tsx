@@ -1,10 +1,10 @@
 import React, { FC, useState } from 'react';
 import { Link } from 'react-router-dom';
 
-import { IHandleValuesChangeFunction, ILoginFormValues } from 'types';
-import { api } from 'api';
-import { Button, Input } from 'components';
-import { useIsMounted } from 'hooks';
+import { IHandleValuesChangeFunction, ILoginFormValues } from '@/types';
+import { api } from '@/api';
+import { Button, Input } from '@/components';
+import { useIsMounted } from '@/hooks';
 
 import useStyles from './LoginForm.styles';
 

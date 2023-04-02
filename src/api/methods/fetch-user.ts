@@ -1,5 +1,5 @@
-import { ISendRequestOptions } from 'api';
-import { IUser } from 'types';
+import { ISendRequestOptions } from '@/api';
+import { IUser } from '@/types';
 
 export type IFetchUserResponse = IUser;
 

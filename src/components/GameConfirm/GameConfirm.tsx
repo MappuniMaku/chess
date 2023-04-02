@@ -1,9 +1,9 @@
 import React, { FC, useEffect, useState } from 'react';
 
-import { Button } from 'components';
-import { socket, useAppSelector } from 'hooks';
-import { WsEvents } from 'enums';
-import { getCurrentPlayerFromGame, getOpponentFromGame } from 'helpers';
+import { Button } from '@/components';
+import { socket, useAppSelector } from '@/hooks';
+import { WsEvents } from '@/enums';
+import { getCurrentPlayerFromGame, getOpponentFromGame } from '@/helpers';
 
 import useStyles from './GameConfirm.styles';
 

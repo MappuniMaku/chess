@@ -1,11 +1,11 @@
-import { IMove, IPiecePosition } from 'types';
-import { CastlingType, Color, PieceColor, PieceType } from 'enums';
-import { isEven } from 'utils';
+import { IMove, IPiecePosition } from '@/types';
+import { CastlingType, Color, PieceColor, PieceType } from '@/enums';
+import { isEven } from '@/utils';
 import { Cell } from './Cell';
 import { Piece } from './Piece';
 import { Bishop, King, Knight, Pawn, Queen, Rook } from './pieces';
 import { getCellIdFromPosition, getMoveString, getPositionFromCellId } from '../helpers';
-import { pickPropsFromObj } from 'helpers';
+import { pickPropsFromObj } from '@/helpers';
 
 const PIECES_DICTIONARY: Record<PieceType, typeof Piece> = {
   bishop: Bishop,

@@ -1,4 +1,4 @@
-import { VALIDATION_ERRORS } from 'enums';
+import { VALIDATION_ERRORS } from '@/enums';
 
 export type IHandleValuesChangeFunction<Values> = <Key extends keyof Values>(
   key: Key,

@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { api } from 'api';
-import { IUser } from 'types';
+import { api } from '@/api';
+import { IUser } from '@/types';
 
 export interface IUserState {
   value?: IUser;

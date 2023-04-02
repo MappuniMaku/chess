@@ -1,4 +1,4 @@
-import { IPaginatedResponse, IPaginationRequest } from 'api';
+import { IPaginatedResponse, IPaginationRequest } from '@/api';
 
 export interface IUser {
   username: string;

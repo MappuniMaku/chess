@@ -1,6 +1,6 @@
 import { Piece } from '../Piece';
-import { IPieceProps, IRook } from 'types';
-import { PieceType } from 'enums';
+import { IPieceProps, IRook } from '@/types';
+import { PieceType } from '@/enums';
 import {
   getBottomLine,
   getLeftLine,

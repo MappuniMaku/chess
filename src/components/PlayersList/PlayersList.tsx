@@ -1,10 +1,10 @@
 import React, { FC, useEffect, useRef } from 'react';
 import clsx from 'clsx';
 
-import { IUsersFilters, IUsersListData } from 'types';
-import { Preloader } from 'components';
+import { IUsersFilters, IUsersListData } from '@/types';
+import { Preloader } from '@/components';
 import { HeadingButton } from './components';
-import { useAppSelector } from 'hooks';
+import { useAppSelector } from '@/hooks';
 
 import useStyles from './PlayersList.styles';
 

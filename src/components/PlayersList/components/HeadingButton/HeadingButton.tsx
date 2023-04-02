@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 
-import { IUsersFilters } from 'types';
-import { Icon } from 'components';
+import { IUsersFilters } from '@/types';
+import { Icon } from '@/components';
 
 import useStyles from './HeadingButton.styles';
 

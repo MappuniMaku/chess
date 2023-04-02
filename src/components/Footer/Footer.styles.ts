@@ -1,5 +1,5 @@
 import { createUseStyles } from 'react-jss';
-import { colors } from 'theme';
+import { colors } from '@/theme';
 
 export default createUseStyles({
   root: {

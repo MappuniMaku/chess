@@ -1,6 +1,6 @@
 import React, { FC, ReactNode } from 'react';
 
-import { Preloader } from 'components';
+import { Preloader } from '@/components';
 
 import useStyles from './Button.styles';
 

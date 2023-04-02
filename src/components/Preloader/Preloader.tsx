@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 import HashLoader from 'react-spinners/HashLoader';
 import SyncLoader from 'react-spinners/SyncLoader';
 
-import { colors } from 'theme';
+import { colors } from '@/theme';
 
 import useStyles from './Preloader.styles';
 

@@ -1,6 +1,6 @@
 import { Piece } from '../Piece';
-import { IBishop, IPieceProps } from 'types';
-import { PieceType } from 'enums';
+import { IBishop, IPieceProps } from '@/types';
+import { PieceType } from '@/enums';
 import {
   getTopLeftDiagonal,
   getTopRightDiagonal,
