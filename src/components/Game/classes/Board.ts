@@ -1,4 +1,4 @@
-import { IMove, IPiecePosition } from '@/types';
+import { IBackendMove, IMove, IPiecePosition } from '@/types';
 import { CastlingType, Color, PieceColor, PieceType } from '@/enums';
 import { isEven } from '@/utils';
 import { Cell } from './Cell';
@@ -28,7 +28,6 @@ export class Board {
   cells: Cell[];
   pieces: Piece[];
   $activePiece: Piece | null;
-  activePiecePossibleMoves: number[];
   pieceIdCounter: number;
   currentlyMovingColor: PieceColor;
   movesLog: IMove[];
@@ -43,7 +42,6 @@ export class Board {
     this.renderCells();
     this.pieces = [];
     this.$activePiece = null;
-    this.activePiecePossibleMoves = [];
     this.pieceIdCounter = 0;
     this.currentlyMovingColor = PieceColor.White;
     this.movesLog = [];
@@ -174,7 +172,6 @@ export class Board {
     }
 
     this.$activePiece = activePiece;
-    this.activePiecePossibleMoves = activePiece.getValidMoves();
 
     this.showAvailableCells();
     this.$board.style.cursor = 'grabbing';
@@ -230,11 +227,29 @@ export class Board {
     if (this.$activePiece === null) {
       throw new Error('handleMouseUp(): Active piece is null');
     }
-    const { id: pieceId, position: startingPosition, type: activePieceType } = this.$activePiece;
+
+    this.makeMoveIfPossible({ activePiece: this.$activePiece, targetPosition });
+
+    this.clearActivePiece();
+    this.clearAvailableCells();
+    this.clearListeners();
+  }
+
+  makeMoveIfPossible({
+    activePiece,
+    targetPosition,
+    newPieceType,
+  }: {
+    activePiece: Piece;
+    targetPosition: IPiecePosition;
+    newPieceType?: PieceType;
+  }): void {
+    const { id: pieceId, position: startingPosition, type: activePieceType } = activePiece;
+    const { row: targetRow, col: targetCol } = targetPosition;
 
     const targetCellId = getCellIdFromPosition(targetPosition);
 
-    const isMoveAvailable = this.activePiecePossibleMoves.includes(targetCellId);
+    const isMoveAvailable = activePiece.getValidMoves().includes(targetCellId);
 
     if (!isMoveAvailable) {
       this.movePiece(pieceId, startingPosition);
@@ -246,7 +261,7 @@ export class Board {
 
     let castlingType: CastlingType | undefined;
     if (activePieceType === PieceType.King) {
-      const { king } = this.$activePiece.getKingInfo();
+      const { king } = activePiece.getKingInfo();
       if (king.getPossibleCastles().includes(targetCellId)) {
         const {
           rook,
@@ -279,10 +294,10 @@ export class Board {
       wasCaptureMade = true;
     }
 
-    this.$activePiece.hasMadeAnyMoves = true;
+    activePiece.hasMadeAnyMoves = true;
 
     const move: IMove = {
-      piece: pickPropsFromObj(this.$activePiece, ['id', 'type', 'color', 'hasMadeAnyMoves']),
+      piece: pickPropsFromObj(activePiece, ['id', 'type', 'color', 'hasMadeAnyMoves']),
       initialPosition: startingPosition,
       finalPosition: targetPosition,
       wasCaptureMade,
@@ -290,30 +305,38 @@ export class Board {
     };
 
     let shouldAddMoveToLog = true;
+
+    this.movePiece(pieceId, targetPosition);
+
     if (activePieceType === PieceType.Pawn && (targetRow === 1 || targetRow === 8)) {
       const cell = this.cells.find((cell) => cell.id === targetCellId);
       if (cell === undefined) {
         throw new Error(`handleMouseUp(): Cell with id ${targetCellId} not found`);
       }
-      const boundTransformPawnToPiece = this.transformPawnToPiece.bind(this, move);
-      cell.addPawnTransformationState(boundTransformPawnToPiece);
-      this.addOverlay();
-      this.disableMoving();
-      shouldAddMoveToLog = false;
+      if (newPieceType !== undefined) {
+        this.transformPawnToPiece(move, cell.id, newPieceType, true);
+      } else {
+        const boundTransformPawnToPiece = this.transformPawnToPiece.bind(this, move);
+        cell.addPawnTransformationState(boundTransformPawnToPiece);
+        this.addOverlay();
+        this.disableMoving();
+        shouldAddMoveToLog = false;
+      }
     }
-
-    this.movePiece(pieceId, targetPosition);
 
     if (shouldAddMoveToLog) {
       this.addMoveToLog(move);
     }
 
-    this.clearActivePiece();
-    this.clearAvailableCells();
-    this.clearListeners();
+    this.switchActiveMovingColor();
   }
 
-  transformPawnToPiece(boundMove: IMove, cellId: number, newPieceType: PieceType): void {
+  transformPawnToPiece(
+    boundMove: IMove,
+    cellId: number,
+    newPieceType: PieceType,
+    isFromMovesLog = false,
+  ): void {
     const pawn = this.pieces.find((p) => p.cellId === cellId);
     if (pawn === undefined) {
       throw new Error('transformPawnToPiece(): pawn not found');
@@ -321,8 +344,10 @@ export class Board {
     const { color } = pawn;
     this.removePiece(pawn);
     this.addPiece(newPieceType, color, boundMove.finalPosition);
-    this.removeOverlay();
-    this.enableMoving();
+    if (!isFromMovesLog) {
+      this.removeOverlay();
+      this.enableMoving();
+    }
     this.addMoveToLog({
       ...boundMove,
       selectedPieceTypeToTransform: newPieceType,
@@ -351,6 +376,7 @@ export class Board {
       lastMove.isStalemate = !wasCheckMade;
       this.disableMoving();
     }
+    console.log(this.currentlyMovingColor, this.movesLog);
     this.renderMovesLog();
   }
 
@@ -382,6 +408,22 @@ export class Board {
     $list.scrollTo({ top: $list.scrollHeight });
   }
 
+  recoverPositionFromMovesLog(movesLog: IBackendMove[]): void {
+    movesLog.forEach(({ piece, finalPosition, selectedPieceTypeToTransform }) => {
+      const activePiece = this.pieces.find((item) => item.id === piece.id);
+      this.makeMoveIfPossible({
+        activePiece: activePiece as Piece,
+        targetPosition: finalPosition,
+        newPieceType: selectedPieceTypeToTransform,
+      });
+    });
+  }
+
+  switchActiveMovingColor(): void {
+    this.currentlyMovingColor =
+      this.currentlyMovingColor === PieceColor.White ? PieceColor.Black : PieceColor.White;
+  }
+
   clearListeners(): void {
     this.$board.removeEventListener('mousemove', this.handleMouseMove);
     this.$board.removeEventListener('mouseup', this.handleMouseUp);
@@ -397,7 +439,8 @@ export class Board {
       throw new Error('showAvailableCells(): Active piece is null in showAvailableCells');
     }
     const activePiece = this.$activePiece;
-    if (this.activePiecePossibleMoves.length === 0 && activePiece.getKingCheckers().length > 0) {
+    const activePiecePossibleMoves = activePiece.getValidMoves();
+    if (activePiecePossibleMoves.length === 0 && activePiece.getKingCheckers().length > 0) {
       const kingCell = this.cells.find((cell) => cell.id === activePiece.getKingInfo().king.cellId);
       if (kingCell === undefined) {
         throw new Error('showAvailableCells(): Cannot find king cell');
@@ -405,7 +448,7 @@ export class Board {
       kingCell.highlightCheck();
       return;
     }
-    this.activePiecePossibleMoves.forEach((id) => {
+    activePiecePossibleMoves.forEach((id) => {
       const cell = this.cells.find((item) => item.id === id);
       if (cell === undefined) {
         throw new Error(`showAvailableCells(): Cell with id ${id} not found`);
@@ -431,6 +474,5 @@ export class Board {
   clearActivePiece(): void {
     this.$activePiece?.removeActivePieceClassName();
     this.$activePiece = null;
-    this.activePiecePossibleMoves = [];
   }
 }

@@ -140,6 +140,8 @@ export interface IMove {
   isStalemate?: boolean;
 }
 
+export type IBackendMove = Pick<IMove, 'piece' | 'finalPosition' | 'selectedPieceTypeToTransform'>;
+
 export interface IPlayer {
   user: IUser;
   isGameAccepted: boolean;

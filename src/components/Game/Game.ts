@@ -1,6 +1,7 @@
 import './index.scss';
 import { Board } from './classes/Board';
 import { PieceColor, PieceType } from '@/enums';
+import { IBackendMove } from '@/types';
 
 export class Game {
   board: Board;
@@ -50,5 +51,9 @@ export class Game {
 
     this.board.addPiece(PieceType.Queen, PieceColor.White, { row: 8, col: 4 });
     this.board.addPiece(PieceType.Queen, PieceColor.Black, { row: 1, col: 4 });
+
+    const logs = [] as IBackendMove[];
+
+    this.board.recoverPositionFromMovesLog(logs);
   }
 }

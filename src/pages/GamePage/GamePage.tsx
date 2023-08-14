@@ -19,17 +19,18 @@ export const GamePage: FC = () => {
     <Layout currentPage="game">
       <Container>
         <div className={classes.root}>
-          {user !== undefined ? (
-            <>
-              {activeGame === undefined ? (
-                <GameSearch />
-              ) : (
-                <>{!isGameStarted ? <GameConfirm /> : <GameLauncher />}</>
-              )}
-            </>
-          ) : (
-            <Button onClick={() => navigate('/login')}>Войти</Button>
-          )}
+          <GameLauncher />
+          {/*{user !== undefined ? (*/}
+          {/*  <>*/}
+          {/*    {activeGame === undefined ? (*/}
+          {/*      <GameSearch />*/}
+          {/*    ) : (*/}
+          {/*      <>{!isGameStarted ? <GameConfirm /> : <GameLauncher />}</>*/}
+          {/*    )}*/}
+          {/*  </>*/}
+          {/*) : (*/}
+          {/*  <Button onClick={() => navigate('/login')}>Войти</Button>*/}
+          {/*)}*/}
         </div>
       </Container>
     </Layout>
