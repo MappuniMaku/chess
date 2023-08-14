@@ -76,6 +76,10 @@ export const useWebSockets = () => {
       },
     );
 
+    socket.on(WsEvents.MakeMove, ({ game }: { game: IGame }) => {
+      dispatch(updateActiveGame(game));
+    });
+
     return () => {
       socket.off(WsEvents.Connect);
       socket.off(WsEvents.UpdateLobby);

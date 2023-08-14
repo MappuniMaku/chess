@@ -2,16 +2,30 @@ import './index.scss';
 import { Board } from './classes/Board';
 import { PieceColor, PieceType } from '@/enums';
 import { IBackendMove } from '@/types';
+import { isArrayNotEmpty } from '@/helpers';
 
 export class Game {
   board: Board;
 
-  constructor($el: HTMLDivElement) {
+  constructor({
+    $el,
+    playerColor,
+    movesLog,
+    onMakeMove,
+  }: {
+    $el: HTMLDivElement;
+    playerColor: PieceColor;
+    movesLog?: IBackendMove[];
+    onMakeMove(move: IBackendMove): void;
+  }) {
     const $boardEl = document.createElement('div');
     $boardEl.classList.add('Chess');
     $el.appendChild($boardEl);
-    this.board = new Board($boardEl);
+    this.board = new Board({ $el: $boardEl, playerColor, onMakeMove });
     this.init();
+    if (isArrayNotEmpty(movesLog)) {
+      this.board.recoverPositionFromMovesLog(movesLog);
+    }
   }
 
   init(): void {
@@ -51,9 +65,5 @@ export class Game {
 
     this.board.addPiece(PieceType.Queen, PieceColor.White, { row: 8, col: 4 });
     this.board.addPiece(PieceType.Queen, PieceColor.Black, { row: 1, col: 4 });
-
-    const logs = [] as IBackendMove[];
-
-    this.board.recoverPositionFromMovesLog(logs);
   }
 }

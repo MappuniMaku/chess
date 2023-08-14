@@ -1,12 +1,14 @@
-import { IBishop, IKing, IKnight, IMove, IPiece, IQueen, IRook } from '@/types';
+import { IBackendMove, IBishop, IKing, IKnight, IMove, IPiece, IQueen, IRook } from '@/types';
 import {
   CastlingType,
   cellMovingPieces,
   COLUMN_NAMES,
   lineMovingPieces,
+  PieceColor,
   PieceType,
   SHORT_PIECES_NAMES_DICTIONARY,
 } from '@/enums';
+import { pickPropsFromObj } from '@/helpers';
 
 const reverseRows = Array.from({ length: 10 })
   .fill('')
@@ -64,3 +66,15 @@ export const isLineMovingPiece = (piece: IPiece): piece is IRook | IQueen | IBis
 
 export const isCellMovingPiece = (piece: IPiece): piece is IKing | IKnight =>
   cellMovingPieces.includes(piece.type);
+
+export const getOppositeColor = (color: PieceColor): PieceColor =>
+  color === PieceColor.White ? PieceColor.Black : PieceColor.White;
+
+export const convertMoveToBackendMove = (move: IMove): IBackendMove =>
+  pickPropsFromObj(move, [
+    'piece',
+    'finalPosition',
+    'selectedPieceTypeToTransform',
+    'isMate',
+    'isStalemate',
+  ]);

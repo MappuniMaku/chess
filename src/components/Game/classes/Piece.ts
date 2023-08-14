@@ -249,7 +249,10 @@ export class Piece implements IPiece {
     ].filter((i) => i.boundingLine.length > 0);
   }
 
-  getValidMoves() {
+  getValidMoves(playerColor: PieceColor, currentMovingColor: PieceColor) {
+    if (this.color !== playerColor || playerColor !== currentMovingColor) {
+      return [];
+    }
     const boundingLineObj = this.getKingBounders().find((l) => l.boundPiece.id === this.id);
     const targetCellsIds = this.getMoves();
     let possibleMoves =

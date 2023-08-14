@@ -19,4 +19,5 @@ export enum WsEvents {
   UpdateGame = 'update-game',
   AcceptGame = 'accept-game',
   DeclineGame = 'decline-game',
+  MakeMove = 'make-move',
 }

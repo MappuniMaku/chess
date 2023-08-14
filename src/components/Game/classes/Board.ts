@@ -1,10 +1,17 @@
+import { isEqual, pickBy } from 'lodash';
 import { IBackendMove, IMove, IPiecePosition } from '@/types';
 import { CastlingType, Color, PieceColor, PieceType } from '@/enums';
 import { isEven } from '@/utils';
 import { Cell } from './Cell';
 import { Piece } from './Piece';
 import { Bishop, King, Knight, Pawn, Queen, Rook } from './pieces';
-import { getCellIdFromPosition, getMoveString, getPositionFromCellId } from '../helpers';
+import {
+  convertMoveToBackendMove,
+  getCellIdFromPosition,
+  getMoveString,
+  getOppositeColor,
+  getPositionFromCellId,
+} from '../helpers';
 import { pickPropsFromObj } from '@/helpers';
 
 const PIECES_DICTIONARY: Record<PieceType, typeof Piece> = {
@@ -29,10 +36,20 @@ export class Board {
   pieces: Piece[];
   $activePiece: Piece | null;
   pieceIdCounter: number;
+  playerColor: PieceColor;
   currentlyMovingColor: PieceColor;
   movesLog: IMove[];
+  onMakeMove: (move: IBackendMove) => void;
 
-  constructor($el: HTMLDivElement) {
+  constructor({
+    $el,
+    playerColor,
+    onMakeMove,
+  }: {
+    $el: HTMLDivElement;
+    playerColor: PieceColor;
+    onMakeMove(move: IBackendMove): void;
+  }) {
     this.$el = $el;
     this.render();
     this.$board = document.getElementById(boardId) as HTMLDivElement;
@@ -43,14 +60,20 @@ export class Board {
     this.pieces = [];
     this.$activePiece = null;
     this.pieceIdCounter = 0;
+    this.playerColor = playerColor;
     this.currentlyMovingColor = PieceColor.White;
     this.movesLog = [];
+    this.onMakeMove = onMakeMove;
     this.handleMouseDown = this.handleMouseDown.bind(this);
     this.handleMouseMove = this.handleMouseMove.bind(this);
     this.handleMouseUp = this.handleMouseUp.bind(this);
     this.handleMouseLeave = this.handleMouseLeave.bind(this);
     this.clearListeners = this.clearListeners.bind(this);
     this.enableMoving();
+  }
+
+  reportMove(move: IMove): void {
+    this.onMakeMove(convertMoveToBackendMove(move));
   }
 
   enableMoving(): void {
@@ -239,17 +262,21 @@ export class Board {
     activePiece,
     targetPosition,
     newPieceType,
+    isFromMovesLog,
   }: {
     activePiece: Piece;
     targetPosition: IPiecePosition;
     newPieceType?: PieceType;
+    isFromMovesLog?: boolean;
   }): void {
     const { id: pieceId, position: startingPosition, type: activePieceType } = activePiece;
     const { row: targetRow, col: targetCol } = targetPosition;
 
     const targetCellId = getCellIdFromPosition(targetPosition);
 
-    const isMoveAvailable = activePiece.getValidMoves().includes(targetCellId);
+    const isMoveAvailable =
+      isFromMovesLog ||
+      activePiece.getValidMoves(this.playerColor, this.currentlyMovingColor).includes(targetCellId);
 
     if (!isMoveAvailable) {
       this.movePiece(pieceId, startingPosition);
@@ -275,7 +302,7 @@ export class Board {
 
     let wasCaptureMade = false;
     let enemyPiece = this.pieces.find(
-      (piece) => piece.color !== this.$activePiece?.color && piece.cellId === targetCellId,
+      (piece) => piece.color !== activePiece?.color && piece.cellId === targetCellId,
     );
 
     // Here we check if the pawn was hit by en passant
@@ -325,7 +352,7 @@ export class Board {
     }
 
     if (shouldAddMoveToLog) {
-      this.addMoveToLog(move);
+      this.addMoveToLog(move, isFromMovesLog);
     }
 
     this.switchActiveMovingColor();
@@ -348,13 +375,16 @@ export class Board {
       this.removeOverlay();
       this.enableMoving();
     }
-    this.addMoveToLog({
-      ...boundMove,
-      selectedPieceTypeToTransform: newPieceType,
-    });
+    this.addMoveToLog(
+      {
+        ...boundMove,
+        selectedPieceTypeToTransform: newPieceType,
+      },
+      isFromMovesLog,
+    );
   }
 
-  addMoveToLog(move: IMove): void {
+  addMoveToLog(move: IMove, isFromMovesLog = false): void {
     const pieceColor = move.piece.color;
     const enemyKing = this.pieces.find((p) => p.type === PieceType.King && p.color !== pieceColor);
 
@@ -369,15 +399,22 @@ export class Board {
       wasCheckMade,
     });
     const enemyPieces = this.pieces.filter((p) => p.color !== pieceColor);
-    const availableMoves = enemyPieces.flatMap((p) => p.getValidMoves());
+    const enemyColor = getOppositeColor(pieceColor);
+    const availableMoves = enemyPieces.flatMap((p) => p.getValidMoves(enemyColor, enemyColor));
+
+    const lastMove = this.movesLog[this.movesLog.length - 1];
+
     if (availableMoves.length === 0) {
-      const lastMove = this.movesLog[this.movesLog.length - 1];
       lastMove.isMate = wasCheckMade;
       lastMove.isStalemate = !wasCheckMade;
       this.disableMoving();
     }
-    console.log(this.currentlyMovingColor, this.movesLog);
     this.renderMovesLog();
+
+    // Report only moves made by users
+    if (!isFromMovesLog) {
+      this.reportMove(lastMove);
+    }
   }
 
   renderMovesLog(): void {
@@ -409,19 +446,32 @@ export class Board {
   }
 
   recoverPositionFromMovesLog(movesLog: IBackendMove[]): void {
-    movesLog.forEach(({ piece, finalPosition, selectedPieceTypeToTransform }) => {
-      const activePiece = this.pieces.find((item) => item.id === piece.id);
-      this.makeMoveIfPossible({
-        activePiece: activePiece as Piece,
-        targetPosition: finalPosition,
-        newPieceType: selectedPieceTypeToTransform,
-      });
+    movesLog.forEach((move) => this.addMoveFromMovesLog(move));
+  }
+
+  addMoveFromMovesLog(move: IBackendMove): void {
+    const lastMove = this.movesLog[this.movesLog.length - 1] as IMove | undefined;
+    // Converting move from local log to backend one and cleaning it from undefined values
+    const convertedLastMove =
+      lastMove !== undefined ? pickBy(convertMoveToBackendMove(lastMove)) : undefined;
+
+    if (isEqual(move, convertedLastMove)) {
+      return;
+    }
+
+    const { piece, finalPosition, selectedPieceTypeToTransform } = move;
+
+    const activePiece = this.pieces.find((item) => item.id === piece.id);
+    this.makeMoveIfPossible({
+      activePiece: activePiece as Piece,
+      targetPosition: finalPosition,
+      newPieceType: selectedPieceTypeToTransform,
+      isFromMovesLog: true,
     });
   }
 
   switchActiveMovingColor(): void {
-    this.currentlyMovingColor =
-      this.currentlyMovingColor === PieceColor.White ? PieceColor.Black : PieceColor.White;
+    this.currentlyMovingColor = getOppositeColor(this.currentlyMovingColor);
   }
 
   clearListeners(): void {
@@ -439,7 +489,10 @@ export class Board {
       throw new Error('showAvailableCells(): Active piece is null in showAvailableCells');
     }
     const activePiece = this.$activePiece;
-    const activePiecePossibleMoves = activePiece.getValidMoves();
+    const activePiecePossibleMoves = activePiece.getValidMoves(
+      this.playerColor,
+      this.currentlyMovingColor,
+    );
     if (activePiecePossibleMoves.length === 0 && activePiece.getKingCheckers().length > 0) {
       const kingCell = this.cells.find((cell) => cell.id === activePiece.getKingInfo().king.cellId);
       if (kingCell === undefined) {

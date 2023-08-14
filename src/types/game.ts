@@ -52,7 +52,7 @@ export interface IPiece {
   };
   getKingCheckers: () => IKingChecker[];
   getKingBounders: () => IKingBounder[];
-  getValidMoves: () => number[];
+  getValidMoves: (playerColor: PieceColor, currentMovingColor: PieceColor) => number[];
   getAttackedCells: (pieces: IPiece[]) => number[];
   getCastlingRook: (targetCastlingCell: number) => {
     rook: IRook;
@@ -140,7 +140,10 @@ export interface IMove {
   isStalemate?: boolean;
 }
 
-export type IBackendMove = Pick<IMove, 'piece' | 'finalPosition' | 'selectedPieceTypeToTransform'>;
+export type IBackendMove = Pick<
+  IMove,
+  'piece' | 'finalPosition' | 'selectedPieceTypeToTransform' | 'isMate' | 'isStalemate'
+>;
 
 export interface IPlayer {
   user: IUser;
@@ -151,7 +154,7 @@ export interface IGame {
   id: string;
   black: IPlayer;
   white: IPlayer;
-  movesLog: IMove[];
+  movesLog: IBackendMove[];
   isStarted: boolean;
   acceptanceStatus?: {
     secondsLeft: number;
