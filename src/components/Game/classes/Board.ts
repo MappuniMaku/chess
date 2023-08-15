@@ -405,8 +405,8 @@ export class Board {
     const lastMove = this.movesLog[this.movesLog.length - 1];
 
     if (availableMoves.length === 0) {
-      lastMove.isMate = wasCheckMade;
-      lastMove.isStalemate = !wasCheckMade;
+      lastMove.isMate = wasCheckMade ? true : undefined;
+      lastMove.isStalemate = !wasCheckMade ? true : undefined;
       this.disableMoving();
     }
     this.renderMovesLog();
