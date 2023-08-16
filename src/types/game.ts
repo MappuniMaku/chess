@@ -168,6 +168,11 @@ export interface IBannedPlayer {
   timeLeft: number;
 }
 
+export interface IRatingChange {
+  black: number;
+  white: number;
+}
+
 export interface IGameHistory<DateType = Date> {
   id: string;
   date: DateType;
@@ -175,6 +180,7 @@ export interface IGameHistory<DateType = Date> {
   white: string;
   movesLog: IBackendMove[];
   result: GameResult;
+  ratingChange: IRatingChange;
 }
 
 export type IPlayerResult = 'win' | 'loss' | 'draw';

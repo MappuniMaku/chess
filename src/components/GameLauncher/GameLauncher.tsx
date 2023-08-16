@@ -1,9 +1,13 @@
 import React, { FC, useEffect, useRef, useState } from 'react';
 
-import { Game } from '@/components';
+import { Button, Game } from '@/components';
 import { PieceColor } from '@/enums';
 import { IBackendMove } from '@/types';
 import { isArrayNotEmpty } from '@/helpers';
+import { useAppDispatch } from '@/hooks';
+import { fetchUser, updateActiveGame } from '@/store/slices';
+
+import useStyles from './GameLauncher.styles';
 
 export interface IGameLauncherProps {
   movesLog?: IBackendMove[];
@@ -12,10 +16,18 @@ export interface IGameLauncherProps {
 }
 
 export const GameLauncher: FC<IGameLauncherProps> = ({ movesLog, playerColor, onMakeMove }) => {
-  const [isGameInitialized, setIsGameInitialized] = useState(false);
-  const [game, setGame] = useState<Game>();
+  const classes = useStyles();
+  const dispatch = useAppDispatch();
 
   const gameContainerRef = useRef<HTMLDivElement>(null);
+
+  const [isGameInitialized, setIsGameInitialized] = useState(false);
+  const [game, setGame] = useState<Game>();
+  const [isGameFinished, setIsGameFinished] = useState(false);
+
+  const handleStartNewGame = () => {
+    dispatch(updateActiveGame(undefined));
+  };
 
   useEffect(() => {
     const container = gameContainerRef.current;
@@ -37,8 +49,23 @@ export const GameLauncher: FC<IGameLauncherProps> = ({ movesLog, playerColor, on
       return;
     }
 
-    game.board.addMoveFromMovesLog(movesLog[movesLog.length - 1]);
+    const lastMove = movesLog[movesLog.length - 1];
+    game.board.addMoveFromMovesLog(lastMove);
+
+    if (lastMove.isMate || lastMove.isStalemate) {
+      dispatch(fetchUser());
+      setIsGameFinished(true);
+    }
   }, [game, movesLog]);
 
-  return <div ref={gameContainerRef} />;
+  return (
+    <div className={classes.root}>
+      {isGameFinished && (
+        <div className={classes.newGameButton}>
+          <Button onClick={handleStartNewGame}>Новая игра</Button>
+        </div>
+      )}
+      <div ref={gameContainerRef} />
+    </div>
+  );
 };

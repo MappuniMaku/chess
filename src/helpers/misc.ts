@@ -61,8 +61,8 @@ export const getResultTextFromGameHistory = (
 
   const playerResult = resultsMap[userColor][result];
   const resultTextMap: Record<IPlayerResult, string> = {
-    win: 'Победа (+25 ПТС)',
-    loss: 'Поражение (-25 ПТС)',
+    win: 'Победа',
+    loss: 'Поражение',
     draw: 'Ничья',
   };
   return {
