@@ -3,10 +3,15 @@ import React, { FC, useEffect, useState } from 'react';
 import { api } from '@/api';
 import { IGameHistory, IUser } from '@/types';
 import { Preloader } from '@/components';
-import { getResultTextFromGameHistory, isArrayNotEmpty } from '@/helpers';
+import {
+  getRatingChangeFromGameHistory,
+  getResultFromGameHistory,
+  isArrayNotEmpty,
+} from '@/helpers';
 
 import useStyles from './GamesHistory.styles';
 import clsx from 'clsx';
+import { RatingChangeChart } from '@/components/RatingChangeChart';
 
 export interface IGamesHistoryProps {
   user: IUser;
@@ -50,10 +55,9 @@ export const GamesHistory: FC<IGamesHistoryProps> = ({ user }) => {
           </div>
           <ul className={classes.list}>
             {gamesHistory.map((item) => {
-              const { text: resultText, result } = getResultTextFromGameHistory(item, user);
+              const { text: resultText, result } = getResultFromGameHistory(item, user);
+              const { text: ratingChangeText } = getRatingChangeFromGameHistory(item, user);
               const isUserWhite = item.white === user.username;
-              const ratingChange = item.ratingChange[isUserWhite ? 'white' : 'black'];
-              const ratingChangeText = `${ratingChange > 0 ? '+' : ''}${ratingChange} ПТС`;
 
               return (
                 <li key={item.id} className={classes.item}>
@@ -72,6 +76,9 @@ export const GamesHistory: FC<IGamesHistoryProps> = ({ user }) => {
               );
             })}
           </ul>
+          <div className={classes.chart}>
+            <RatingChangeChart gamesHistory={gamesHistory} user={user} />
+          </div>
         </>
       ) : (
         <div>Вы пока не сыграли ни одной игры</div>

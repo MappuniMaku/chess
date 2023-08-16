@@ -41,7 +41,7 @@ export const getOpponentFromGame = (
     : undefined;
 };
 
-export const getResultTextFromGameHistory = (
+export const getResultFromGameHistory = (
   { white, result }: IGameHistory,
   user: IUser,
 ): { text: string; result: IPlayerResult } => {
@@ -68,5 +68,17 @@ export const getResultTextFromGameHistory = (
   return {
     text: resultTextMap[playerResult],
     result: playerResult,
+  };
+};
+
+export const getRatingChangeFromGameHistory = (
+  { white, ratingChange }: IGameHistory,
+  user: IUser,
+): { change: number; text: string } => {
+  const isUserWhite = white === user.username;
+  const change = ratingChange[isUserWhite ? 'white' : 'black'];
+  return {
+    change,
+    text: `${change > 0 ? '+' : ''}${change} ПТС`,
   };
 };

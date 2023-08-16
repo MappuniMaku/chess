@@ -46,4 +46,9 @@ export default createUseStyles({
   draw: {
     color: colors.GRAY,
   },
+
+  chart: {
+    maxWidth: 1000,
+    marginTop: 40,
+  },
 });
