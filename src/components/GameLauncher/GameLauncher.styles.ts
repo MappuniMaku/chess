@@ -6,4 +6,12 @@ export default createUseStyles({
   newGameButton: {
     marginBottom: 32,
   },
+
+  playersInfo: {
+    marginBottom: 24,
+  },
+
+  bold: {
+    fontWeight: 'bold',
+  },
 });

@@ -2,20 +2,21 @@ import React, { FC, useEffect, useRef, useState } from 'react';
 
 import { Button, Game } from '@/components';
 import { PieceColor } from '@/enums';
-import { IBackendMove } from '@/types';
-import { isArrayNotEmpty } from '@/helpers';
+import { IBackendMove, IGame, IUser } from '@/types';
+import { getCurrentPlayerFromGame, isArrayNotEmpty } from '@/helpers';
 import { useAppDispatch } from '@/hooks';
 import { fetchUser, updateActiveGame } from '@/store/slices';
 
 import useStyles from './GameLauncher.styles';
+import clsx from 'clsx';
 
 export interface IGameLauncherProps {
-  movesLog?: IBackendMove[];
-  playerColor: PieceColor;
+  activeGame: IGame;
+  user: IUser;
   onMakeMove(move: IBackendMove): void;
 }
 
-export const GameLauncher: FC<IGameLauncherProps> = ({ movesLog, playerColor, onMakeMove }) => {
+export const GameLauncher: FC<IGameLauncherProps> = ({ activeGame, user, onMakeMove }) => {
   const classes = useStyles();
   const dispatch = useAppDispatch();
 
@@ -24,6 +25,11 @@ export const GameLauncher: FC<IGameLauncherProps> = ({ movesLog, playerColor, on
   const [isGameInitialized, setIsGameInitialized] = useState(false);
   const [game, setGame] = useState<Game>();
   const [isGameFinished, setIsGameFinished] = useState(false);
+
+  const { movesLog, white, black } = activeGame;
+
+  const currentPlayer = getCurrentPlayerFromGame(activeGame, user);
+  const isUserWhite = white.user.username === user.username;
 
   const handleStartNewGame = () => {
     dispatch(updateActiveGame(undefined));
@@ -36,7 +42,7 @@ export const GameLauncher: FC<IGameLauncherProps> = ({ movesLog, playerColor, on
     }
     const gameInstance = new Game({
       $el: container,
-      playerColor,
+      playerColor: currentPlayer?.color as PieceColor,
       movesLog,
       onMakeMove,
     });
@@ -65,6 +71,15 @@ export const GameLauncher: FC<IGameLauncherProps> = ({ movesLog, playerColor, on
           <Button onClick={handleStartNewGame}>Новая игра</Button>
         </div>
       )}
+      <div className={classes.playersInfo}>
+        <span className={clsx(isUserWhite && classes.bold)}>
+          {white.user.username} ({white.user.rating} ПТС) (белые)
+        </span>
+        &nbsp;—{' '}
+        <span className={clsx(!isUserWhite && classes.bold)}>
+          {black.user.username} ({black.user.rating} ПТС) (чёрные)
+        </span>
+      </div>
       <div ref={gameContainerRef} />
     </div>
   );
