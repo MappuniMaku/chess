@@ -27,6 +27,7 @@ export const PlayersList: FC<IPlayersListProps> = ({
 }) => {
   const classes = useStyles();
 
+  const { value: currentUser } = useAppSelector((state) => state.user);
   const { connectedUsers } = useAppSelector((state) => state.connectedUsersList);
 
   const { items, page, totalPages } = data ?? {};
@@ -86,13 +87,15 @@ export const PlayersList: FC<IPlayersListProps> = ({
           {items !== undefined && items.length > 0 ? (
             <>
               <ul className={classes.list}>
-                {items.map((i) => {
-                  const { username, rating } = i;
+                {items.map((user) => {
+                  const { username, rating } = user;
                   const isOnline = connectedUsers.findIndex((u) => u.username === username) !== -1;
                   return (
                     <li key={username} className={classes.listItem}>
-                      <span>{username}</span>
-                      <span>{rating}</span>
+                      <span className={clsx(username === currentUser?.username && classes.bold)}>
+                        {username}
+                      </span>
+                      <span>{rating}&nbsp;ПТС</span>
                       <span
                         className={clsx(
                           classes.statusBullet,

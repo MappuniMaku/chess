@@ -26,6 +26,10 @@ export default createUseStyles({
     },
   },
 
+  bold: {
+    fontWeight: 'bold',
+  },
+
   statusBullet: {
     display: 'block',
     alignSelf: 'center',
