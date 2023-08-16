@@ -1,5 +1,6 @@
 {
   "hosting": {
+    "site": "chess-play",
     "public": "build",
     "ignore": [
       "firebase.json",
