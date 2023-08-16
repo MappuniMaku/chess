@@ -1,4 +1,5 @@
-import React, { FC, useRef, useState } from 'react';
+import React, { FC, useMemo, useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import { DropdownMenu, Icon, IDropdownMenuItem } from '@/components';
 import { clearCookie } from '@/helpers';
@@ -6,18 +7,9 @@ import { useAppSelector, useOnClickOutside } from '@/hooks';
 
 import useStyles from './Account.styles';
 
-const accountMenuItems: IDropdownMenuItem[] = [
-  {
-    text: 'Выйти',
-    onClick: () => {
-      clearCookie('token');
-      window.location.reload();
-    },
-  },
-];
-
 export const Account: FC = () => {
   const classes = useStyles();
+  const navigate = useNavigate();
 
   const { value: user } = useAppSelector((state) => state.user);
   const { username, rating } = user ?? {};
@@ -26,6 +18,26 @@ export const Account: FC = () => {
 
   const buttonRef = useRef<HTMLButtonElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
+
+  const accountMenuItems: IDropdownMenuItem[] = useMemo(
+    () => [
+      {
+        text: 'Профиль',
+        onClick: () => {
+          navigate('/');
+          setIsMenuOpen(false);
+        },
+      },
+      {
+        text: 'Выйти',
+        onClick: () => {
+          clearCookie('token');
+          window.location.reload();
+        },
+      },
+    ],
+    [],
+  );
 
   useOnClickOutside({
     ref: dropdownRef,
