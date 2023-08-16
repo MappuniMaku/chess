@@ -1,12 +1,14 @@
 import { ISendRequestOptions } from './types';
 import {
   fetchLoginOptions,
+  fetchMyGamesOptions,
   fetchProfileOptions,
   fetchSignupOptions,
   fetchUserOptions,
   fetchUsersOptions,
   IFetchLoginBodyRequest,
   IFetchLoginResponse,
+  IFetchMyGamesResponse,
   IFetchProfileResponse,
   IFetchSignupBodyRequest,
   IFetchSignupResponse,
@@ -108,6 +110,12 @@ class ApiClient {
     return this.sendRequest<IFetchSignupResponse>({
       options: fetchSignupOptions,
       body,
+    });
+  }
+
+  async fetchMyGames() {
+    return this.sendRequest<IFetchMyGamesResponse>({
+      options: fetchMyGamesOptions,
     });
   }
 }

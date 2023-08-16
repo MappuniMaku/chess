@@ -1,5 +1,5 @@
-import { IGame, IPlayer, IUser } from '@/types';
-import { PieceColor } from '@/enums';
+import { IGame, IGameHistory, IPlayer, IPlayerResult, IUser } from '@/types';
+import { GameResult, PieceColor } from '@/enums';
 
 export const clearCookie = (cookieName: string): void => {
   document.cookie = `${cookieName}=; expires=Thu, 01 Jan 1970 00:00:00 GMT`;
@@ -39,4 +39,34 @@ export const getOpponentFromGame = (
     : game.white.user.username === user.username
     ? game.black
     : undefined;
+};
+
+export const getResultTextFromGameHistory = (
+  { white, result }: IGameHistory,
+  user: IUser,
+): { text: string; result: IPlayerResult } => {
+  const userColor = user.username === white ? PieceColor.White : PieceColor.Black;
+  const resultsMap: Record<PieceColor, Record<GameResult, IPlayerResult>> = {
+    [PieceColor.White]: {
+      [GameResult.WhiteWin]: 'win',
+      [GameResult.BlackWin]: 'loss',
+      [GameResult.Draw]: 'draw',
+    },
+    [PieceColor.Black]: {
+      [GameResult.WhiteWin]: 'loss',
+      [GameResult.BlackWin]: 'win',
+      [GameResult.Draw]: 'draw',
+    },
+  };
+
+  const playerResult = resultsMap[userColor][result];
+  const resultTextMap: Record<IPlayerResult, string> = {
+    win: 'Победа (+25 ПТС)',
+    loss: 'Поражение (-25 ПТС)',
+    draw: 'Ничья',
+  };
+  return {
+    text: resultTextMap[playerResult],
+    result: playerResult,
+  };
 };

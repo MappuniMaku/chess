@@ -1,4 +1,4 @@
-import { CastlingType, PieceColor, PieceType } from '@/enums';
+import { CastlingType, GameResult, PieceColor, PieceType } from '@/enums';
 import { IUser } from '@/types';
 
 export interface IPiecePosition {
@@ -167,3 +167,14 @@ export interface IBannedPlayer {
   isBanActive: boolean;
   timeLeft: number;
 }
+
+export interface IGameHistory<DateType = Date> {
+  id: string;
+  date: DateType;
+  black: string;
+  white: string;
+  movesLog: IBackendMove[];
+  result: GameResult;
+}
+
+export type IPlayerResult = 'win' | 'loss' | 'draw';

@@ -45,3 +45,9 @@ export const COLUMN_NAMES = {
   7: 'g',
   8: 'h',
 };
+
+export enum GameResult {
+  WhiteWin = 'whiteWin',
+  BlackWin = 'blackWin',
+  Draw = 'draw',
+}

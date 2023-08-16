@@ -48,7 +48,7 @@ export const Account: FC = () => {
         <Icon type="account_circle" />
         <span className={classes.account}>
           <span className={classes.username}>{username}</span>
-          <span className={classes.rating}>Рейтинг: {rating}</span>
+          <span className={classes.rating}>Рейтинг: {rating} ПТС</span>
         </span>
       </button>
       {isMenuOpen && (

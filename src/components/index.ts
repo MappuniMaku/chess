@@ -15,3 +15,4 @@ export * from './DropdownMenu';
 export * from './GameLauncher';
 export * from './GameSearch';
 export * from './GameConfirm';
+export * from './GamesHistory';

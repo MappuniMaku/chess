@@ -19,7 +19,7 @@ const pages: Array<{
   {
     name: 'main',
     link: '/',
-    text: 'Главная',
+    text: 'Профиль',
   },
   {
     name: 'game',
