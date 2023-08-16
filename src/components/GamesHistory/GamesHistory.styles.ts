@@ -20,15 +20,14 @@ export default createUseStyles({
   },
 
   list: {
+    display: 'flex',
+    flexDirection: 'column-reverse',
+    gap: 8,
     marginTop: 16,
   },
 
   item: {
     ...gridStyles,
-
-    '&:not(:first-child)': {
-      marginTop: 8,
-    },
   },
 
   bold: {
